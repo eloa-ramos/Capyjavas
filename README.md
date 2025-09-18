@@ -29,8 +29,8 @@ Wireframe: [Protótipo Navegável](https://www.figma.com/design/m2NtSl60oMRmOBVV
 
 
 ## Backlog do Produto 
-| RANK  | FUNCIONALIDADE         | DESCRIÇÃO                                         | USER STORY DETALHADA                                                                                    | PRIORIDADE  | SPRINT |
-|:---:|:-------------------:|:-----------------------:|:-------------------------------------------------:|:------------------------------------------------------------------------------------:|:----------:|:------:|
+| RANK| FUNCIONALIDADE       | DESCRIÇÃO                                            | USER STORY DETALHADA                                                                                     | PRIORIDADE  | SPRINT |
+|:---:|:-------------------:|:-----------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|:----------:|:-------:|
 | #01 | Interações              | Interação Dinâmica                                | "Como usuário, quero ter uma interface interativa para acessar as funcionalidades e visuais do sistema." | Alta        | 1      |
 | #02 | Estrutura do Projeto    | WireFrames para planejamento da estrutura         | Como Gestor do Projeto, quero visualizar o wireframe para validar a estrutura antes do desenvolvimento." | Baixa       | 1      |
 
