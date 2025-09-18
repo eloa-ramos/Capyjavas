@@ -32,7 +32,7 @@ Wireframe: [Protótipo Navegável](https://www.figma.com/design/m2NtSl60oMRmOBVV
 | RANK  | ITEM                | FUNCIONALIDADE         | DESCRIÇÃO                                         | USER STORY DETALHADA                                                                 | PRIORIDADE | SPRINT |
 |:---:|:-------------------:|:-----------------------:|:-------------------------------------------------:|:------------------------------------------------------------------------------------:|:----------:|:------:|
 | #01 | *Interface*         | Interações              | Interação Dinâmica                                | "Como usuário, quero ter uma interface interativa para acessar as funcionalidades e visuais do sistema." | Alta    | 1      |
-| #02 | *Estruturação*      | Estrutura do Projeto    | WireFrames para planejamento da estrutura         | Como Gestor do Projeto, quero visualizar o wireframe para validar a estrutura antes do desenvolvimento." | Alta       | 1      |
+| #02 | *Estruturação*      | Estrutura do Projeto    | WireFrames para planejamento da estrutura         | Como Gestor do Projeto, quero visualizar o wireframe para validar a estrutura antes do desenvolvimento." | Baixa       | 1      |
 
 
 
