@@ -77,7 +77,7 @@ Wireframe: [Protótipo Navegável](https://www.figma.com/design/m2NtSl60oMRmOBVV
 |Eloá Ramos Costa da Silva|Developer Team|<a href="https://github.com/eloa-ramos"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>|<a href=""><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>|
 |Isabela Araújo Freitas|Developer Team|<a href="https://github.com/IsabelaAmasu"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>|<a href=""><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>|
 |Matheus Rafael Pereira Dias|Developer Team|<a href="https://github.com/matheusssd1"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>|<a href=""><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>|
-|João Gabriel Schimidt|Developer Team|<a href="https://github.com/"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>|<a href=""><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>|
+|João Gabriel Schimidt|Developer Team|<a href="https://github.com/JoaoSchmidt29"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>|<a href=""><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>|
 
 
 
