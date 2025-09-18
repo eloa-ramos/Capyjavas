@@ -49,7 +49,7 @@ A solução proposta para a **Youtan** foi criarmos uma ferramenta que permita a
 |4|   Alta   |Como **RH**, quero cadastrar um novo PDI para um colaborador para acompanhar seu desenvolvimento|   240min   |2|
 |5|   Média   |Como **RH**, quero registrar objetivos dentro de um PDI para estruturar os planos de crescimento|   180min   |2|
 |6|  Média   |Como **RH**, quero adicionar metas e prazos dentro de cada objetivo do PDI para mensurar resultados|   180min   |2|
-|7|  Média   |Como **RH**, quero visualizar todos os PDIs de um colaborador para manter o histórico anual|   240min   |3|
+|7|  Média   |Como **RH**, quero visualizar todos os PDIs de um colaborador para manter o histórico anual|   210min   |3|
 |8|  Média   |Como **Gerente de Área**, quero visualizar o atingimento individual de cada colaborador da minha equipe para avaliar desempenho|   240min   |3|
 |9|  Média   |Como **Gerente Geral**, quero visualizar o atingimento coletivo da equipe para acompanhar resultados|   240min   |3|
 |10|   Pequena   |Como **usuário**, quero ver uma barra de progresso no dashboard do PDI para acompanhar o status das metas|   180min   |3|
