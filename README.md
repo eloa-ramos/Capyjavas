@@ -69,7 +69,7 @@ Wireframe: [Protótipo Navegável](https://www.figma.com/design/m2NtSl60oMRmOBVV
 
 | NOME| FUNÇÃO| GITHUB| LINKEDIN|
 |:----:|:----:|:----:|:----:|
-|Marya Vitória Cândido|Scrum Master|<a href="https://github.com/"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>|<a href=""><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>|
+|Marya Vitória Garcia Cândido de Assis|Scrum Master|<a href="https://github.com/mavygarcia"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>|<a href=""><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>|
 |Heitor Guilherme Rezende Queiroz Silva|Developer Team|<a href="https://github.com/heitors1337"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>|<a href=""><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>|
 |Cauan Gabriel da Silva Rezende Nascimento |Developer Team|<a href="https://github.com/LoadCG"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>|<a href=""><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>|
 |Isabella Dombrowski Zanlorenzi|Developer Team|<a href="https://github.com/isadombrowski"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white"></a>|<a href=""><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a>|
