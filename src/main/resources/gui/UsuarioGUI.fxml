@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <VBox xmlns:fx="http://javafx.com/fxml" fx:controller="gui.UsuarioGUIController"
       spacing="10" alignment="CENTER" style="-fx-padding: 20;">
 
@@ -13,12 +17,26 @@
     <TextField fx:id="cargoUsuario" promptText="Cargo"/>
     <TextField fx:id="experienciaUsuario" promptText="Experiência"/>
     <TextField fx:id="observacoesUsuario" promptText="Observações"/>
+    <!-- ComboBox para Tipo de Usuário -->
+    <Label text="Tipo de Usuário"/>
+    <ComboBox fx:id="tipoUsuarioCombo">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="RH"/>
+                <String fx:value="Gestor de Área"/>
+                <String fx:value="Gestor Geral"/>
+                <String fx:value="Colaborador"/>
+            </FXCollections>
+        </items>
+    </ComboBox>
+
 
     <!-- Botões -->
     <HBox spacing="10">
         <Button fx:id="cadastrarUsuarioBtn" text="Cadastrar" onAction="#clickCadastrar"/>
         <Button fx:id="sairBtn" text="Sair" onAction="#clickSair"/>
     </HBox>
+
 
 </VBox>
 

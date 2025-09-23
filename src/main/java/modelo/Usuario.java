@@ -9,6 +9,8 @@ public class Usuario {
     private String experiencia;
     private String observacoes;
     private LocalDate dataNascimento;
+    private String tipoAcesso;
+
 
     // Getters e Setters
     public String getNome() { return nome; }
@@ -28,4 +30,9 @@ public class Usuario {
 
     public LocalDate getDataNascimento() { return dataNascimento; }
     public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
+
+
+    public String getTipoAcesso() { return tipoAcesso; }
+    public void setTipoAcesso(String tipoAcesso) { this.tipoAcesso = tipoAcesso; }
 }
+

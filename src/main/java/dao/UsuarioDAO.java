@@ -14,8 +14,8 @@ public class UsuarioDAO {
     }
 
     public void adiciona(Usuario usuario) {
-        String sql = "INSERT INTO usuarios (nome, cpf, data_nascimento, cargo, experiencia, observacoes) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO usuarios (nome, cpf, data_nascimento, cargo, experiencia, observacoes,tipo_acesso) " +
+                "VALUES (?, ?, ?, ?, ?, ?,?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, usuario.getNome());
@@ -24,6 +24,7 @@ public class UsuarioDAO {
             stmt.setString(4, usuario.getCargo());
             stmt.setString(5, usuario.getExperiencia());
             stmt.setString(6, usuario.getObservacoes());
+            stmt.setString(7, usuario.getTipoAcesso());
 
             stmt.execute();
         } catch (SQLException e) {

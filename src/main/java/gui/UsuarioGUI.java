@@ -48,9 +48,11 @@ public class UsuarioGUI extends Application {
         grid.add(txtObservacoes, 1, 4);
 
         Label lblTipoAcesso = new Label("Tipo de Acesso:");
-        TextField txtTipoAcesso = new TextField();
+        ComboBox<String> comboTipoAcesso = new ComboBox<>();
+        comboTipoAcesso.getItems().addAll("RH", "Gestor de Área", "Gestor Geral");
         grid.add(lblTipoAcesso, 0, 5);
-        grid.add(txtTipoAcesso, 1, 5);
+        grid.add(comboTipoAcesso, 1, 5);
+
 
         Label lblDataNascimento = new Label("Data de Nascimento:");
         DatePicker datePicker = new DatePicker();
