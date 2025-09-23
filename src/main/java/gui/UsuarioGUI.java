@@ -70,7 +70,6 @@ public class UsuarioGUI extends Application {
                 usuario.setCargo(txtCargo.getText());
                 usuario.setExperiencia(txtExperiencia.getText());
                 usuario.setObservacoes(txtObservacoes.getText());
-                usuario.setTipoAcesso(txtTipoAcesso.getText());
                 usuario.setDataNascimento(datePicker.getValue());
 
                 UsuarioDAO dao = new UsuarioDAO();
