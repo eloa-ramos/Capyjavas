@@ -76,8 +76,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <!-- Ajuste para sua classe principal -->
-                    <mainClass>Main</mainClass>
+                    <mainClass>gui.UsuarioGUI</mainClass>
                 </configuration>
             </plugin>
         </plugins>

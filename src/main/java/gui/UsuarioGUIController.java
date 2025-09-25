@@ -16,7 +16,6 @@ public class UsuarioGUIController {
     @FXML private TextField experienciaUsuario;
     @FXML private TextField observacoesUsuario;
     @FXML private ComboBox<String> tipoUsuarioCombo;
-
     @FXML private Button cadastrarUsuarioBtn;
     @FXML private Button sairBtn;
 
