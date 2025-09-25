@@ -1,3 +1,4 @@
+create database db_pdi;
 use db_pdi;
 
 CREATE TABLE `Usuarios` (

@@ -1,94 +1,235 @@
 package gui;
-
 import dao.UsuarioDAO;
 import modelo.Usuario;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import java.util.function.UnaryOperator;
 
 public class UsuarioGUI extends Application {
 
+    private final DashboardGUI dashboard = new DashboardGUI();
+
+    private TextField txtNome;
+    private TextField txtCpf;
+    private TextField txtCargo;
+    private TextField txtArea; // Campo 'Área' adicionado para espelhar o layout
+    private TextArea txtExperiencia;
+    private TextArea txtObservacoes;
+    private DatePicker datePicker;
+    private ComboBox<String> comboTipoAcesso;
+    private Button btnSalvar;
+
     @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("Cadastro de Usuário");
+    public void start(Stage stage) {
+        stage.setTitle("Cadastro de Usuários");
 
-        // Layout
+        BorderPane root = new BorderPane();
+        root.setPadding(new Insets(36));
+        root.setStyle("-fx-background-color: #f7f7f7;");
+
+        // --- Título ---
+        Label lblTitulo = new Label("Cadastro de Usuários");
+        lblTitulo.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #333;");
+
+        VBox topBox = new VBox(lblTitulo);
+        topBox.setAlignment(Pos.TOP_CENTER);
+        topBox.setPadding(new Insets(0, 0, 40, 0));
+        root.setTop(topBox);
+
+        // --- Formulário ---
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(15));
-        grid.setHgap(10);
-        grid.setVgap(10);
+        grid.setHgap(30);
+        grid.setVgap(20);
+        grid.setAlignment(Pos.TOP_CENTER);
 
-        // Campos
-        Label lblNome = new Label("Nome:");
-        TextField txtNome = new TextField();
-        grid.add(lblNome, 0, 0);
-        grid.add(txtNome, 1, 0);
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setPercentWidth(50);
+        ColumnConstraints col2 = new ColumnConstraints();
+        col2.setPercentWidth(50);
+        grid.getColumnConstraints().addAll(col1, col2);
 
-        Label lblCpf = new Label("CPF:");
-        TextField txtCpf = new TextField();
-        grid.add(lblCpf, 0, 1);
-        grid.add(txtCpf, 1, 1);
+        String inputStyle = "-fx-font-size: 14px; -fx-border-color: #ddd; -fx-border-radius: 4; -fx-padding: 8 10; -fx-background-color: white; -fx-prompt-text-fill: #999;";
 
-        Label lblCargo = new Label("Cargo:");
-        TextField txtCargo = new TextField();
-        grid.add(lblCargo, 0, 2);
-        grid.add(txtCargo, 1, 2);
+        // LINHA 0: Nome Completo (ocupa 2 colunas)
+        txtNome = new TextField();
+        txtNome.setPromptText("Ex: João Silva");
+        txtNome.setStyle(inputStyle);
+        VBox vNome = createLabeledControl("Nome completo", txtNome);
+        grid.add(vNome, 0, 0, 2, 1);
 
-        Label lblExperiencia = new Label("Experiência:");
-        TextField txtExperiencia = new TextField();
-        grid.add(lblExperiencia, 0, 3);
-        grid.add(txtExperiencia, 1, 3);
+        // LINHA 1: CPF e Data de Nascimento
+        txtCpf = new TextField();
+        txtCpf.setPromptText("Digite apenas números");
+        UnaryOperator<TextFormatter.Change> cpfFilter = change -> {
+            String newText = change.getControlNewText();
+            if (!change.getText().matches("[0-9]*")) return null;
+            if (newText.length() > 11) return null;
+            return change;
+        };
+        txtCpf.setTextFormatter(new TextFormatter<>(cpfFilter));
+        txtCpf.setStyle(inputStyle);
+        VBox vCpf = createLabeledControl("CPF", txtCpf);
+        grid.add(vCpf, 0, 1);
 
-        Label lblObservacoes = new Label("Observações:");
-        TextField txtObservacoes = new TextField();
-        grid.add(lblObservacoes, 0, 4);
-        grid.add(txtObservacoes, 1, 4);
+        datePicker = new DatePicker();
+        datePicker.setPromptText("30/10/2000");
+        datePicker.setStyle(inputStyle + "-fx-padding: 6 10;");
+        VBox vData = createLabeledControl("Data de Nascimento", datePicker);
+        grid.add(vData, 1, 1);
 
-        Label lblTipoAcesso = new Label("Tipo de Acesso:");
-        ComboBox<String> comboTipoAcesso = new ComboBox<>();
-        comboTipoAcesso.getItems().addAll("RH", "Gestor de Área", "Gestor Geral");
-        grid.add(lblTipoAcesso, 0, 5);
-        grid.add(comboTipoAcesso, 1, 5);
+        // LINHA 2: Cargo e Área
+        txtCargo = new TextField();
+        txtCargo.setPromptText("Escolha o Cargo");
+        txtCargo.setStyle(inputStyle);
+        VBox vCargo = createLabeledControl("Cargo", txtCargo);
+        grid.add(vCargo, 0, 2);
 
+        txtArea = new TextField();
+        txtArea.setPromptText("Defina a Área");
+        txtArea.setStyle(inputStyle);
+        VBox vArea = createLabeledControl("Área", txtArea);
+        grid.add(vArea, 1, 2);
 
-        Label lblDataNascimento = new Label("Data de Nascimento:");
-        DatePicker datePicker = new DatePicker();
-        grid.add(lblDataNascimento, 0, 6);
-        grid.add(datePicker, 1, 6);
+        // LINHA 3: Tipo de Acesso (ocupa 2 colunas)
+        comboTipoAcesso = new ComboBox<>();
+        comboTipoAcesso.getItems().addAll("RH", "Gestor Geral", "Gestor de Area", "Colaborador");
+        comboTipoAcesso.setPromptText("Tipo de Acesso");
+        comboTipoAcesso.setStyle(inputStyle);
+        comboTipoAcesso.setMaxWidth(Double.MAX_VALUE);
+        VBox vTipo = createLabeledControl("Tipo de Acesso", comboTipoAcesso);
+        grid.add(vTipo, 0, 3, 2, 1);
 
-        // Botão
-        Button btnSalvar = new Button("Salvar");
-        grid.add(btnSalvar, 1, 7);
+        // LINHA 4: Experiência (ocupa 2 colunas)
+        txtExperiencia = new TextArea();
+        txtExperiencia.setPromptText("Experiência");
+        txtExperiencia.setWrapText(true);
+        txtExperiencia.setPrefRowCount(3);
+        txtExperiencia.setStyle(inputStyle);
+        VBox vExp = createLabeledControl("Experiência", txtExperiencia);
+        grid.add(vExp, 0, 4, 2, 1);
 
-        // Ação do botão
-        btnSalvar.setOnAction(e -> {
+        // LINHA 5: Observações (ocupa 2 colunas)
+        txtObservacoes = new TextArea();
+        txtObservacoes.setPromptText("Observações");
+        txtObservacoes.setWrapText(true);
+        txtObservacoes.setPrefRowCount(3);
+        txtObservacoes.setStyle(inputStyle);
+        VBox vObs = createLabeledControl("Observações", txtObservacoes);
+        grid.add(vObs, 0, 5, 2, 1);
+
+        // Botões
+        btnSalvar = new Button("Cadastrar");
+        btnSalvar.setOnAction(e -> salvarUsuario());
+        btnSalvar.setStyle(
+                "-fx-background-color: #2C2C2C; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;"
+        );
+
+        Button btnVoltar = new Button("Voltar"); // Simplifiquei o label para "Voltar"
+        btnVoltar.setOnAction(e -> {
             try {
-                Usuario usuario = new Usuario();
-                usuario.setNome(txtNome.getText());
-                usuario.setCpf(txtCpf.getText());
-                usuario.setCargo(txtCargo.getText());
-                usuario.setExperiencia(txtExperiencia.getText());
-                usuario.setObservacoes(txtObservacoes.getText());
-                usuario.setDataNascimento(datePicker.getValue());
-
-                UsuarioDAO dao = new UsuarioDAO();
-                dao.adiciona(usuario);
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Usuário cadastrado com sucesso!");
-                alert.showAndWait();
+                dashboard.start(stage);
             } catch (Exception ex) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Erro: " + ex.getMessage());
-                alert.showAndWait();
+                ex.printStackTrace();
             }
         });
+        btnVoltar.setStyle(
+                "-fx-background-color: #E0E0E0; -fx-text-fill: #333; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;"
+        );
 
-        // Cena
-        Scene scene = new Scene(grid, 400, 350);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        HBox btnBox = new HBox(15, btnVoltar, btnSalvar);
+        btnBox.setAlignment(Pos.BOTTOM_RIGHT);
+        btnBox.setPadding(new Insets(20, 0, 0, 0));
+
+        VBox centerBox = new VBox(grid, btnBox);
+        centerBox.setSpacing(6);
+        centerBox.setAlignment(Pos.TOP_CENTER);
+        centerBox.setMaxWidth(800);
+        root.setCenter(centerBox);
+
+        Scene scene = new Scene(root, 1000, 800);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private VBox createLabeledControl(String labelText, Control control) {
+        Label label = new Label(labelText);
+        label.getStyleClass().add("form-label");
+        label.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #555;");
+        control.setMaxWidth(Double.MAX_VALUE);
+        VBox box = new VBox(4, label, control);
+        box.setFillWidth(true);
+        VBox.setVgrow(control, Priority.ALWAYS);
+        return box;
+    }
+
+    private void salvarUsuario() {
+        // Lógica de salvamento e validação (intacta)
+        if (txtNome.getText().trim().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Informe o nome.");
+            return;
+        }
+        if (txtCpf.getText().trim().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Informe o CPF.");
+            return;
+        }
+        if (comboTipoAcesso.getValue() == null) {
+            showAlert(Alert.AlertType.WARNING, "Escolha o tipo de acesso.");
+            return;
+        }
+
+        try {
+            Usuario usuario = new Usuario();
+            usuario.setNome(txtNome.getText().trim());
+            usuario.setCpf(txtCpf.getText().trim());
+            usuario.setDataNascimento(datePicker.getValue());
+            usuario.setCargo(txtCargo.getText().trim());
+            // Nota: O campo txtArea não está no modelo Usuario e não está sendo salvo.
+            usuario.setExperiencia(txtExperiencia.getText().trim());
+            usuario.setObservacoes(txtObservacoes.getText().trim());
+            usuario.setTipoAcesso(comboTipoAcesso.getValue());
+            UsuarioDAO dao = new UsuarioDAO();
+            dao.adiciona(usuario);
+
+            showAlert(Alert.AlertType.INFORMATION, "Usuário cadastrado com sucesso.");
+            clearForm();
+        } catch (Exception ex) {
+            showAlert(Alert.AlertType.ERROR, "Erro ao salvar: " + ex.getMessage());
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String message) {
+        Alert a = new Alert(type, message, ButtonType.OK);
+        a.showAndWait();
+    }
+
+    private void clearForm() {
+        txtNome.clear();
+        txtCpf.clear();
+        datePicker.setValue(null);
+        txtCargo.clear();
+        txtArea.clear(); // Limpa o novo campo 'Área'
+        txtExperiencia.clear();
+        txtObservacoes.clear();
+        comboTipoAcesso.setValue(null);
     }
 
     public static void main(String[] args) {
