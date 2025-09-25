@@ -46,6 +46,21 @@ public class DashboardGUI extends Application {
         Button cadastrarButton = new Button("Cadastrar");
         cadastrarButton.setStyle("-fx-background-color: #333333; -fx-text-fill: white;");
 
+        cadastrarButton.setOnAction(e -> {
+            try {
+                // 1. Instancia a nova tela
+                UsuarioGUI cadastroApp = new UsuarioGUI();
+
+                // 2. Inicia a nova tela, reutilizando o Stage (janela) atual
+                cadastroApp.start(stage);
+            } catch (Exception ex) {
+                // Trata exceções se a nova tela não puder ser carregada
+                ex.printStackTrace();
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Cadastro: " + ex.getMessage());
+                errorAlert.showAndWait();
+            }
+        });
+
         HBox searchArea = new HBox(10, cadastrarButton, searchField);
         searchArea.setAlignment(Pos.CENTER_LEFT);
 

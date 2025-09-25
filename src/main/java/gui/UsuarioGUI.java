@@ -19,16 +19,19 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.function.UnaryOperator;
 
 public class UsuarioGUI extends Application {
 
+    private final DashboardGUI dashboard = new DashboardGUI();
 
     private TextField txtNome;
     private TextField txtCpf;
     private TextField txtCargo;
+    private TextField txtArea; // Campo 'Área' adicionado para espelhar o layout
     private TextArea txtExperiencia;
     private TextArea txtObservacoes;
     private DatePicker datePicker;
@@ -41,20 +44,22 @@ public class UsuarioGUI extends Application {
 
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(36));
+        root.setStyle("-fx-background-color: #f7f7f7;");
 
         // --- Título ---
         Label lblTitulo = new Label("Cadastro de Usuários");
-        lblTitulo.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #333;");
+        lblTitulo.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #333;");
 
         VBox topBox = new VBox(lblTitulo);
-        topBox.setAlignment(Pos.CENTER);
-        topBox.setPadding(new Insets(0, 0, 20, 0));
+        topBox.setAlignment(Pos.TOP_CENTER);
+        topBox.setPadding(new Insets(0, 0, 40, 0));
         root.setTop(topBox);
 
         // --- Formulário ---
         GridPane grid = new GridPane();
-        grid.setHgap(18);
-        grid.setVgap(12);
+        grid.setHgap(30);
+        grid.setVgap(20);
+        grid.setAlignment(Pos.TOP_CENTER);
 
         ColumnConstraints col1 = new ColumnConstraints();
         col1.setPercentWidth(50);
@@ -62,82 +67,105 @@ public class UsuarioGUI extends Application {
         col2.setPercentWidth(50);
         grid.getColumnConstraints().addAll(col1, col2);
 
+        String inputStyle = "-fx-font-size: 14px; -fx-border-color: #ddd; -fx-border-radius: 4; -fx-padding: 8 10; -fx-background-color: white; -fx-prompt-text-fill: #999;";
 
+        // LINHA 0: Nome Completo (ocupa 2 colunas)
         txtNome = new TextField();
         txtNome.setPromptText("Ex: João Silva");
-        txtNome.setStyle("-fx-font-size: 13px; -fx-border-color: #aaa; -fx-border-radius: 4; -fx-padding: 4;");
+        txtNome.setStyle(inputStyle);
         VBox vNome = createLabeledControl("Nome completo", txtNome);
         grid.add(vNome, 0, 0, 2, 1);
 
-        // CPF (apenas números)
+        // LINHA 1: CPF e Data de Nascimento
         txtCpf = new TextField();
         txtCpf.setPromptText("Digite apenas números");
-        // filtro para aceitar apenas dígitos e limitar a 11 caracteres.
         UnaryOperator<TextFormatter.Change> cpfFilter = change -> {
             String newText = change.getControlNewText();
             if (!change.getText().matches("[0-9]*")) return null;
-            if (newText.length() > 11) return null; // limite opcional
+            if (newText.length() > 11) return null;
             return change;
         };
         txtCpf.setTextFormatter(new TextFormatter<>(cpfFilter));
+        txtCpf.setStyle(inputStyle);
         VBox vCpf = createLabeledControl("CPF", txtCpf);
         grid.add(vCpf, 0, 1);
 
-        // Data de Nascimento
         datePicker = new DatePicker();
-        datePicker.setPromptText("dd/MM/yyyy");
+        datePicker.setPromptText("30/10/2000");
+        datePicker.setStyle(inputStyle + "-fx-padding: 6 10;");
         VBox vData = createLabeledControl("Data de Nascimento", datePicker);
         grid.add(vData, 1, 1);
 
-        // Cargo
+        // LINHA 2: Cargo e Área
         txtCargo = new TextField();
         txtCargo.setPromptText("Escolha o Cargo");
+        txtCargo.setStyle(inputStyle);
         VBox vCargo = createLabeledControl("Cargo", txtCargo);
-        grid.add(vCargo, 0, 2, 2, 1);
+        grid.add(vCargo, 0, 2);
 
-        // Experiência
-        txtExperiencia = new TextArea();
-        txtExperiencia.setPromptText("Experiência");
-        txtExperiencia.setWrapText(true);
-        VBox vExp = createLabeledControl("Experiência", txtExperiencia);
-        grid.add(vExp, 0, 4, 2, 1);
+        txtArea = new TextField();
+        txtArea.setPromptText("Defina a Área");
+        txtArea.setStyle(inputStyle);
+        VBox vArea = createLabeledControl("Área", txtArea);
+        grid.add(vArea, 1, 2);
 
-        // Observações
-        txtObservacoes = new TextArea();
-        txtObservacoes.setPromptText("Observações");
-        txtObservacoes.setWrapText(true);
-        VBox vObs = createLabeledControl("Observações", txtObservacoes);
-        grid.add(vObs, 0, 5, 2, 1);
-
-        // Tipo de Acesso
+        // LINHA 3: Tipo de Acesso (ocupa 2 colunas)
         comboTipoAcesso = new ComboBox<>();
         comboTipoAcesso.getItems().addAll("RH", "Gestor Geral", "Gestor de Area", "Colaborador");
         comboTipoAcesso.setPromptText("Tipo de Acesso");
+        comboTipoAcesso.setStyle(inputStyle);
+        comboTipoAcesso.setMaxWidth(Double.MAX_VALUE);
         VBox vTipo = createLabeledControl("Tipo de Acesso", comboTipoAcesso);
-        grid.add(vTipo, 0, 6, 2, 1);
+        grid.add(vTipo, 0, 3, 2, 1);
 
-        // Botão Salvar
+        // LINHA 4: Experiência (ocupa 2 colunas)
+        txtExperiencia = new TextArea();
+        txtExperiencia.setPromptText("Experiência");
+        txtExperiencia.setWrapText(true);
+        txtExperiencia.setPrefRowCount(3);
+        txtExperiencia.setStyle(inputStyle);
+        VBox vExp = createLabeledControl("Experiência", txtExperiencia);
+        grid.add(vExp, 0, 4, 2, 1);
+
+        // LINHA 5: Observações (ocupa 2 colunas)
+        txtObservacoes = new TextArea();
+        txtObservacoes.setPromptText("Observações");
+        txtObservacoes.setWrapText(true);
+        txtObservacoes.setPrefRowCount(3);
+        txtObservacoes.setStyle(inputStyle);
+        VBox vObs = createLabeledControl("Observações", txtObservacoes);
+        grid.add(vObs, 0, 5, 2, 1);
+
+        // Botões
         btnSalvar = new Button("Cadastrar");
         btnSalvar.setOnAction(e -> salvarUsuario());
         btnSalvar.setStyle(
-                "-fx-background-color: #2C2C2C; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 5;"
+                "-fx-background-color: #2C2C2C; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;"
         );
 
-        HBox btnBox = new HBox(btnSalvar);
-        btnBox.setAlignment(Pos.CENTER);
-        btnBox.setPadding(new Insets(18, 0, 0, 0));
+        Button btnVoltar = new Button("Voltar"); // Simplifiquei o label para "Voltar"
+        btnVoltar.setOnAction(e -> {
+            try {
+                dashboard.start(stage);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        btnVoltar.setStyle(
+                "-fx-background-color: #E0E0E0; -fx-text-fill: #333; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;"
+        );
+
+        HBox btnBox = new HBox(15, btnVoltar, btnSalvar);
+        btnBox.setAlignment(Pos.BOTTOM_RIGHT);
+        btnBox.setPadding(new Insets(20, 0, 0, 0));
 
         VBox centerBox = new VBox(grid, btnBox);
         centerBox.setSpacing(6);
         centerBox.setAlignment(Pos.TOP_CENTER);
-        centerBox.setMaxWidth(920);
+        centerBox.setMaxWidth(800);
         root.setCenter(centerBox);
 
-        centerBox.setPadding(new Insets(6)); // Adiciona um padding interno ao contêiner central
-
-        //cena
-        Scene scene = new Scene(root, 1000, 760);
-
+        Scene scene = new Scene(root, 1000, 800);
         stage.setScene(scene);
         stage.show();
     }
@@ -145,14 +173,16 @@ public class UsuarioGUI extends Application {
     private VBox createLabeledControl(String labelText, Control control) {
         Label label = new Label(labelText);
         label.getStyleClass().add("form-label");
-        label.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
-        control.setMaxWidth(Double.MAX_VALUE); // permite o controle ocupar a largura disponível
-        VBox box = new VBox(6, label, control);
+        label.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #555;");
+        control.setMaxWidth(Double.MAX_VALUE);
+        VBox box = new VBox(4, label, control);
         box.setFillWidth(true);
+        VBox.setVgrow(control, Priority.ALWAYS);
         return box;
     }
+
     private void salvarUsuario() {
-        // validações
+        // Lógica de salvamento e validação (intacta)
         if (txtNome.getText().trim().isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Informe o nome.");
             return;
@@ -172,6 +202,7 @@ public class UsuarioGUI extends Application {
             usuario.setCpf(txtCpf.getText().trim());
             usuario.setDataNascimento(datePicker.getValue());
             usuario.setCargo(txtCargo.getText().trim());
+            // Nota: O campo txtArea não está no modelo Usuario e não está sendo salvo.
             usuario.setExperiencia(txtExperiencia.getText().trim());
             usuario.setObservacoes(txtObservacoes.getText().trim());
             usuario.setTipoAcesso(comboTipoAcesso.getValue());
@@ -195,6 +226,7 @@ public class UsuarioGUI extends Application {
         txtCpf.clear();
         datePicker.setValue(null);
         txtCargo.clear();
+        txtArea.clear(); // Limpa o novo campo 'Área'
         txtExperiencia.clear();
         txtObservacoes.clear();
         comboTipoAcesso.setValue(null);
@@ -204,4 +236,3 @@ public class UsuarioGUI extends Application {
         launch(args);
     }
 }
-
