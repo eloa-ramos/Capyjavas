@@ -3,6 +3,12 @@ use db_pdi;
 
 CREATE TABLE `Usuarios` (
   `id_usuario` INT NOT NULL AUTO_INCREMENT,
+
+  -- CAMPOS ADICIONADOS DO MODELO JAVA
+  `email` VARCHAR(255) NOT NULL UNIQUE, -- O email deve ser único
+  `senha` VARCHAR(255) NOT NULL,        -- A senha será armazenada (idealmente como hash)
+
+  -- CAMPOS EXISTENTES
   `nome` VARCHAR(255) NOT NULL,
   `cpf` VARCHAR(14) NOT NULL UNIQUE,
   `data_nascimento` DATE,
@@ -12,6 +18,7 @@ CREATE TABLE `Usuarios` (
   `id_gestor_de_area` INT,
   `id_gestor_geral` INT,
   `tipo_acesso` ENUM('RH', 'Gestor Geral', 'Gestor de Area', 'Colaborador') NOT NULL,
+
   PRIMARY KEY (`id_usuario`),
   CONSTRAINT `fk_gestor_area`
     FOREIGN KEY (`id_gestor_de_area`)
@@ -84,3 +91,7 @@ CREATE TABLE `Anexos` (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
+
+
+
+
