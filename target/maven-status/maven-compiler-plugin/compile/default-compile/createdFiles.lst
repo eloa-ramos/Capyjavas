@@ -3,6 +3,7 @@ gui\DashboardGUI.class
 gui\LoginGUIController.class
 Main.class
 Main$StageManager.class
+gui\RootGUIController.class
 dao\DashboardDAO.class
 gui\UsuarioGUI.class
 modelo\PDIDashItem.class
