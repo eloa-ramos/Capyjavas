@@ -1,5 +1,6 @@
 gui\DashboardGUIController.class
 gui\DashboardGUI.class
+gui\LoginGUIController.class
 Main.class
 Main$StageManager.class
 dao\DashboardDAO.class
