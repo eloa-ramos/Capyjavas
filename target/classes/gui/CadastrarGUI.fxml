@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="your.package.ControllerCadastro"
+            prefWidth="800.0" prefHeight="600.0">
+
+    <VBox alignment="CENTER" spacing="20.0" layoutX="200.0" layoutY="50.0" prefWidth="400">
+        
+        <!-- Logo -->
+        <Label text="Youtan" style="-fx-font-size: 36px; -fx-font-family: 'Arial Black'; -fx-text-fill: #58a8c6;" />
+        <Label text="Conectando oportunidades e soluções" style="-fx-font-size: 10px; -fx-text-fill: gray;" />
+
+        <!-- Título -->
+        <VBox alignment="CENTER">
+            <Label text="Cadastrar" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+            <HBox alignment="CENTER">
+                <Label text="Já possui uma conta?" />
+                <Hyperlink text="Entrar" onAction="#onEntrar"/>
+            </HBox>
+        </VBox>
+
+        <!-- Formulário -->
+        <VBox spacing="10" maxWidth="300">
+            <Label text="Email" />
+            <TextField fx:id="txtEmail" promptText="Digite seu endereço de email" />
+            
+            <Label text="Senha" />
+            <PasswordField fx:id="txtSenha" promptText="Digite sua senha" />
+
+            <HBox spacing="5" alignment="CENTER_LEFT">
+                <CheckBox fx:id="checkLembrar" selected="true" />
+                <Label text="Lembrar de mim" />
+            </HBox>
+
+            <Button text="Criar conta" onAction="#onCriarConta" 
+                    style="-fx-background-color: #1a1a1a; -fx-text-fill: white; -fx-pref-width: 300px;" />
+        </VBox>
+    </VBox>
+
+</AnchorPane>

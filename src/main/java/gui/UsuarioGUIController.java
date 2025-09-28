@@ -15,6 +15,8 @@ public class UsuarioGUIController {
     @FXML private TextField cargoUsuario;
     @FXML private TextField experienciaUsuario;
     @FXML private TextField observacoesUsuario;
+    @FXML private TextField emailUsuario;
+    @FXML private PasswordField senhaUsuario;
     @FXML private ComboBox<String> tipoUsuarioCombo;
     @FXML private Button cadastrarUsuarioBtn;
     @FXML private Button sairBtn;
@@ -34,8 +36,10 @@ public class UsuarioGUIController {
             String experiencia = experienciaUsuario.getText().trim();
             String observacoes = observacoesUsuario.getText().trim();
             String tipoAcesso = tipoUsuarioCombo.getValue();
+            String email = emailUsuario.getText().trim();
+            String senha = senhaUsuario.getText().trim();
             // Validação básica
-            if (nome.isEmpty() || cpf.isEmpty() || cargo.isEmpty() || tipoAcesso == null) {
+            if (nome.isEmpty() || cpf.isEmpty() || cargo.isEmpty() || tipoAcesso == null || email.isEmpty() || senha.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "⚠️ Preencha todos os campos obrigatórios!");
                 alert.showAndWait();
                 return;
@@ -49,6 +53,8 @@ public class UsuarioGUIController {
             usuario.setObservacoes(observacoes);
             usuario.setTipoAcesso(tipoAcesso);
             usuario.setDataNascimento(dataNascimentoUsuario.getValue());
+            usuario.setEmail(email);
+            usuario.setSenha(senha);
 
             UsuarioDAO usuarioDAO = new UsuarioDAO();
             usuarioDAO.adiciona(usuario);
@@ -64,6 +70,8 @@ public class UsuarioGUIController {
             observacoesUsuario.clear();
             dataNascimentoUsuario.setValue(null);
             tipoUsuarioCombo.setValue(null);
+            emailUsuario.clear();
+            senhaUsuario.clear();
 
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Erro ao cadastrar: " + e.getMessage());

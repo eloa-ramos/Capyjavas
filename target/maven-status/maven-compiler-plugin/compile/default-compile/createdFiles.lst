@@ -1,4 +1,8 @@
-Main$StageManager.class
+gui\DashboardGUIController.class
+gui\DashboardGUI.class
 Main.class
+Main$StageManager.class
+dao\DashboardDAO.class
 gui\UsuarioGUI.class
+modelo\PDIDashItem.class
 gui\UsuarioGUIController.class

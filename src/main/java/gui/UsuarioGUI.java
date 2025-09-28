@@ -1,4 +1,5 @@
 package gui;
+
 import dao.UsuarioDAO;
 import modelo.Usuario;
 import javafx.application.Application;
@@ -12,6 +13,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField; // Importação adicionada
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -28,10 +30,15 @@ public class UsuarioGUI extends Application {
 
     private final DashboardGUI dashboard = new DashboardGUI();
 
+    // --- CAMPOS ADICIONADOS ---
+    private TextField txtEmail;
+    private PasswordField txtSenha; // Usar PasswordField para segurança
+    // -------------------------
+
     private TextField txtNome;
     private TextField txtCpf;
     private TextField txtCargo;
-    private TextField txtArea; // Campo 'Área' adicionado para espelhar o layout
+    private TextField txtArea;
     private TextArea txtExperiencia;
     private TextArea txtObservacoes;
     private DatePicker datePicker;
@@ -96,45 +103,61 @@ public class UsuarioGUI extends Application {
         VBox vData = createLabeledControl("Data de Nascimento", datePicker);
         grid.add(vData, 1, 1);
 
-        // LINHA 2: Cargo e Área
+        // --- NOVAS LINHAS PARA EMAIL E SENHA ---
+        // LINHA 2: E-mail
+        txtEmail = new TextField();
+        txtEmail.setPromptText("nome.sobrenome@empresa.com");
+        txtEmail.setStyle(inputStyle);
+        VBox vEmail = createLabeledControl("E-mail", txtEmail);
+        grid.add(vEmail, 0, 2);
+
+        // LINHA 2: Senha
+        txtSenha = new PasswordField();
+        txtSenha.setPromptText("Defina uma senha");
+        txtSenha.setStyle(inputStyle);
+        VBox vSenha = createLabeledControl("Senha", txtSenha);
+        grid.add(vSenha, 1, 2);
+        // ---------------------------------------
+
+        // LINHA 3: Cargo e Área (Anteriormente Linha 2)
         txtCargo = new TextField();
         txtCargo.setPromptText("Escolha o Cargo");
         txtCargo.setStyle(inputStyle);
         VBox vCargo = createLabeledControl("Cargo", txtCargo);
-        grid.add(vCargo, 0, 2);
+        grid.add(vCargo, 0, 3);
 
         txtArea = new TextField();
         txtArea.setPromptText("Defina a Área");
         txtArea.setStyle(inputStyle);
         VBox vArea = createLabeledControl("Área", txtArea);
-        grid.add(vArea, 1, 2);
+        grid.add(vArea, 1, 3);
 
-        // LINHA 3: Tipo de Acesso (ocupa 2 colunas)
+        // LINHA 4: Tipo de Acesso (Anteriormente Linha 3)
         comboTipoAcesso = new ComboBox<>();
         comboTipoAcesso.getItems().addAll("RH", "Gestor Geral", "Gestor de Area", "Colaborador");
         comboTipoAcesso.setPromptText("Tipo de Acesso");
         comboTipoAcesso.setStyle(inputStyle);
         comboTipoAcesso.setMaxWidth(Double.MAX_VALUE);
         VBox vTipo = createLabeledControl("Tipo de Acesso", comboTipoAcesso);
-        grid.add(vTipo, 0, 3, 2, 1);
+        grid.add(vTipo, 0, 4, 2, 1);
 
-        // LINHA 4: Experiência (ocupa 2 colunas)
+        // LINHA 5: Experiência (Anteriormente Linha 4)
         txtExperiencia = new TextArea();
         txtExperiencia.setPromptText("Experiência");
         txtExperiencia.setWrapText(true);
         txtExperiencia.setPrefRowCount(3);
         txtExperiencia.setStyle(inputStyle);
         VBox vExp = createLabeledControl("Experiência", txtExperiencia);
-        grid.add(vExp, 0, 4, 2, 1);
+        grid.add(vExp, 0, 5, 2, 1);
 
-        // LINHA 5: Observações (ocupa 2 colunas)
+        // LINHA 6: Observações (Anteriormente Linha 5)
         txtObservacoes = new TextArea();
         txtObservacoes.setPromptText("Observações");
         txtObservacoes.setWrapText(true);
         txtObservacoes.setPrefRowCount(3);
         txtObservacoes.setStyle(inputStyle);
         VBox vObs = createLabeledControl("Observações", txtObservacoes);
-        grid.add(vObs, 0, 5, 2, 1);
+        grid.add(vObs, 0, 6, 2, 1);
 
         // Botões
         btnSalvar = new Button("Cadastrar");
@@ -143,9 +166,11 @@ public class UsuarioGUI extends Application {
                 "-fx-background-color: #2C2C2C; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;"
         );
 
-        Button btnVoltar = new Button("Voltar"); // Simplifiquei o label para "Voltar"
+        Button btnVoltar = new Button("Voltar");
         btnVoltar.setOnAction(e -> {
             try {
+                // Supondo que DashboardGUI pode ser carregada
+                // DashboardGUI dashboard = new DashboardGUI(); // Já existe como campo
                 dashboard.start(stage);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -182,7 +207,7 @@ public class UsuarioGUI extends Application {
     }
 
     private void salvarUsuario() {
-        // Lógica de salvamento e validação (intacta)
+        // Lógica de salvamento e validação
         if (txtNome.getText().trim().isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Informe o nome.");
             return;
@@ -191,6 +216,16 @@ public class UsuarioGUI extends Application {
             showAlert(Alert.AlertType.WARNING, "Informe o CPF.");
             return;
         }
+        // --- VALIDAÇÃO ADICIONADA ---
+        if (txtEmail.getText().trim().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Informe o E-mail.");
+            return;
+        }
+        if (txtSenha.getText().isEmpty()) { // Não use trim() para senhas
+            showAlert(Alert.AlertType.WARNING, "Informe a Senha.");
+            return;
+        }
+        // -----------------------------
         if (comboTipoAcesso.getValue() == null) {
             showAlert(Alert.AlertType.WARNING, "Escolha o tipo de acesso.");
             return;
@@ -202,17 +237,25 @@ public class UsuarioGUI extends Application {
             usuario.setCpf(txtCpf.getText().trim());
             usuario.setDataNascimento(datePicker.getValue());
             usuario.setCargo(txtCargo.getText().trim());
+
+            // --- DADOS DE ACESSO INCLUÍDOS ---
+            usuario.setEmail(txtEmail.getText().trim());
+            usuario.setSenha(txtSenha.getText());
+            // ----------------------------------
+
             // Nota: O campo txtArea não está no modelo Usuario e não está sendo salvo.
             usuario.setExperiencia(txtExperiencia.getText().trim());
             usuario.setObservacoes(txtObservacoes.getText().trim());
             usuario.setTipoAcesso(comboTipoAcesso.getValue());
+
             UsuarioDAO dao = new UsuarioDAO();
             dao.adiciona(usuario);
 
-            showAlert(Alert.AlertType.INFORMATION, "Usuário cadastrado com sucesso.");
+            showAlert(Alert.AlertType.INFORMATION, "✅ Usuário cadastrado com sucesso.");
             clearForm();
         } catch (Exception ex) {
-            showAlert(Alert.AlertType.ERROR, "Erro ao salvar: " + ex.getMessage());
+            showAlert(Alert.AlertType.ERROR, "❌ Erro ao salvar: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -226,10 +269,15 @@ public class UsuarioGUI extends Application {
         txtCpf.clear();
         datePicker.setValue(null);
         txtCargo.clear();
-        txtArea.clear(); // Limpa o novo campo 'Área'
+        txtArea.clear();
         txtExperiencia.clear();
         txtObservacoes.clear();
         comboTipoAcesso.setValue(null);
+
+        // --- LIMPEZA DOS NOVOS CAMPOS ---
+        txtEmail.clear();
+        txtSenha.clear();
+        // --------------------------------
     }
 
     public static void main(String[] args) {
