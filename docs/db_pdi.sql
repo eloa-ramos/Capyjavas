@@ -6,7 +6,9 @@ CREATE TABLE `Usuarios` (
 
   -- CAMPOS ADICIONADOS DO MODELO JAVA
   `email` VARCHAR(255) NOT NULL UNIQUE, -- O email deve ser único
-  `senha` VARCHAR(255) NOT NULL,        -- A senha será armazenada (idealmente como hash)
+
+  -- *** MUDANÇA AQUI: Adiciona a COLLATION binária para case-sensitive ***
+  `senha` VARCHAR(255) NOT NULL COLLATE utf8mb4_bin,
 
   -- CAMPOS EXISTENTES
   `nome` VARCHAR(255) NOT NULL,
@@ -20,11 +22,13 @@ CREATE TABLE `Usuarios` (
   `tipo_acesso` ENUM('RH', 'Gestor Geral', 'Gestor de Area', 'Colaborador') NOT NULL,
 
   PRIMARY KEY (`id_usuario`),
+
   CONSTRAINT `fk_gestor_area`
     FOREIGN KEY (`id_gestor_de_area`)
     REFERENCES `Usuarios` (`id_usuario`)
     ON DELETE SET NULL
     ON UPDATE CASCADE,
+
   CONSTRAINT `fk_gestor_geral`
     FOREIGN KEY (`id_gestor_geral`)
     REFERENCES `Usuarios` (`id_usuario`)
@@ -91,7 +95,3 @@ CREATE TABLE `Anexos` (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
-
-
-
-
