@@ -1,52 +1,142 @@
-/* Botões */
+/* =========================
+   Dashboard Principal
+   ========================= */
+
+/* Root geral da tela */
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-background-color: #f4f4f9;
+}
+
+/* =========================
+   HBox do topo (logo + botão)
+   ========================= */
+.top > .hbox {
+    -fx-alignment: center-left;
+    -fx-padding: 15 20 15 20;
+    -fx-spacing: 20;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1 0; /* linha inferior */
+}
+
+/* Botão de cadastro PDI */
 .button {
     -fx-background-color: #1a1a1a;
     -fx-text-fill: white;
-    -fx-font-size: 13px;
     -fx-font-weight: bold;
-    -fx-background-radius: 5;
-    -fx-padding: 6 12;
+    -fx-font-size: 13px;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0, 0, 2);
 }
 
-/* ComboBox */
-.combo-box {
+.button:hover {
+    -fx-background-color: #333333;
+}
+
+/* =========================
+   VBox central (filtros + tabela)
+   ========================= */
+.center > .vbox {
+    -fx-alignment: top-center;
+    -fx-spacing: 20;
+    -fx-padding: 20 20 20 20;
+}
+
+/* =========================
+   Filtros (combobox + label)
+   ========================= */
+.combo-box, .label {
     -fx-font-size: 13px;
+}
+
+.combo-box {
     -fx-background-radius: 5;
     -fx-border-radius: 5;
+    -fx-border-color: #cccccc;
+    -fx-padding: 4 8;
 }
 
-/* TableView */
+.hbox > .label {
+    -fx-font-weight: bold;
+}
+
+/* =========================
+   TableView
+   ========================= */
 .table-view {
-    -fx-border-color: #ccc;
-    -fx-border-radius: 6;
-    -fx-background-color: white;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+    -fx-table-cell-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-padding: 5;
 }
 
 .table-view .column-header-background {
     -fx-background-color: #f0f0f0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-border-color: transparent;
+    -fx-font-weight: bold;
 }
 
 .table-view .cell {
     -fx-alignment: CENTER_LEFT;
-    -fx-padding: 5 10;
-}
-
-/* Labels */
-.label {
+    -fx-padding: 4 8;
     -fx-font-size: 13px;
+}
+
+/* Linhas alternadas */
+.table-row-cell:odd {
+    -fx-background-color: #fafafa;
+}
+.table-row-cell:even {
+    -fx-background-color: #ffffff;
+}
+
+/* =========================
+   Cores da coluna Status
+   ========================= */
+.table-cell {
+    -fx-alignment: CENTER;
     -fx-font-weight: bold;
+    -fx-text-alignment: center;
 }
 
-/* Top HBox (logo + botões) */
-.hbox {
-    -fx-alignment: center-left;
-    -fx-spacing: 20;
-    -fx-padding: 10;
+.table-cell:filled:contains("Concluído") {
+    -fx-background-color: #4CAF50; /* verde */
+    -fx-text-fill: white;
 }
 
-/* VBox central da tela */
-.vbox-center {
-    -fx-alignment: top-center;
-    -fx-padding: 20;
-    -fx-spacing: 15;
+.table-cell:filled:contains("Em Andamento") {
+    -fx-background-color: #FFC107; /* amarelo */
+    -fx-text-fill: black;
+}
+
+.table-cell:filled:contains("Atrasado") {
+    -fx-background-color: #F44336; /* vermelho */
+    -fx-text-fill: white;
+}
+
+/* =========================
+   Imagem de logo
+   ========================= */
+.image-view {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0.5, 0, 2);
+}
+
+/* =========================
+   Responsividade geral
+   ========================= */
+.border-pane {
+    -fx-background-color: #f4f4f9;
+}
+
+.table-view {
+    -fx-pref-width: 100%;
 }

@@ -14,16 +14,16 @@
     <top>
         <HBox spacing="20" alignment="CENTER_LEFT">
             <padding>
-                <Insets top="10" right="20" bottom="10" left="20"/>
+                <Insets top="15" right="20" bottom="15" left="20"/>
             </padding>
             <ImageView fx:id="logoImage" fitHeight="60" preserveRatio="true"/>
             <Button fx:id="btnCadastroPdi" text="Cadastrar PDI" onAction="#abrirCadastroPdi" visible="false"/>
         </HBox>
     </top>
 
-    <!-- Center: Conteúdo centralizado -->
+    <!-- Center: Filtros e Tabela centralizados -->
     <center>
-        <VBox alignment="TOP_CENTER" spacing="20">
+        <VBox alignment="TOP_CENTER" spacing="20" fillWidth="true">
             <padding>
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
@@ -37,13 +37,13 @@
             </HBox>
 
             <!-- Tabela -->
-            <TableView fx:id="tabela" prefHeight="600" prefWidth="1100">
+            <TableView fx:id="tabela" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="colColaborador" text="Colaborador" prefWidth="200"/>
-                    <TableColumn fx:id="colObjetivo" text="Objetivo" prefWidth="300"/>
-                    <TableColumn fx:id="colPrazo" text="Prazo" prefWidth="150"/>
-                    <TableColumn fx:id="colStatus" text="Status" prefWidth="150"/>
-                    <TableColumn fx:id="colArea" text="Área" prefWidth="200"/>
+                    <TableColumn fx:id="colColaborador" text="Colaborador"/>
+                    <TableColumn fx:id="colObjetivo" text="Objetivo"/>
+                    <TableColumn fx:id="colPrazo" text="Prazo"/>
+                    <TableColumn fx:id="colStatus" text="Status"/>
+                    <TableColumn fx:id="colArea" text="Área"/>
                 </columns>
             </TableView>
         </VBox>
