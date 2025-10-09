@@ -1,0 +1,71 @@
+/* =====================
+   GLOBAL
+===================== */
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-background-color: #f4f4f4;
+}
+
+/* Botões principais */
+.button {
+    -fx-background-color: #1a1a1a;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #333333;
+}
+
+/* Labels padrão */
+.label {
+    -fx-font-size: 13px;
+}
+
+/* TableView */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #eeeeee;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #fafafa;
+}
+
+.table-row-cell:even {
+    -fx-background-color: white;
+}
+
+/* ComboBox */
+.combo-box {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #cccccc;
+    -fx-padding: 4 8 4 8;
+}
+
+/* ImageView (Logo) */
+.image-view {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0.5, 0, 2);
+}
+
+/* Inputs (TextField, PasswordField, TextArea) */
+.text-field, .password-field, .text-area {
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #ccc;
+    -fx-padding: 6 10 6 10;
+}

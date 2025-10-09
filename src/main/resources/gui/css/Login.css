@@ -1,0 +1,45 @@
+/* Caixa de login */
+.login-box {
+    -fx-background-color: #ffffff;
+    -fx-padding: 40;
+    -fx-spacing: 20;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-alignment: center;
+    -fx-max-width: 400px;
+}
+
+/* Título */
+.login-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a1a;
+    -fx-alignment: center;
+}
+
+/* Botões */
+.button {
+    -fx-background-color: #1a1a1a;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-pref-width: 200px;
+    -fx-padding: 8 16 8 16;
+}
+
+/* Campos de texto */
+.text-field, .password-field {
+    -fx-font-size: 14px;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #ccc;
+    -fx-padding: 8 10 8 10;
+}
+
+/* Hyperlink */
+.hyperlink {
+    -fx-text-fill: #58a8c6;
+    -fx-font-size: 12px;
+}

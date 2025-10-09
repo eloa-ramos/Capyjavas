@@ -1,0 +1,52 @@
+/* Botões */
+.button {
+    -fx-background-color: #1a1a1a;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 6 12;
+}
+
+/* ComboBox */
+.combo-box {
+    -fx-font-size: 13px;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+}
+
+/* TableView */
+.table-view {
+    -fx-border-color: #ccc;
+    -fx-border-radius: 6;
+    -fx-background-color: white;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f0f0f0;
+}
+
+.table-view .cell {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 5 10;
+}
+
+/* Labels */
+.label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* Top HBox (logo + botões) */
+.hbox {
+    -fx-alignment: center-left;
+    -fx-spacing: 20;
+    -fx-padding: 10;
+}
+
+/* VBox central da tela */
+.vbox-center {
+    -fx-alignment: top-center;
+    -fx-padding: 20;
+    -fx-spacing: 15;
+}

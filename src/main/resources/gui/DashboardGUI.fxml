@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="gui.DashboardGUIController"
+            prefWidth="1200" prefHeight="800">
+
+    <!-- Top: Logo e botão de cadastro -->
+    <top>
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="20" bottom="10" left="20"/>
+            </padding>
+            <ImageView fx:id="logoImage" fitHeight="60" preserveRatio="true"/>
+            <Button fx:id="btnCadastroPdi" text="Cadastrar PDI" onAction="#abrirCadastroPdi" visible="false"/>
+        </HBox>
+    </top>
+
+    <!-- Center: Conteúdo centralizado -->
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="20">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Filtros -->
+            <HBox spacing="15" alignment="CENTER">
+                <Label text="Status:"/>
+                <ComboBox fx:id="filtroStatus" prefWidth="150"/>
+                <Label text="Área:"/>
+                <ComboBox fx:id="filtroArea" prefWidth="150"/>
+            </HBox>
+
+            <!-- Tabela -->
+            <TableView fx:id="tabela" prefHeight="600" prefWidth="1100">
+                <columns>
+                    <TableColumn fx:id="colColaborador" text="Colaborador" prefWidth="200"/>
+                    <TableColumn fx:id="colObjetivo" text="Objetivo" prefWidth="300"/>
+                    <TableColumn fx:id="colPrazo" text="Prazo" prefWidth="150"/>
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="150"/>
+                    <TableColumn fx:id="colArea" text="Área" prefWidth="200"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+</BorderPane>

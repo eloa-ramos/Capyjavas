@@ -48,15 +48,14 @@ public class UsuarioDAO {
                     usuario.setNome(rs.getString("nome"));
                     usuario.setEmail(rs.getString("email"));
                     usuario.setTipoAcesso(rs.getString("tipo_acesso"));
-                    // Adicione outros campos se precisar
 
-                    return usuario; // Retorna o usuário encontrado
+                    return usuario;
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao autenticar usuário: " + e.getMessage(), e);
         }
 
-        return null; // Retorna null se nenhum usuário for encontrado
+        return null;
     }
 }
