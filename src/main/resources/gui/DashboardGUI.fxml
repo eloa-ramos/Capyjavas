@@ -5,43 +5,107 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Pos?>
+<?import javafx.scene.shape.SVGPath?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="gui.DashboardGUIController"
+            fx:id="rootPane"
             prefWidth="1200" prefHeight="800"
-            stylesheets="@/gui/css/Dashboard.css"> <top>
-    <HBox spacing="20" alignment="CENTER_LEFT">
-        <padding>
-            <Insets top="15" right="20" bottom="15" left="20"/>
-        </padding>
-        <ImageView fx:id="logoImage" fitHeight="60" preserveRatio="true"/>
-        <Button fx:id="btnCadastroPdi" text="Cadastrar PDI" onAction="#abrirCadastroPdi" visible="false"/>
-    </HBox>
-</top>
+            stylesheets="@/gui/css/Dashboard.css">
+
+    <top>
+        <HBox styleClass="top" spacing="20" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+        </HBox>
+    </top>
 
     <center>
-        <VBox alignment="TOP_CENTER" spacing="25" fillWidth="true"> <padding>
-            <Insets top="30" right="30" bottom="30" left="30"/> </padding>
+        <HBox styleClass="main-content-container" spacing="0" fillHeight="true">
 
-            <HBox spacing="15" alignment="CENTER">
-                <Label text="Status:"/>
-                <ComboBox fx:id="filtroStatus" prefWidth="150"/>
-                <Label text="Área:"/>
-                <ComboBox fx:id="filtroArea" prefWidth="150"/>
-            </HBox>
+            <VBox fx:id="sidebarFiltros" styleClass="sidebar-filtro" prefWidth="280">
+                <padding>
+                    <Insets top="20" right="15" bottom="20" left="15"/>
+                </padding>
+                <spacing>20</spacing>
 
-            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="card-scroll-pane">
-                <content>
-                    <FlowPane fx:id="cardsContainer"
-                              hgap="20"
-                              vgap="20"
-                              alignment="TOP_LEFT"> <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
-                    </padding>
-                    </FlowPane>
-                </content>
-            </ScrollPane>
-        </VBox>
+                <ImageView fx:id="logoSidebar" fitHeight="60.0" preserveRatio="true">
+                    <VBox.margin>
+                        <Insets bottom="10" />
+                    </VBox.margin>
+                </ImageView>
+                <Region prefHeight="1.0" minHeight="1.0" style="-fx-background-color: #f0f0f0;" />
+                <Region prefHeight="5.0" minHeight="5.0" />
+
+                <TextField fx:id="campoBusca" promptText="Buscar por PDI, colaborador..." styleClass="text-field-search"/>
+
+                <VBox styleClass="filtro-group" spacing="10">
+                    <Label text="Status" styleClass="filtro-title"/>
+                    <VBox fx:id="checkboxContainerStatus" spacing="5">
+                    </VBox>
+                </VBox>
+
+                <VBox styleClass="filtro-group" spacing="10">
+                    <Label text="Área" styleClass="filtro-title"/>
+                    <VBox fx:id="checkboxContainerArea" spacing="5">
+                    </VBox>
+                </VBox>
+
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <Button fx:id="btnCadastroPdi"
+                        text="Cadastrar Novo PDI"
+                        onAction="#abrirCadastroPdi"
+                        visible="false"
+                        managed="false"
+                        prefWidth="250"
+                        styleClass="button">
+                    <VBox.margin>
+                        <Insets bottom="10"/>
+                    </VBox.margin>
+                </Button>
+
+                <Button fx:id="btnAtualizarPdi"
+                        text="Recarregar Dados"
+                        onAction="#recarregarPdis"
+                        prefWidth="250"
+                        styleClass="button-sidebar-action"/>
+
+            </VBox>
+
+            <VBox styleClass="center-content-area" alignment="TOP_CENTER" spacing="25" fillWidth="true" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets top="20" right="30" bottom="30" left="30"/>
+                </padding>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Ordenar por:" styleClass="label-ordenacao"/>
+                    <ComboBox fx:id="comboOrdenacao" prefWidth="150" promptText="Padrão"/>
+
+                    <Button fx:id="btnInverterOrdem" onAction="#inverterOrdem" styleClass="icon-button-action icon-button-sort">
+                        <graphic>
+                            <SVGPath fx:id="iconSetaOrdem" content="M8 10l4 4 4-4H8z" />
+                        </graphic>
+                    </Button>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+                </HBox>
+
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="card-scroll-pane">
+                    <content>
+                        <FlowPane fx:id="cardsContainer"
+                                  hgap="20"
+                                  vgap="20"
+                                  alignment="TOP_LEFT">
+                            <padding>
+                                <Insets top="10" right="10" bottom="10" left="10"/>
+                            </padding>
+                        </FlowPane>
+                    </content>
+                </ScrollPane>
+            </VBox>
+        </HBox>
     </center>
 
 </BorderPane>

@@ -4,10 +4,10 @@
 
 /* Root geral da tela */
 .root {
-    -primary-color: #459eb5; /* <== ESSENCIAL! */
+    -primary-color: #459eb5;
     -fx-font-family: "Segoe UI", "Arial", sans-serif;
     -fx-background-color: #f7f9fc; /* Fundo mais claro e suave */
-    -fx-font-size: 14px; /* Aumentar um pouco a fonte base */
+    -fx-font-size: 14px;
 }
 
 /* =========================
@@ -15,196 +15,282 @@
    ========================= */
 .top > .hbox {
     -fx-alignment: center-left;
-    -fx-padding: 15 30 15 30; /* Aumentar o padding */
+    -fx-padding: 15 30 15 30;
     -fx-spacing: 25;
     -fx-background-color: #ffffff;
-    /* Substituir a borda por uma sombra sutil, estilo "card" flutuante */
+    /* Sombra sutil, estilo "card" flutuante */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 4);
     -fx-border-width: 0;
 }
 
-/* Botão de cadastro PDI (Cor Primária: #459eb5) */
+/* =========================
+   ESTILOS GERAIS DE BOTÃO DE AÇÃO (Cadastro PDI)
+   ========================= */
+/* O seletor '.button' aplica-se apenas ao botão de texto principal */
 .button {
-    -fx-background-color: #459eb5; /* Cor azul do seu login */
-    -fx-text-fill: white;
+    -fx-background-color: -primary-color; /* Cor azul primária */
+    -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
-    -fx-background-radius: 8; /* Bordas mais arredondadas */
-    -fx-padding: 10 20; /* Mais espaçamento */
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
     -fx-cursor: hand;
-    /* Sombra mais suave */
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.1, 0, 2);
     -fx-border-width: 0;
+    /* Transição suave para hover e active */
+    -fx-transition: -fx-background-color 0.2s ease, -fx-effect 0.2s ease, -fx-scale 0.1s linear;
 }
 
 .button:hover {
-    -fx-background-color: #3b889b; /* Tonalidade levemente mais escura para o hover */
+    -fx-background-color: #3b889b;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0.2, 0, 3);
+    -fx-cursor: hand;
 }
 
-/* =========================
-   VBox central (filtros + tabela)
-   ========================= */
-.center > .vbox {
+.button:pressed { /* Estilo Active */
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0.1, 0, 1);
+}
+
+/* ==================================
+   LAYOUT PRINCIPAL
+   ================================== */
+.main-content-container {
+    -fx-background-color: #f7f9fc;
+}
+
+/* ==================================
+   BARRA LATERAL DE FILTROS (SIDEBAR)
+   ================================= */
+.sidebar-filtro {
+    -fx-background-color: #ffffff; /* Fundo branco para sidebar */
+    -fx-padding: 20 15 20 15;
+    -fx-spacing: 25;
+    /* Linha sutil de separação */
+    -fx-border-color: #eeeeee;
+    -fx-border-width: 0 1 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.03), 10, 0, 0, 0);
+}
+
+.filtro-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 5 0 0 0;
+}
+
+/* Estilo do VBox que contém cada grupo de filtros (Status, Área) */
+.filtro-group {
+    -fx-padding: 10 0 5 0;
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Estilo para as Checkboxes (melhorando o visual) */
+.check-box {
+    -fx-text-fill: #555555;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-padding: 2 0;
+}
+
+.check-box:selected .box {
+    -fx-background-color: -primary-color;
+    -fx-border-color: -primary-color;
+}
+
+.check-box .box {
+    -fx-border-color: #bbbbbb;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+}
+
+/* Botão de Ação na Sidebar (Recarregar) */
+.button-sidebar-action {
+    /* Herda o estilo .button base, mas com ajuste de sombra e raio */
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 6, 0.1, 0, 1);
+}
+
+/* ==================================
+   ÁREA CENTRAL DE CONTEÚDO (FILTROS DE ORDENAÇÃO + CARDS)
+   ================================== */
+.center-content-area {
     -fx-alignment: top-center;
     -fx-spacing: 25;
-    -fx-padding: 30 30 30 30;
+    -fx-padding: 30;
 }
 
-/* =========================
-   Filtros (combobox + label)
-   ========================= */
-.combo-box, .label {
+/* Label de Ordenação */
+.label-ordenacao {
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+}
+
+/* ==================================
+   FILTROS DE BUSCA E ORDENAÇÃO
+   ================================== */
+.text-field-search {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #dddddd;
+    -fx-padding: 6 10;
     -fx-font-size: 14px;
+    -fx-transition: -fx-border-color 0.2s ease;
+}
+
+.text-field-search:focused {
+    -fx-border-color: -primary-color;
+    -fx-effect: dropshadow(gaussian, rgba(69, 158, 181, 0.2), 5, 0.0, 0, 0);
 }
 
 .combo-box {
     -fx-background-color: #ffffff;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
-    -fx-border-color: #459eb5; /* Usar a cor primária na borda do campo */
+    -fx-border-color: #dddddd;
     -fx-padding: 6 10;
+    -fx-cursor: pointer;
+    -fx-transition: -fx-border-color 0.2s ease, -fx-background-color 0.2s ease;
 }
 
-.hbox > .label {
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
+.combo-box:hover {
+    -fx-border-color: -primary-color;
+    -fx-cursor: hand;
 }
 
-/* =========================
-   TableView - Estilo de Card
-   ========================= */
-.table-view {
-    -fx-background-color: #ffffff;
-    /* Transforma a tabela em um "Card" flutuante */
-    -fx-border-color: transparent;
+.combo-box-popup .list-view .list-cell:filled:selected {
+    -fx-background-color: -primary-color;
+}
+
+/* Botão de Ícone para Ordenação (Giro) */
+.icon-button-sort {
+    -fx-background-color: transparent;
+    -fx-background-radius: 4;
+    -fx-padding: 4;
+    -fx-cursor: hand;
     -fx-border-width: 0;
-    -fx-table-cell-border-color: #f0f0f0; /* Linha de grade horizontal muito sutil */
-    -fx-focus-color: transparent;
-    -fx-padding: 0;
-    -fx-background-radius: 10; /* Bordas arredondadas do Card */
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0.1, 0, 5);
+    -fx-transition: -fx-background-color 0.2s ease, -fx-scale 0.1s linear;
 }
 
-.table-view .column-header-background {
-    -fx-background-color: #ffffff; /* Fundo branco no cabeçalho */
-    -fx-border-width: 0 0 1 0;
-    -fx-border-color: #459eb5; /* Cor primária na linha de separação */
+.icon-button-sort:hover {
+    -fx-background-color: #e0f2f7;
 }
 
-.table-view .column-header, .table-view .filler {
-    -fx-border-color: transparent;
-    -fx-font-weight: bold;
-    -fx-text-fill: #459eb5; /* Título da coluna na cor primária */
-    -fx-font-size: 14px;
+.icon-button-sort:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
 }
 
-.table-view .cell {
-    -fx-alignment: CENTER_LEFT;
-    -fx-padding: 10 12;
-    -fx-font-size: 14px;
-    -fx-border-color: transparent transparent #f0f0f0 transparent;
-    -fx-border-width: 0 0 1 0;
+.icon-button-sort .svg-path {
+    -fx-fill: -primary-color;
+    -fx-scale-x: 1.5; /* Aumenta um pouco o ícone da seta */
+    -fx-scale-y: 1.5;
+    -fx-transition: -fx-rotate 0.3s ease; /* Transição suave na rotação */
+    /* Removemos o -fx-rotate: 0deg daqui para que as classes específicas abaixo prevaleçam */
 }
 
-/* Linhas alternadas (diferença bem sutil) */
-.table-row-cell:odd {
-    -fx-background-color: #fdfdfd;
+/* REGRAS CORRIGIDAS PARA ROTAÇÃO DA SETA */
+
+/* Classe aplicada ao BOTÃO quando está no modo Descendente (Seta para baixo - Padrão) */
+.icon-button-sort.descendente .svg-path {
+    -fx-rotate: 0deg;
 }
-.table-row-cell:even {
-    -fx-background-color: #ffffff;
+
+/* Classe aplicada ao BOTÃO quando está no modo Ascendente (Seta para cima) */
+.icon-button-sort.ascendente .svg-path {
+    -fx-rotate: 180deg;
 }
 
 /* =========================
-   Cores da coluna Status (Estilo Badge/Pill)
+   ScrollPane para a área de Cards
    ========================= */
-.table-cell {
-    -fx-alignment: CENTER;
-    -fx-font-weight: 600;
-    -fx-text-alignment: center;
+.card-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
 }
 
-/* Concluído (Verde Sutil) */
-.table-cell:filled:contains("Concluído") {
-    -fx-background-color: #e6ffed; /* Fundo verde muito claro */
-    -fx-text-fill: #1e8449; /* Texto verde escuro */
-    -fx-background-radius: 12;
-    -fx-padding: 3 8;
+/* Estilo para a barra de rolagem (modernização) */
+.card-scroll-pane .scroll-bar:vertical .increment-button,
+.card-scroll-pane .scroll-bar:vertical .decrement-button,
+.card-scroll-pane .scroll-bar:horizontal .increment-button,
+.card-scroll-pane .scroll-bar:horizontal .decrement-button {
+    -fx-padding: 0;
 }
 
-/* Em Andamento (Amarelo/Laranja Sutil) */
-.table-cell:filled:contains("Em Andamento") {
-    -fx-background-color: #fff8e1;
-    -fx-text-fill: #f39c12;
-    -fx-background-radius: 12;
-    -fx-padding: 3 8;
-}
-
-/* Atrasado (Vermelho Sutil) */
-.table-cell:filled:contains("Atrasado") {
-    -fx-background-color: #ffeaea;
-    -fx-text-fill: #c0392b;
-    -fx-background-radius: 12;
-    -fx-padding: 3 8;
+.card-scroll-pane .scroll-bar:vertical .thumb,
+.card-scroll-pane .scroll-bar:horizontal .thumb {
+    -fx-background-color: rgba(69, 158, 181, 0.5); /* Azul primário semi-transparente */
+    -fx-background-insets: 0;
+    -fx-background-radius: 5;
 }
 
 /* =========================
-   Imagem de logo
+   Imagem de logo e BorderPane
    ========================= */
 .image-view {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 6, 0.3, 0, 1);
 }
 
-/* =========================
-   Responsividade geral
-   ========================= */
 .border-pane {
     -fx-background-color: #f7f9fc;
 }
 
-.table-view {
-    -fx-pref-width: 100%;
-}
-
 /* ============================================== */
-/* ESTILOS ESPECÍFICOS DO PDI CARD                */
+/* ESTILOS ESPECÍFICOS DO PDI CARD (Card Template)*/
 /* ============================================== */
 
 /* Raiz do Card (VBox) - Estilo de Card Flutuante */
 .pdi-card-root {
-    -fx-background-color: #ffffff; /* Fundo do card branco */
-    -fx-background-radius: 10; /* Cantos arredondados, conforme definido */
-    -fx-border-color: #e0e0e0; /* Borda leve para definição */
+    -fx-background-color: #ffffff; /* Fundo do card (Branco Puro) */
+    -fx-background-radius: 10;
+    -fx-border-color: #e0e0e0;
     -fx-border-radius: 10;
     -fx-border-width: 1;
-    /* Sombra suave para efeito flutuante (conforme seu design system) */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.05, 0, 2);
-    -fx-cursor: hand; /* Indica que o card é clicável/interativo */
+    -fx-padding: 20; /* Espaçamento interno */
+    -fx-min-width: 300px; /* Largura mínima para visualização */
+    -fx-pref-width: 320px; /* Largura padrão */
+    /* Sombra suave para efeito flutuante */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 10, 0.05, 0, 3);
+    -fx-cursor: hand;
+    /* Transição suave para hover e active */
+    -fx-transition: -fx-scale-x 0.2s ease, -fx-scale-y 0.2s ease, -fx-effect 0.2s ease, -fx-border-color 0.1s ease;
 }
 
-/* Efeito de destaque ao passar o mouse */
 .pdi-card-root:hover {
-    -fx-scale-x: 1.01; /* Levemente maior */
+    -fx-scale-x: 1.01;
     -fx-scale-y: 1.01;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 15, 0.0, 0, 4); /* Sombra mais forte no hover */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 15, 0.0, 0, 4);
+    -fx-border-color: #b3d9ff; /* Borda sutilmente azulada no hover */
+    -fx-cursor: hand;
+}
+
+.pdi-card-root:pressed { /* Estilo Active */
+    -fx-scale-x: 0.99;
+    -fx-scale-y: 0.99;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0.0, 0, 1);
 }
 
 /* Título do Card (Objetivo) */
 .card-title {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-text-fill: -primary-color; /* Usando a cor de marca definida (#459eb5) */
-    -fx-padding: 0 0 5 0; /* Espaço após o título */
+    -fx-text-fill: -primary-color; /* Cor de marca definida */
+    -fx-padding: 0 0 5 0;
 }
 
 /* Rótulos de informação (Ex: Colaborador:, Área:) */
 .card-label {
     -fx-font-weight: bold;
     -fx-text-fill: #555555;
-    -fx-font-size: 13px; /* Um pouco menor para rótulos */
+    -fx-font-size: 13px;
 }
 
-/* Botão de Ação (Visualizar/Editar) */
+/* =========================
+   Botão de Ação no Card
+   ========================= */
 .card-action-button {
     -fx-background-color: transparent;
     -fx-text-fill: -primary-color; /* Texto na cor azul de marca */
@@ -215,29 +301,36 @@
     -fx-border-width: 1;
     -fx-font-size: 13px;
     -fx-cursor: hand;
+    -fx-transition: -fx-background-color 0.15s ease, -fx-text-fill 0.15s ease, -fx-scale 0.1s linear;
 }
+
 .card-action-button:hover {
     -fx-background-color: -primary-color;
     -fx-text-fill: #ffffff;
 }
 
+.card-action-button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0.1, 0, 1);
+}
+
 /* ============================================== */
 /* ESTILOS DOS STATUS (Pills/Badges)              */
-/* (Usados pelo lblStatus)                        */
 /* ============================================== */
 
 /* Base para todas as Pills de Status */
 .status-pill {
     -fx-padding: 3 8;
-    -fx-background-radius: 12; /* Borda arredondada para formato "pill" */
+    -fx-background-radius: 12;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
 }
 
 /* Status: Concluído (Verde Sutil) */
 .status-concluido {
-    -fx-background-color: #e6ffed; /* Fundo pastel claro */
-    -fx-text-fill: #008a2e; /* Texto escuro */
+    -fx-background-color: #e6ffed;
+    -fx-text-fill: #008a2e;
 }
 
 /* Status: Em Andamento (Amarelo Sutil) */

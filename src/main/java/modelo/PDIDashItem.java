@@ -4,12 +4,14 @@ public class PDIDashItem {
 
     private final int idUsuario;
     private final String colaborador;
-    private final String objetivo;
+    private final String objetivo; // Usado na busca de texto livre
     private final String prazo;
-    private final String status;
-    private final String area;
+    private final String status; // Usado no filtro de status
+    private final String area; // Usado no filtro de área e na busca
 
-    // Novo construtor com o campo área
+    /**
+     * Construtor principal com todas as propriedades.
+     */
     public PDIDashItem(int idUsuario, String colaborador, String objetivo, String prazo, String status, String area) {
         this.idUsuario = idUsuario;
         this.colaborador = colaborador;
@@ -19,16 +21,18 @@ public class PDIDashItem {
         this.area = area;
     }
 
-    // Construtor antigo (mantém compatibilidade)
+    /**
+     * Construtor de compatibilidade, assumindo área nula.
+     */
     public PDIDashItem(int idUsuario, String colaborador, String objetivo, String prazo, String status) {
         this(idUsuario, colaborador, objetivo, prazo, status, null);
     }
 
     // Getters
-    public String getArea() { return area; }
     public int getIdUsuario() { return idUsuario; }
     public String getColaborador() { return colaborador; }
     public String getObjetivo() { return objetivo; }
     public String getPrazo() { return prazo; }
     public String getStatus() { return status; }
+    public String getArea() { return area; }
 }

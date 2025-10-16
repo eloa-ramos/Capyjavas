@@ -32,7 +32,6 @@ public class DashboardGUI extends Application {
         scene.getStylesheets().add(getClass().getResource("/gui/css/style.css").toExternalForm());
         scene.getStylesheets().add(getClass().getResource("/gui/css/Dashboard.css").toExternalForm());
 
-        stage.setTitle("Dashboard - " + (usuarioLogado != null ? usuarioLogado.getTipoAcesso() : "Visitante"));
         stage.setMaximized(true); // Tela inicial maximizada
         stage.setScene(scene);
         stage.show();
