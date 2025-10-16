@@ -18,18 +18,19 @@
     -fx-alignment: center;
 }
 
-/* Botões */
 .button {
     -fx-background-color: #459eb5;
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-background-radius: 6;
-    -fx-pref-width: 200px;
     -fx-padding: 8 16 8 16;
 }
+.button:hover {
+    -fx-background-color: #357a8f;
+}
 
-/* Campos de texto */
+
 .text-field, .password-field {
     -fx-font-size: 14px;
     -fx-background-radius: 6;
@@ -38,7 +39,29 @@
     -fx-padding: 8 10 8 10;
 }
 
-/*FUNDO*/
+.text-field-split, .password-field-split {
+    -fx-font-size: 14px;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #459eb5;
+    -fx-padding: 8 10 8 10;
+}
+
+
+.toggle-password-button-square {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #459eb5;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+.toggle-password-button-square:hover {
+    -fx-background-color: #dddddd;
+}
+
+/* FUNDO */
 .fundo{
-    -fx-background-color: #459eb5
+    -fx-background-color: #459eb5;
 }

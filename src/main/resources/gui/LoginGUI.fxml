@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
@@ -10,24 +11,45 @@
             fx:controller="gui.LoginGUIController"
             prefWidth="800" prefHeight="600" styleClass="fundo">
 
-    <!-- Fundo centralizado -->
     <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
           AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
-
-
-        <!-- Formulário -->
         <VBox spacing="10" alignment="CENTER" styleClass="login-box">
-            <!-- Logo -->
             <ImageView fx:id="logoImage" fitHeight="80" preserveRatio="true"/>
 
-            <!-- Título -->
-            <Label text="Bem-vindo ao YouTan" styleClass="login-title"/>
+            <Label text="Seja bem-vindo(a)!" styleClass="login-title"/>
 
-            <TextField fx:id="txtEmail" promptText="Digite seu e-mail" />
-            <PasswordField fx:id="txtSenha" promptText="Digite sua senha" />
+            <TextField fx:id="txtEmail" promptText="Digite seu e-mail" onAction="#handleBtnEntrar" maxWidth="200" />
 
-            <Button fx:id="btnEntrar" text="Entrar" onAction="#handleBtnEntrar"/>
+            <HBox spacing="10" alignment="CENTER" maxWidth="200">
+
+                <StackPane HBox.hgrow="ALWAYS">
+
+                    <PasswordField fx:id="txtSenha"
+                                   promptText="Digite sua senha"
+                                   styleClass="password-field-split"
+                                   onAction="#handleBtnEntrar" />
+
+                    <TextField fx:id="txtTextoSenha"
+                               promptText="Digite sua senha"
+                               styleClass="text-field-split"
+                               visible="false" managed="false"
+                               onAction="#handleBtnEntrar" />
+                </StackPane>
+
+                <Button fx:id="btnToggleSenha"
+                        onAction="#toggleVisibilidadeSenha"
+                        minWidth="30" maxWidth="30" minHeight="30" maxHeight="30"
+                        styleClass="toggle-password-button-square">
+                    <graphic>
+                        <ImageView fx:id="iconToggle" fitHeight="18" fitWidth="18">
+                            <image><Image url="@images/icon_eye_closed.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <Button fx:id="btnEntrar" text="Entrar" onAction="#handleBtnEntrar" defaultButton="true" maxWidth="200"/>
 
         </VBox>
 
