@@ -18,7 +18,6 @@ public class LoginGUIController {
     @FXML private TextField txtEmail;
     @FXML private PasswordField txtSenha;
     @FXML private Button btnEntrar;
-    @FXML private Hyperlink linkCadastrar;
     @FXML private ImageView logoImage;
 
     private Usuario usuarioLogado;
@@ -27,13 +26,12 @@ public class LoginGUIController {
     private void initialize() {
         // Carregar logo
         try {
-            Image img = new Image(getClass().getResourceAsStream("/gui/images/logo_youtan.png"));
+            Image img = new Image(getClass().getResourceAsStream("/gui/images/logo_youtan_transparente.png"));
             logoImage.setImage(img);
         } catch (Exception e) {
             System.err.println("Logo não encontrada: " + e.getMessage());
         }
 
-        linkCadastrar.setVisible(false);
     }
 
     @FXML
@@ -50,8 +48,6 @@ public class LoginGUIController {
         usuarioLogado = dao.autenticar(email, senha);
 
         if (usuarioLogado != null) {
-            // Exibir link RH
-            linkCadastrar.setVisible("RH".equalsIgnoreCase(usuarioLogado.getTipoAcesso()));
 
             // Abrir Dashboard
             try {

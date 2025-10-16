@@ -1,6 +1,6 @@
 /* Caixa de login */
 .login-box {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #fefefe;
     -fx-padding: 40;
     -fx-spacing: 20;
     -fx-border-radius: 12;
@@ -20,7 +20,7 @@
 
 /* Botões */
 .button {
-    -fx-background-color: #1a1a1a;
+    -fx-background-color: #459eb5;
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
@@ -34,12 +34,11 @@
     -fx-font-size: 14px;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
-    -fx-border-color: #ccc;
+    -fx-border-color: #459eb5;
     -fx-padding: 8 10 8 10;
 }
 
-/* Hyperlink */
-.hyperlink {
-    -fx-text-fill: #58a8c6;
-    -fx-font-size: 12px;
+/*FUNDO*/
+.fundo{
+    -fx-background-color: #459eb5
 }

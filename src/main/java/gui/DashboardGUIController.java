@@ -71,7 +71,7 @@ public class DashboardGUIController {
         tabela.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // Carregar logo
         try {
-            Image img = new Image(getClass().getResourceAsStream("/gui/images/logo_youtan.png"));
+            Image img = new Image(getClass().getResourceAsStream("/gui/images/logo_youtan_transparente.png"));
             logoImage.setImage(img);
         } catch (Exception e) {
             System.err.println("Logo não encontrada: " + e.getMessage());

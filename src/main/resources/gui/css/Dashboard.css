@@ -1,39 +1,44 @@
 /* =========================
-   Dashboard Principal
+   Dashboard Principal (Estilo Moderno Azul)
    ========================= */
 
 /* Root geral da tela */
 .root {
     -fx-font-family: "Segoe UI", "Arial", sans-serif;
-    -fx-background-color: #f4f4f9;
+    -fx-background-color: #f7f9fc; /* Fundo mais claro e suave */
+    -fx-font-size: 14px; /* Aumentar um pouco a fonte base */
 }
 
 /* =========================
-   HBox do topo (logo + botão)
+   HBox do topo (logo + botão) - Header/Navbar
    ========================= */
 .top > .hbox {
     -fx-alignment: center-left;
-    -fx-padding: 15 20 15 20;
-    -fx-spacing: 20;
+    -fx-padding: 15 30 15 30; /* Aumentar o padding */
+    -fx-spacing: 25;
     -fx-background-color: #ffffff;
-    -fx-border-color: #e0e0e0;
-    -fx-border-width: 0 0 1 0; /* linha inferior */
+    /* Substituir a borda por uma sombra sutil, estilo "card" flutuante */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 4);
+    -fx-border-width: 0;
 }
 
-/* Botão de cadastro PDI */
+/* Botão de cadastro PDI (Cor Primária: #459eb5) */
 .button {
-    -fx-background-color: #1a1a1a;
+    -fx-background-color: #459eb5; /* Cor azul do seu login */
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-font-size: 13px;
-    -fx-background-radius: 6;
-    -fx-padding: 8 16;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8; /* Bordas mais arredondadas */
+    -fx-padding: 10 20; /* Mais espaçamento */
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0, 0, 2);
+    /* Sombra mais suave */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0.1, 0, 2);
+    -fx-border-width: 0;
 }
 
 .button:hover {
-    -fx-background-color: #333333;
+    -fx-background-color: #3b889b; /* Tonalidade levemente mais escura para o hover */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0.2, 0, 3);
 }
 
 /* =========================
@@ -41,100 +46,119 @@
    ========================= */
 .center > .vbox {
     -fx-alignment: top-center;
-    -fx-spacing: 20;
-    -fx-padding: 20 20 20 20;
+    -fx-spacing: 25;
+    -fx-padding: 30 30 30 30;
 }
 
 /* =========================
    Filtros (combobox + label)
    ========================= */
 .combo-box, .label {
-    -fx-font-size: 13px;
+    -fx-font-size: 14px;
 }
 
 .combo-box {
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
-    -fx-border-color: #cccccc;
-    -fx-padding: 4 8;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #459eb5; /* Usar a cor primária na borda do campo */
+    -fx-padding: 6 10;
 }
 
 .hbox > .label {
     -fx-font-weight: bold;
+    -fx-text-fill: #333333;
 }
 
 /* =========================
-   TableView
+   TableView - Estilo de Card
    ========================= */
 .table-view {
     -fx-background-color: #ffffff;
-    -fx-border-color: #cccccc;
-    -fx-border-width: 1;
-    -fx-table-cell-border-color: transparent;
+    /* Transforma a tabela em um "Card" flutuante */
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-table-cell-border-color: #f0f0f0; /* Linha de grade horizontal muito sutil */
     -fx-focus-color: transparent;
-    -fx-padding: 5;
+    -fx-padding: 0;
+    -fx-background-radius: 10; /* Bordas arredondadas do Card */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0.1, 0, 5);
 }
 
 .table-view .column-header-background {
-    -fx-background-color: #f0f0f0;
+    -fx-background-color: #ffffff; /* Fundo branco no cabeçalho */
     -fx-border-width: 0 0 1 0;
+    -fx-border-color: #459eb5; /* Cor primária na linha de separação */
 }
 
 .table-view .column-header, .table-view .filler {
     -fx-border-color: transparent;
     -fx-font-weight: bold;
+    -fx-text-fill: #459eb5; /* Título da coluna na cor primária */
+    -fx-font-size: 14px;
 }
 
 .table-view .cell {
     -fx-alignment: CENTER_LEFT;
-    -fx-padding: 4 8;
-    -fx-font-size: 13px;
+    -fx-padding: 10 12;
+    -fx-font-size: 14px;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
 }
 
-/* Linhas alternadas */
+/* Linhas alternadas (diferença bem sutil) */
 .table-row-cell:odd {
-    -fx-background-color: #fafafa;
+    -fx-background-color: #fdfdfd;
 }
 .table-row-cell:even {
     -fx-background-color: #ffffff;
 }
 
 /* =========================
-   Cores da coluna Status
+   Cores da coluna Status (Estilo Badge/Pill)
    ========================= */
 .table-cell {
     -fx-alignment: CENTER;
-    -fx-font-weight: bold;
+    -fx-font-weight: 600;
     -fx-text-alignment: center;
 }
 
+/* Concluído (Verde Sutil) */
 .table-cell:filled:contains("Concluído") {
-    -fx-background-color: #4CAF50; /* verde */
-    -fx-text-fill: white;
+    -fx-background-color: #e6ffed; /* Fundo verde muito claro */
+    -fx-text-fill: #1e8449; /* Texto verde escuro */
+    -fx-background-radius: 12;
+    -fx-padding: 3 8;
 }
 
+/* Em Andamento (Amarelo/Laranja Sutil) */
 .table-cell:filled:contains("Em Andamento") {
-    -fx-background-color: #FFC107; /* amarelo */
-    -fx-text-fill: black;
+    -fx-background-color: #fff8e1;
+    -fx-text-fill: #f39c12;
+    -fx-background-radius: 12;
+    -fx-padding: 3 8;
 }
 
+/* Atrasado (Vermelho Sutil) */
 .table-cell:filled:contains("Atrasado") {
-    -fx-background-color: #F44336; /* vermelho */
-    -fx-text-fill: white;
+    -fx-background-color: #ffeaea;
+    -fx-text-fill: #c0392b;
+    -fx-background-radius: 12;
+    -fx-padding: 3 8;
 }
 
 /* =========================
    Imagem de logo
    ========================= */
 .image-view {
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0.5, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 6, 0.3, 0, 1);
 }
 
 /* =========================
    Responsividade geral
    ========================= */
 .border-pane {
-    -fx-background-color: #f4f4f9;
+    -fx-background-color: #f7f9fc;
 }
 
 .table-view {

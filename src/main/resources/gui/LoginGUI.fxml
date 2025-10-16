@@ -8,27 +8,27 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="gui.LoginGUIController"
-            prefWidth="800" prefHeight="600">
+            prefWidth="800" prefHeight="600" styleClass="fundo">
 
     <!-- Fundo centralizado -->
     <VBox alignment="CENTER" spacing="20" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
           AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
-        <!-- Logo -->
-        <ImageView fx:id="logoImage" fitHeight="80" preserveRatio="true"/>
 
-        <!-- Título -->
-        <Label text="Bem-vindo ao YouTan" styleClass="login-title"/>
 
         <!-- Formulário -->
         <VBox spacing="10" alignment="CENTER" styleClass="login-box">
+            <!-- Logo -->
+            <ImageView fx:id="logoImage" fitHeight="80" preserveRatio="true"/>
+
+            <!-- Título -->
+            <Label text="Bem-vindo ao YouTan" styleClass="login-title"/>
 
             <TextField fx:id="txtEmail" promptText="Digite seu e-mail" />
             <PasswordField fx:id="txtSenha" promptText="Digite sua senha" />
 
             <Button fx:id="btnEntrar" text="Entrar" onAction="#handleBtnEntrar"/>
 
-            <Hyperlink fx:id="linkCadastrar" text="Cadastrar PDI (RH)" onAction="#abrirCadastro" visible="false"/>
         </VBox>
 
     </VBox>
