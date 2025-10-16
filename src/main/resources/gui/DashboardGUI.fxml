@@ -61,9 +61,6 @@
                         managed="false"
                         prefWidth="250"
                         styleClass="button">
-                    <VBox.margin>
-                        <Insets bottom="10"/>
-                    </VBox.margin>
                 </Button>
 
                 <Button fx:id="btnAtualizarPdi"
@@ -71,6 +68,12 @@
                         onAction="#recarregarPdis"
                         prefWidth="250"
                         styleClass="button-sidebar-action"/>
+
+                <Button fx:id="btnSair"
+                        text="Sair da Conta"
+                        onAction="#handleLogout"
+                        prefWidth="250"
+                        styleClass="button-sidebar-logout"/>
 
             </VBox>
 

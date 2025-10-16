@@ -350,3 +350,20 @@
     -fx-background-color: #f0f0f0;
     -fx-text-fill: #666666;
 }
+
+/* Estilo para o botão de Sair/Logout na Sidebar */
+.button-sidebar-logout {
+    -fx-background-color: #dc3545; /* Vermelho padrão para ações destrutivas (ou um tom que harmonize) */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16 8 16;
+    -fx-alignment: CENTER; /* Garante que o texto esteja centralizado */
+    -fx-cursor: hand;
+}
+
+/* Efeito Hover do botão Sair/Logout */
+.button-sidebar-logout:hover {
+    -fx-background-color: #c82333; /* Vermelho um pouco mais escuro no hover */
+}

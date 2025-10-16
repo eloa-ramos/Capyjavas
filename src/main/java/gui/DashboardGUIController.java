@@ -17,6 +17,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.CheckBox;
 import javafx.scene.shape.SVGPath;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
 import modelo.PDIDashItem;
 import modelo.Usuario;
 
@@ -43,6 +45,9 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
     @FXML private Button btnCadastroPdi; // AGORA DENTRO DA SIDEBAR
     @FXML private BorderPane rootPane;
     @FXML private TextField campoBusca;
+
+    // Botão de Sair (Adicionado no passo anterior)
+    @FXML private Button btnSair;
 
     // Sidebar e Containers de Checkbox
     @FXML private VBox checkboxContainerStatus;
@@ -340,6 +345,41 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
             // Assumindo que CadastroPdiWindow e Usuario existem
             CadastroPdiWindow cadastro = new CadastroPdiWindow(usuarioLogado);
             cadastro.show();
+        }
+    }
+
+    /**
+     * Fecha o Dashboard e retorna para a tela de Login, garantindo o CSS.
+     */
+    @FXML
+    private void handleLogout() {
+        try {
+            // 1. Fecha a janela atual (Dashboard)
+            Stage dashStage = (Stage) btnSair.getScene().getWindow();
+            dashStage.close();
+
+            // 2. Carrega a tela de Login novamente (assumindo LoginGUI.fxml existe)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/LoginGUI.fxml"));
+            Parent root = loader.load();
+
+            // Reabre a Stage com a tela de Login
+            Stage loginStage = new Stage();
+            loginStage.setTitle("YouTan - Login");
+            // Maximiza
+            loginStage.setMaximized(true);
+            Scene loginScene = new Scene(root);
+
+            // *** CORREÇÃO CRÍTICA: REAPLICAÇÃO DO CSS ***
+            // Garantimos que tanto o CSS global (style.css) quanto o específico (Login.css) sejam aplicados.
+            loginScene.getStylesheets().add(getClass().getResource("/gui/css/style.css").toExternalForm());
+            loginScene.getStylesheets().add(getClass().getResource("/gui/css/Login.css").toExternalForm());
+
+            loginStage.setScene(loginScene);
+            loginStage.show();
+
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar a tela de Login: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
