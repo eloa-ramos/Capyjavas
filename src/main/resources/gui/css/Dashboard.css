@@ -6,7 +6,7 @@
 .root {
     -primary-color: #459eb5;
     -fx-font-family: "Segoe UI", "Arial", sans-serif;
-    -fx-background-color: #f7f9fc; /* Fundo mais claro e suave */
+    -fx-background-color: #f4f4f4; /* Fundo mais claro e suave */
     -fx-font-size: 14px;
 }
 
@@ -17,7 +17,7 @@
     -fx-alignment: center-left;
     -fx-padding: 15 30 15 30;
     -fx-spacing: 25;
-    -fx-background-color: #ffffff;
+    -fx-background-color: #fefefe;
     /* Sombra sutil, estilo "card" flutuante */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 4);
     -fx-border-width: 0;
@@ -29,7 +29,7 @@
 /* O seletor '.button' aplica-se apenas ao botão de texto principal */
 .button {
     -fx-background-color: -primary-color; /* Cor azul primária */
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #fefefe;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
     -fx-background-radius: 8;
@@ -56,15 +56,16 @@
 /* ==================================
    LAYOUT PRINCIPAL
    ================================== */
+/* ATENÇÃO: Mudança no fundo do contêiner principal para harmonizar */
 .main-content-container {
-    -fx-background-color: #f7f9fc;
+    -fx-background-color: #f8f8f8; /* Cinza sutil (Harmoniza entre #f4f4f4 e #fefefe) */
 }
 
 /* ==================================
    BARRA LATERAL DE FILTROS (SIDEBAR)
    ================================= */
 .sidebar-filtro {
-    -fx-background-color: #ffffff; /* Fundo branco para sidebar */
+    -fx-background-color: #fefefe; /* Fundo branco para sidebar */
     -fx-padding: 20 15 20 15;
     -fx-spacing: 25;
     /* Linha sutil de separação */
@@ -116,7 +117,9 @@
 /* ==================================
    ÁREA CENTRAL DE CONTEÚDO (FILTROS DE ORDENAÇÃO + CARDS)
    ================================== */
+/* ATENÇÃO: Mudança aqui para garantir a cor de fundo correta */
 .center-content-area {
+    -fx-background-color: #f4f4f4; /* Herda a cor do root para o padding externo */
     -fx-alignment: top-center;
     -fx-spacing: 25;
     -fx-padding: 30;
@@ -132,7 +135,7 @@
    FILTROS DE BUSCA E ORDENAÇÃO
    ================================== */
 .text-field-search {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #fefefe;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
     -fx-border-color: #dddddd;
@@ -147,7 +150,7 @@
 }
 
 .combo-box {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #fefefe;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
     -fx-border-color: #dddddd;
@@ -208,7 +211,7 @@
    ScrollPane para a área de Cards
    ========================= */
 .card-scroll-pane {
-    -fx-background-color: transparent;
+    -fx-background-color: transparent; /* Permite que o fundo do FlowPane/VBox apareça */
     -fx-border-width: 0;
 }
 
@@ -234,8 +237,9 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 6, 0.3, 0, 1);
 }
 
+/* ATENÇÃO: Mudança aqui. O BorderPane agora usa a cor do root */
 .border-pane {
-    -fx-background-color: #f7f9fc;
+    -fx-background-color: #f4f4f4;
 }
 
 /* ============================================== */
@@ -244,7 +248,7 @@
 
 /* Raiz do Card (VBox) - Estilo de Card Flutuante */
 .pdi-card-root {
-    -fx-background-color: #ffffff; /* Fundo do card (Branco Puro) */
+    -fx-background-color: #fefefe; /* Fundo do card (Branco Puro para contraste) */
     -fx-background-radius: 10;
     -fx-border-color: #e0e0e0;
     -fx-border-radius: 10;
@@ -306,7 +310,7 @@
 
 .card-action-button:hover {
     -fx-background-color: -primary-color;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #fefefe;
 }
 
 .card-action-button:pressed {
@@ -353,7 +357,7 @@
 
 /* Estilo para o botão de Sair/Logout na Sidebar */
 .button-sidebar-logout {
-    -fx-background-color: #dc3545; /* Vermelho padrão para ações destrutivas (ou um tom que harmonize) */
+    -fx-background-color: #dc3545; /* Vermelho padrão para ações destrutivas (ou um tone que harmonize) */
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
@@ -373,7 +377,7 @@
 
 /* Fundo da Barra de Navegação */
 .navbar-menu {
-    -fx-background-color: #ffffff; /* Fundo branco puro */
+    -fx-background-color: #fefefe; /* Fundo branco puro */
     -fx-border-color: #e0e0e0;
     -fx-border-width: 0 0 1px 0; /* Linha de separação sutil */
     -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 1); /* Sombra suave para levantar a barra */
@@ -436,7 +440,7 @@
 }
 
 .kpi-card {
-    -fx-background-color: #ffffff; /* Fundo branco */
+    -fx-background-color: #fefefe; /* Fundo branco (#fefefe) */
     -fx-padding: 25;
     -fx-border-radius: 12;
     -fx-background-radius: 12;
@@ -456,3 +460,53 @@
     -fx-font-weight: 700; /* Mais espesso */
     -fx-text-fill: #459eb5; /* Cor primária */
 }
+
+/* ---------------------------------------------------------------------- */
+/* ESTILOS ADICIONAIS PARA DETALHES DE KPI (EXPANSÃO)                     */
+/* ---------------------------------------------------------------------- */
+
+/* Área de Detalhes (Centraliza o conteúdo e mantém o padding) */
+.kpi-details-area {
+    -fx-padding: 10 0 0 0;
+    -fx-alignment: CENTER; /* CENTRALIZAÇÃO DO SEPARADOR */
+}
+
+/* Separador Visual (Corrigido e Centralizado) */
+.detail-separator {
+    -fx-max-width: 150px;
+    -fx-pref-height: 1px;
+    -fx-background-color: #f0f0f0; /* Cinza bem claro e sutil (não #fefefe) */
+    -fx-padding: 8 0 8 0;
+}
+
+/* Título da Seção de Detalhes (ex: "Detalhes de Status") */
+.details-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057; /* Cinza escuro */
+    -fx-padding: 5 0 2 0;
+}
+
+/* Estilo para cada item de detalhe (ex: "Concluídos: 4") */
+.detail-item-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d; /* Cinza suave */
+}
+
+/* Botão de Toggle "Ver/Ocultar Detalhes" */
+.kpi-detail-button-toggle {
+     -fx-background-color: transparent;
+     -fx-text-fill: #999;
+     -fx-font-size: 13px;
+     -fx-font-weight: 500;
+     -fx-padding: 5 0 0 0;
+     -fx-cursor: hand;
+     -fx-underline: false;
+     -fx-focus-traversable: false;
+     -fx-transition: -fx-text-fill 0.15s ease-out;
+ }
+
+.kpi-detail-button-toggle:hover {
+     -fx-background-color: transparent;
+     -fx-text-fill: #459eb5;
+ }

@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="gui.HomeGUIController"
             fx:id="rootPane"
             prefWidth="1200" prefHeight="800"
-            stylesheets="@/gui/css/Dashboard.css"> <top>
-    <HBox styleClass="navbar-menu" spacing="20" alignment="CENTER_LEFT">
-        <padding>
-            <Insets top="15" right="20" bottom="15" left="20"/>
-        </padding>
+            stylesheets="@/gui/css/Dashboard.css">
 
-        <Button fx:id="btnHome" text="Home" onAction="#handleNavigateToHome" styleClass="navbar-button-active"/>
-        <Button fx:id="btnPDIs" text="PDIs Ativos" onAction="#handleNavigateToPDIs" styleClass="navbar-button"/>
+    <top>
+        <HBox styleClass="navbar-menu" spacing="20" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
 
-        <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="btnHome" text="Home" onAction="#handleNavigateToHome" styleClass="navbar-button-active"/>
+            <Button fx:id="btnPDIs" text="PDIs Ativos" onAction="#handleNavigateToPDIs" styleClass="navbar-button"/>
 
-        <Label fx:id="lblBemVindo" styleClass="navbar-label-user" text="Olá, [Usuário]!"/>
+            <Region HBox.hgrow="ALWAYS" />
 
-    </HBox>
-</top>
+            <Label fx:id="lblBemVindo" styleClass="navbar-label-user" text="Olá, [Usuário]!"/>
+
+        </HBox>
+    </top>
 
     <center>
         <VBox styleClass="home-content-area" alignment="TOP_LEFT" spacing="30">
@@ -30,23 +39,46 @@
                 <Insets top="40" right="50" bottom="50" left="50"/>
             </padding>
 
-            <Label text="Visão Geral do YouTan" styleClass="home-title"/>
+            <Label text="Visão Geral do Gerenciador de PDIs" styleClass="home-title"/>
 
             <HBox spacing="40" alignment="CENTER_LEFT">
 
-                <VBox styleClass="kpi-card" alignment="CENTER" spacing="5">
-                    <Label text="PDIs Ativos" styleClass="kpi-label"/>
-                    <Label fx:id="lblPdiAtivos" text="--" styleClass="kpi-value"/>
-                </VBox>
+                <VBox fx:id="vboxPdiCard" styleClass="kpi-card" alignment="TOP_CENTER" spacing="5">
 
-                <VBox styleClass="kpi-card" alignment="CENTER" spacing="5">
-                    <Label text="Colaboradores" styleClass="kpi-label"/>
-                    <Label fx:id="lblColaboradores" text="--" styleClass="kpi-value"/>
-                </VBox>
+                    <VBox alignment="CENTER" spacing="5">
+                        <Label text="Total de PDIs" styleClass="kpi-label"/>
+                        <Label fx:id="lblTotalPDIs" text="--" styleClass="kpi-value"/>
+                    </VBox>
 
+                    <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                        <Button fx:id="btnDetalhesPdi"
+                                text="Ver Detalhes"
+                                onAction="#handleVerDetalhesPdi"
+                                styleClass="kpi-detail-button-toggle"/>
+                    </HBox>
+
+                    <VBox fx:id="vboxDetalhes"
+                          styleClass="kpi-details-area"
+                          visible="false"
+                          managed="false"
+                          spacing="5">
+
+                        <Separator styleClass="detail-separator"/>
+                        <Label styleClass="details-title" text="Detalhes de Status"/>
+
+                        <Label fx:id="lblDetConcluidos" styleClass="detail-item-label" text="Concluídos: --"/>
+                        <Label fx:id="lblDetAtrasados" styleClass="detail-item-label" text="Atrasados: --"/>
+                        <Label fx:id="lblDetEmAndamento" styleClass="detail-item-label" text="Em Andamento: --"/>
+
+                    </VBox>
+                </VBox>
                 <VBox styleClass="kpi-card" alignment="CENTER" spacing="5">
                     <Label text="PDIs Concluídos" styleClass="kpi-label"/>
                     <Label fx:id="lblPorcentagemConcluidos" text="--%" styleClass="kpi-value-perc"/>
+                </VBox>
+                <VBox styleClass="kpi-card" alignment="CENTER" spacing="5">
+                    <Label text="Colaboradores" styleClass="kpi-label"/>
+                    <Label fx:id="lblColaboradores" text="--" styleClass="kpi-value"/>
                 </VBox>
 
             </HBox>

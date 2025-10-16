@@ -97,8 +97,94 @@ public class DashboardDAO {
     }
 
 
+    /**
+     * Conta o número total de usuários com tipo_acesso = 'Colaborador'.
+     */
+    public int contarTotalColaboradores() {
+        String sql = "SELECT COUNT(*) FROM Usuarios WHERE tipo_acesso = 'Colaborador'";
+        int total = 0;
+
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                total = rs.getInt(1); // O COUNT(*) sempre estará na primeira coluna (índice 1)
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao contar o total de colaboradores: " + e.getMessage());
+            // Se houver erro, podemos retornar 0 ou relançar. Retornar 0 é mais seguro para a UI.
+            return 0;
+        }
+
+        return total;
+    }
+
+    /**
+     * Retorna a quantidade total de PDIs existentes na tabela PDI.
+     */
+    public int contarTotalPDIs() {
+        String sql = "SELECT COUNT(*) FROM PDI";
+        int total = 0;
+
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao contar o total de PDIs: " + e.getMessage());
+            return 0;
+        }
+
+        return total;
+    }
+
+    /**
+     * Retorna a contagem de PDIs por status real (Concluído/Atrasado/Em Andamento)
+     * para todos os PDIs no sistema.
+     */
+    public java.util.Map<String, Integer> contarPDIsPorStatus() {
+        // Esta query replica a lógica de status que você usa para os cards
+        String sql = """
+                SELECT 
+                    CASE
+                        WHEN m.percentual_atingido >= 100 THEN 'Concluído'
+                        WHEN m.percentual_atingido < 100 AND p.data_fim < CURDATE() THEN 'Atrasado'
+                        ELSE 'Em Andamento'
+                    END AS status_calculado,
+                    COUNT(p.id_pdi) AS total
+                FROM PDI p
+                LEFT JOIN Metas m ON p.id_pdi = m.id_pdi
+                GROUP BY status_calculado;
+                """;
+
+        java.util.Map<String, Integer> contagem = new java.util.HashMap<>();
+
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String status = rs.getString("status_calculado");
+                int totalStatus = rs.getInt("total");
+                contagem.put(status, totalStatus);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao contar PDIs por status: " + e.getMessage());
+            return contagem;
+        }
+
+        return contagem;
+    }
+
     // =========================
-    // Método genérico
+    // Método genérico de busca
     // =========================
     private List<PDIDashItem> buscarPDIsGenerico(String sql, Integer idParametro) {
         List<PDIDashItem> listaPDIs = new ArrayList<>();
