@@ -4,6 +4,7 @@
 
 /* Root geral da tela */
 .root {
+    -primary-color: #459eb5; /* <== ESSENCIAL! */
     -fx-font-family: "Segoe UI", "Arial", sans-serif;
     -fx-background-color: #f7f9fc; /* Fundo mais claro e suave */
     -fx-font-size: 14px; /* Aumentar um pouco a fonte base */
@@ -163,4 +164,96 @@
 
 .table-view {
     -fx-pref-width: 100%;
+}
+
+/* ============================================== */
+/* ESTILOS ESPECÍFICOS DO PDI CARD                */
+/* ============================================== */
+
+/* Raiz do Card (VBox) - Estilo de Card Flutuante */
+.pdi-card-root {
+    -fx-background-color: #ffffff; /* Fundo do card branco */
+    -fx-background-radius: 10; /* Cantos arredondados, conforme definido */
+    -fx-border-color: #e0e0e0; /* Borda leve para definição */
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    /* Sombra suave para efeito flutuante (conforme seu design system) */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.05, 0, 2);
+    -fx-cursor: hand; /* Indica que o card é clicável/interativo */
+}
+
+/* Efeito de destaque ao passar o mouse */
+.pdi-card-root:hover {
+    -fx-scale-x: 1.01; /* Levemente maior */
+    -fx-scale-y: 1.01;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 15, 0.0, 0, 4); /* Sombra mais forte no hover */
+}
+
+/* Título do Card (Objetivo) */
+.card-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color; /* Usando a cor de marca definida (#459eb5) */
+    -fx-padding: 0 0 5 0; /* Espaço após o título */
+}
+
+/* Rótulos de informação (Ex: Colaborador:, Área:) */
+.card-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+    -fx-font-size: 13px; /* Um pouco menor para rótulos */
+}
+
+/* Botão de Ação (Visualizar/Editar) */
+.card-action-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -primary-color; /* Texto na cor azul de marca */
+    -fx-font-weight: bold;
+    -fx-padding: 5 10;
+    -fx-border-color: -primary-color;
+    -fx-border-radius: 5;
+    -fx-border-width: 1;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+.card-action-button:hover {
+    -fx-background-color: -primary-color;
+    -fx-text-fill: #ffffff;
+}
+
+/* ============================================== */
+/* ESTILOS DOS STATUS (Pills/Badges)              */
+/* (Usados pelo lblStatus)                        */
+/* ============================================== */
+
+/* Base para todas as Pills de Status */
+.status-pill {
+    -fx-padding: 3 8;
+    -fx-background-radius: 12; /* Borda arredondada para formato "pill" */
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+/* Status: Concluído (Verde Sutil) */
+.status-concluido {
+    -fx-background-color: #e6ffed; /* Fundo pastel claro */
+    -fx-text-fill: #008a2e; /* Texto escuro */
+}
+
+/* Status: Em Andamento (Amarelo Sutil) */
+.status-andamento {
+    -fx-background-color: #fffbe6;
+    -fx-text-fill: #b3a500;
+}
+
+/* Status: Atrasado (Vermelho Sutil) */
+.status-atrasado {
+    -fx-background-color: #ffebeb;
+    -fx-text-fill: #cc0000;
+}
+
+/* Status Padrão/Outros */
+.status-default {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #666666;
 }

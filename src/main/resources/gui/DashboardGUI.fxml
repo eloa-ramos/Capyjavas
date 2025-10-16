@@ -8,27 +8,21 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="gui.DashboardGUIController"
-            prefWidth="1200" prefHeight="800">
+            prefWidth="1200" prefHeight="800"
+            stylesheets="@/gui/css/Dashboard.css"> <top>
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <padding>
+            <Insets top="15" right="20" bottom="15" left="20"/>
+        </padding>
+        <ImageView fx:id="logoImage" fitHeight="60" preserveRatio="true"/>
+        <Button fx:id="btnCadastroPdi" text="Cadastrar PDI" onAction="#abrirCadastroPdi" visible="false"/>
+    </HBox>
+</top>
 
-    <!-- Top: Logo e botão de cadastro -->
-    <top>
-        <HBox spacing="20" alignment="CENTER_LEFT">
-            <padding>
-                <Insets top="15" right="20" bottom="15" left="20"/>
-            </padding>
-            <ImageView fx:id="logoImage" fitHeight="60" preserveRatio="true"/>
-            <Button fx:id="btnCadastroPdi" text="Cadastrar PDI" onAction="#abrirCadastroPdi" visible="false"/>
-        </HBox>
-    </top>
-
-    <!-- Center: Filtros e Tabela centralizados -->
     <center>
-        <VBox alignment="TOP_CENTER" spacing="20" fillWidth="true">
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
-            </padding>
+        <VBox alignment="TOP_CENTER" spacing="25" fillWidth="true"> <padding>
+            <Insets top="30" right="30" bottom="30" left="30"/> </padding>
 
-            <!-- Filtros -->
             <HBox spacing="15" alignment="CENTER">
                 <Label text="Status:"/>
                 <ComboBox fx:id="filtroStatus" prefWidth="150"/>
@@ -36,16 +30,17 @@
                 <ComboBox fx:id="filtroArea" prefWidth="150"/>
             </HBox>
 
-            <!-- Tabela -->
-            <TableView fx:id="tabela" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colColaborador" text="Colaborador"/>
-                    <TableColumn fx:id="colObjetivo" text="Objetivo"/>
-                    <TableColumn fx:id="colPrazo" text="Prazo"/>
-                    <TableColumn fx:id="colStatus" text="Status"/>
-                    <TableColumn fx:id="colArea" text="Área"/>
-                </columns>
-            </TableView>
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="card-scroll-pane">
+                <content>
+                    <FlowPane fx:id="cardsContainer"
+                              hgap="20"
+                              vgap="20"
+                              alignment="TOP_LEFT"> <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    </FlowPane>
+                </content>
+            </ScrollPane>
         </VBox>
     </center>
 
