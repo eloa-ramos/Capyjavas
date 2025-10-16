@@ -32,22 +32,20 @@ import java.util.stream.Collectors;
 
 public class DashboardGUIController implements javafx.fxml.Initializable {
 
-    // Contêiner principal para os cards na UI
-    @FXML private FlowPane cardsContainer;
+    // Contêineres e Componentes Principais
+    @FXML private BorderPane rootPane; // Contêiner raiz para manipulação de tela
+    @FXML private FlowPane cardsContainer; // Contêiner para os cards de PDI
 
-    // A logoImage do topo (Pode ser mantida para evitar problemas, mas não é usada no FXML atual)
-    @FXML private ImageView logoImage;
+    // --- ELEMENTOS DO MENU DE NAVEGAÇÃO SUPERIOR ---
+    @FXML private Button btnHome;
+    @FXML private Button btnPDIs; // Este é o botão da tela atual
+    @FXML private Label lblBemVindo; // Rótulo de boas-vindas
 
-    // NOVO: ImageView para a logo na sidebar (fx:id="logoSidebar")
+    // --- ELEMENTOS DA SIDEBAR ---
     @FXML private ImageView logoSidebar;
-
-    // Botões e Focos
-    @FXML private Button btnCadastroPdi; // AGORA DENTRO DA SIDEBAR
-    @FXML private BorderPane rootPane;
     @FXML private TextField campoBusca;
-
-    // Botão de Sair (Adicionado no passo anterior)
-    @FXML private Button btnSair;
+    @FXML private Button btnCadastroPdi;
+    @FXML private Button btnSair; // Botão de Logout
 
     // Sidebar e Containers de Checkbox
     @FXML private VBox checkboxContainerStatus;
@@ -76,13 +74,11 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
         try {
             Image img = new Image(getClass().getResourceAsStream("/gui/images/logo_youtan_transparente.png"));
 
-            // Carrega em ambas as referências (se existirem)
-            if (logoImage != null) {
-                logoImage.setImage(img);
-            }
+            // Carrega na referência da sidebar
             if (logoSidebar != null) {
                 logoSidebar.setImage(img);
             }
+            // Remove a verificação de logoImage, que estava duplicada e não está no FXML.
         } catch (Exception e) {
             System.err.println("Logo não encontrada: " + e.getMessage());
         }
@@ -101,11 +97,19 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
     public void setUsuario(Usuario usuario) {
         this.usuarioLogado = usuario;
 
-        // CORREÇÃO CRÍTICA: setVisible e setManaged controlam o espaço do botão na sidebar.
-        if (btnCadastroPdi != null) {
-            boolean isRh = "RH".equalsIgnoreCase(usuario.getTipoAcesso());
-            btnCadastroPdi.setVisible(isRh);
-            btnCadastroPdi.setManaged(isRh);
+        if (usuario != null) {
+            // Ajuste para preencher o Label de Boas-Vindas no menu superior
+            if (lblBemVindo != null) {
+                // Exibe apenas o primeiro nome
+                lblBemVindo.setText("Olá, " + usuario.getNome().split(" ")[0] + "!");
+            }
+
+            // CORREÇÃO CRÍTICA: setVisible e setManaged controlam o espaço do botão na sidebar.
+            if (btnCadastroPdi != null) {
+                boolean isRh = "RH".equalsIgnoreCase(usuario.getTipoAcesso());
+                btnCadastroPdi.setVisible(isRh);
+                btnCadastroPdi.setManaged(isRh);
+            }
         }
 
         carregarDados();
@@ -348,8 +352,48 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
         }
     }
 
+    // --- MÉTODOS DE NAVEGAÇÃO SUPERIOR ---
+
     /**
-     * Fecha o Dashboard e retorna para a tela de Login, garantindo o CSS.
+     * Implementa a navegação para a tela Home.
+     */
+    @FXML
+    private void handleNavigateToHome() {
+        // Fecha a Stage atual
+        Stage currentStage = (Stage) rootPane.getScene().getWindow();
+        currentStage.close();
+
+        // Reabre a Stage para a Home (usando o fluxo do Controller)
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/HomeGUI.fxml"));
+            Parent root = loader.load();
+
+            HomeGUIController controller = loader.getController();
+            controller.setUsuario(usuarioLogado); // Passa o usuário logado
+
+            Stage homeStage = new Stage();
+            homeStage.setTitle("YouTan - Home");
+            homeStage.setScene(new javafx.scene.Scene(root));
+            homeStage.setMaximized(true);
+            homeStage.show();
+
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar HomeGUI.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Permanece no Dashboard (PDIs Ativos).
+     */
+    @FXML
+    private void handleNavigateToPDIs() {
+        // Já estamos no Dashboard, podemos apenas recarregar os dados se necessário
+        recarregarPdis(null);
+    }
+
+    /**
+     * Fecha o Dashboard e retorna para a tela de Login, garantindo o CSS e a maximização.
      */
     @FXML
     private void handleLogout() {
@@ -369,8 +413,7 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
             loginStage.setMaximized(true);
             Scene loginScene = new Scene(root);
 
-            // *** CORREÇÃO CRÍTICA: REAPLICAÇÃO DO CSS ***
-            // Garantimos que tanto o CSS global (style.css) quanto o específico (Login.css) sejam aplicados.
+            // REAPLICAÇÃO DO CSS
             loginScene.getStylesheets().add(getClass().getResource("/gui/css/style.css").toExternalForm());
             loginScene.getStylesheets().add(getClass().getResource("/gui/css/Login.css").toExternalForm());
 

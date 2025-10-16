@@ -14,10 +14,18 @@
             stylesheets="@/gui/css/Dashboard.css">
 
     <top>
-        <HBox styleClass="top" spacing="20" alignment="CENTER_LEFT">
+        <HBox styleClass="navbar-menu" spacing="20" alignment="CENTER_LEFT">
             <padding>
                 <Insets top="15" right="20" bottom="15" left="20"/>
             </padding>
+
+            <Button fx:id="btnHome" text="Home" onAction="#handleNavigateToHome" styleClass="navbar-button"/>
+            <Button fx:id="btnPDIs" text="PDIs Ativos" onAction="#handleNavigateToPDIs" styleClass="navbar-button-active"/>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Label fx:id="lblBemVindo" styleClass="navbar-label-user" text="Olá, [Usuário]!"/>
+
         </HBox>
     </top>
 

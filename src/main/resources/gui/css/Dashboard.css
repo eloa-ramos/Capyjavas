@@ -367,3 +367,92 @@
 .button-sidebar-logout:hover {
     -fx-background-color: #c82333; /* Vermelho um pouco mais escuro no hover */
 }
+/* ---------------------------------------------------------------------- */
+/* ESTILOS MODERNOS PARA NAVEGAÇÃO SUPERIOR (HEADER)                      */
+/* ---------------------------------------------------------------------- */
+
+/* Fundo da Barra de Navegação */
+.navbar-menu {
+    -fx-background-color: #ffffff; /* Fundo branco puro */
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1px 0; /* Linha de separação sutil */
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 1); /* Sombra suave para levantar a barra */
+}
+
+/* Estilo Base dos Botões de Navegação */
+.navbar-button, .navbar-button-active {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6c757d; /* Cinza suave */
+    -fx-font-size: 15px;
+    -fx-font-weight: 500; /* Medium weight */
+    -fx-padding: 5 15 10 15; /* Aumenta o padding inferior para o underline */
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 3px 0;
+    -fx-cursor: hand;
+    -fx-focus-traversable: false; /* Remove o contorno de foco padrão */
+}
+
+/* Efeito Hover */
+.navbar-button:hover {
+    -fx-background-color: transparent; /* Garante que o fundo não mude */
+    -fx-border-color: transparent; /* Garante que a borda NÃO apareça */
+    -fx-text-fill: #1a1a1a; /* Texto escuro/preto no hover */
+}
+
+/* Item Ativo (Tela Atual) */
+.navbar-button-active {
+    -fx-border-color: #459eb5; /* Cor primária (azul) como underline (apenas no ativo) */
+    -fx-text-fill: #1a1a1a; /* Texto preto para maior destaque */
+    -fx-font-weight: bold;
+}
+
+.navbar-button-active:hover {
+    -fx-background-color: transparent; /* MANTÉM O FUNDO TRANSPARENTE */
+    -fx-text-fill: #1a1a1a; /* MANTÉM O TEXTO PRETO */
+    -fx-border-color: #459eb5; /* MANTÉM O UNDERLINE AZUL */
+}
+
+.navbar-button-active:focused {
+    -fx-background-color: transparent; /* MANTÉM O FUNDO TRANSPARENTE */
+    -fx-border-color: #459eb5; /* MANTÉM O UNDERLINE AZUL */
+}
+
+/* Label de Boas-Vindas (Nome do Usuário) */
+.navbar-label-user {
+    -fx-text-fill: #333;
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+}
+
+/* ---------------------------------------------------------------------- */
+/* ESTILOS MODERNOS PARA KPIS (TELA HOME)                                 */
+/* ---------------------------------------------------------------------- */
+
+.home-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: 700; /* Bold */
+    -fx-text-fill: #1a1a1a;
+    -fx-padding: 0 0 10 0;
+}
+
+.kpi-card {
+    -fx-background-color: #ffffff; /* Fundo branco */
+    -fx-padding: 25;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3); /* Sombra mais visível */
+    -fx-pref-width: 220px;
+    -fx-min-height: 120px;
+}
+
+.kpi-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #777;
+    -fx-font-weight: 400; /* Normal */
+}
+
+.kpi-value, .kpi-value-perc {
+    -fx-font-size: 40px;
+    -fx-font-weight: 700; /* Mais espesso */
+    -fx-text-fill: #459eb5; /* Cor primária */
+}
