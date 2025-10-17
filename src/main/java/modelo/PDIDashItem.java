@@ -2,17 +2,19 @@ package modelo;
 
 public class PDIDashItem {
 
+    private final int idPdi; // <-- ADICIONADO
     private final int idUsuario;
     private final String colaborador;
-    private final String objetivo; // Usado na busca de texto livre
+    private final String objetivo;
     private final String prazo;
-    private final String status; // Usado no filtro de status
-    private final String area; // Usado no filtro de área e na busca
+    private final String status;
+    private final String area;
 
     /**
      * Construtor principal com todas as propriedades.
      */
-    public PDIDashItem(int idUsuario, String colaborador, String objetivo, String prazo, String status, String area) {
+    public PDIDashItem(int idPdi, int idUsuario, String colaborador, String objetivo, String prazo, String status, String area) {
+        this.idPdi = idPdi; // <-- ADICIONADO
         this.idUsuario = idUsuario;
         this.colaborador = colaborador;
         this.objetivo = objetivo;
@@ -25,10 +27,11 @@ public class PDIDashItem {
      * Construtor de compatibilidade, assumindo área nula.
      */
     public PDIDashItem(int idUsuario, String colaborador, String objetivo, String prazo, String status) {
-        this(idUsuario, colaborador, objetivo, prazo, status, null);
+        this(0, idUsuario, colaborador, objetivo, prazo, status, null); // Adicionado 0 para idPdi
     }
 
     // Getters
+    public int getIdPdi() { return idPdi; } // <-- ADICIONADO
     public int getIdUsuario() { return idUsuario; }
     public String getColaborador() { return colaborador; }
     public String getObjetivo() { return objetivo; }
