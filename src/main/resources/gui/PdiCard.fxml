@@ -8,30 +8,24 @@
       prefWidth="300" spacing="8" styleClass="pdi-card-root">
 
     <Label fx:id="lblObjetivo" styleClass="card-title" wrapText="true"/>
-
     <HBox alignment="CENTER_LEFT" spacing="8">
         <Label text="Status:" styleClass="card-label"/>
         <Label fx:id="lblStatus" styleClass="status-pill"/>
     </HBox>
-
     <GridPane hgap="10" vgap="5">
         <columnConstraints>
-            <ColumnConstraints prefWidth="120" hgrow="NEVER"/> <ColumnConstraints hgrow="ALWAYS"/> </columnConstraints>
-
+            <ColumnConstraints prefWidth="120" hgrow="NEVER"/> <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
         <Label text="Colaborador:" styleClass="card-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
         <Label fx:id="lblColaborador" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-
         <Label text="Área:" styleClass="card-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         <Label fx:id="lblArea" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-
         <Label text="Prazo Final:" styleClass="card-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
         <Label fx:id="lblPrazo" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
     </GridPane>
-
     <HBox alignment="CENTER_RIGHT" style="-fx-padding-top: 10">
-        <Button text="Visualizar/Editar" onAction="#handleEditAction" styleClass="card-action-button"/>
+        <Button fx:id="handleEditAction" text="Visualizar/Editar" onAction="#handleEditAction" styleClass="card-action-button"/>
     </HBox>
-
     <padding>
         <Insets top="15" right="15" bottom="15" left="15"/>
     </padding>
