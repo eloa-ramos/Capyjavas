@@ -1,8 +1,10 @@
 package gui;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import modelo.PDIDashItem; // Usamos o DTO para carregar os dados
+import modelo.PDIDashItem;
+import modelo.Usuario;
 
 public class PdiCardController {
 
@@ -10,47 +12,59 @@ public class PdiCardController {
     @FXML private Label lblStatus;
     @FXML private Label lblColaborador;
     @FXML private Label lblArea;
-    @FXML private Label lblPrazo; // Mudei para 'lblPrazo' para refletir o PDIDashItem
+    @FXML private Label lblPrazo;
+    @FXML private Button handleEditAction;
 
-    private PDIDashItem item; // O objeto DTO associado a este card
+    private PDIDashItem item;
+    private DashboardGUIController dashboardController;
 
-    // Método principal para popular o card com dados
+    // Método antigo mantido por compatibilidade, mas o novo é preferível
     public void setPdiItem(PDIDashItem item) {
         this.item = item;
+        preencherDados();
+        handleEditAction.setVisible(false); // Oculta por padrão
+    }
 
-        // Preenchimento dos Labels
+    // NOVO MÉTODO: Recebe as referências necessárias
+    public void setupCard(PDIDashItem item, Usuario usuarioLogado, DashboardGUIController controller) {
+        this.item = item;
+        this.dashboardController = controller;
+        preencherDados();
+
+        // Lógica de acesso
+        String tipoAcesso = usuarioLogado.getTipoAcesso().toUpperCase().replace(" ", "");
+        boolean isGestorGeral = "GESTORGERAL".equals(tipoAcesso);
+        handleEditAction.setVisible(isGestorGeral);
+        handleEditAction.setManaged(isGestorGeral);
+    }
+
+    private void preencherDados() {
         lblObjetivo.setText(item.getObjetivo());
         lblColaborador.setText(item.getColaborador());
-        lblArea.setText(item.getArea() != null ? item.getArea() : "N/A"); // Proteção contra área nula
+        lblArea.setText(item.getArea() != null ? item.getArea() : "N/A");
         lblPrazo.setText(item.getPrazo());
 
-        // Lógica para o Status (e adicionar a classe CSS)
         String status = item.getStatus();
         lblStatus.setText(status);
+        lblStatus.getStyleClass().clear();
+        lblStatus.getStyleClass().add("status-pill");
         lblStatus.getStyleClass().add(getStatusCssClass(status));
     }
 
-    // Mapeia o status para a classe CSS (essencial para o seu novo design!)
     private String getStatusCssClass(String status) {
         if (status == null) return "status-default";
-
-        String lowerStatus = status.toLowerCase();
-        if (lowerStatus.contains("concluído")) {
-            return "status-concluido";
-        } else if (lowerStatus.contains("andamento")) {
-            return "status-andamento";
-        } else if (lowerStatus.contains("atrasado") || lowerStatus.contains("bloqueado")) {
-            return "status-atrasado";
-        }
-        return "status-default"; // Classe padrão caso não se encaixe
+        return switch (status.toLowerCase()) {
+            case "concluído" -> "status-concluido";
+            case "em andamento" -> "status-andamento";
+            case "atrasado" -> "status-atrasado";
+            default -> "status-default";
+        };
     }
 
     @FXML
     private void handleEditAction() {
-        // Ação de clique: Você deve usar o 'item.getIdUsuario()' ou o ID do PDI
-        // para carregar a tela de edição correta.
-        System.out.println("Abrir edição para PDI do Colaborador ID: " + item.getIdUsuario());
-        // Aqui você chamaria um método no DashboardGUIController principal
-        // para carregar a nova tela (ou usar o Stage/Scene atual).
+        if (dashboardController != null) {
+            dashboardController.abrirJanelaDeEdicao(item);
+        }
     }
 }

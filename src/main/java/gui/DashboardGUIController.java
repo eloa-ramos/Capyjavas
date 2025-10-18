@@ -1,6 +1,7 @@
 package gui;
 
 import dao.DashboardDAO;
+import dao.PDIDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -19,8 +20,11 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import modelo.PDI;
 import modelo.PDIDashItem;
 import modelo.Usuario;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -332,7 +336,7 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/PdiCard.fxml"));
                 Parent cardNode = loader.load();
                 PdiCardController cardController = loader.getController();
-                cardController.setPdiItem(item);
+                cardController.setupCard(item, usuarioLogado, this);
                 cardsContainer.getChildren().add(cardNode);
 
             } catch (IOException e) {
@@ -340,6 +344,42 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void abrirJanelaDeEdicao(PDIDashItem item) {
+        try {
+            // Usa o DAO para buscar o objeto PDI completo
+            PDIDAO dao = new PDIDAO();
+            PDI pdiCompleto = dao.buscarPdiPorId(item.getIdPdi());
+
+            if (pdiCompleto == null) {
+                // Tratar o caso de não encontrar o PDI
+                System.err.println("PDI com ID " + item.getIdPdi() + " não encontrado.");
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/EdicaoPdiGUI.fxml"));
+            Parent root = loader.load();
+
+            EdicaoPdiController controller = loader.getController();
+            controller.carregarPdi(pdiCompleto, item, this); // Envia o PDI e a referência do dashboard
+
+            Stage stage = new Stage();
+            stage.setTitle("Editar PDI - " + item.getColaborador());
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela principal
+            stage.showAndWait(); // Espera a janela fechar
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * NOVO MÉTODO PÚBLICO: Para que a janela de edição possa pedir a atualização do dashboard
+     */
+    public void atualizarDashboard() {
+        carregarDados();
     }
 
     // Este FXML Action agora se aplica ao botão dentro da Sidebar
