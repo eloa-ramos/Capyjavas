@@ -32,7 +32,7 @@ public class DashboardGUIControllerHelper {
         }
 
         // Garante que a comparação seja case-insensitive (RH, rh, Rh)
-        String tipoAcesso = usuario.getTipoAcesso().toUpperCase();
+        String tipoAcesso = usuario.getTipoAcesso().toUpperCase().replace(" ", "");
 
         switch (tipoAcesso) {
             case "RH":
