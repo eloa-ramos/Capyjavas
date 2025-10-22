@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" prefWidth="900" prefHeight="500"
+            style="-fx-background-color: #FAFAFA;">
+
+    <Label layoutX="30.0" layoutY="30.0" text="Dashboard Gestor">
+        <font>
+            <Font name="System Bold" size="24.0" />
+        </font>
+    </Label>
+
+    <!-- Campo de busca -->
+    <TextField layoutX="30.0" layoutY="70.0" prefWidth="250.0" promptText="Buscar"
+               style="-fx-background-radius: 10;" />
+
+    <!-- Botão Cadastrar -->
+    <Button layoutX="30.0" layoutY="110.0" text="Cadastrar" prefWidth="100"
+            style="-fx-background-color: #212121; -fx-text-fill: white; -fx-background-radius: 5;" />
+
+    <!-- Botão Sair -->
+    <Button layoutX="800.0" layoutY="30.0" text="Sair" prefWidth="60"
+            style="-fx-background-color: #e53900; -fx-text-fill: white; -fx-background-radius: 5;" />
+
+    <TableView layoutX="30.0" layoutY="170.0" prefHeight="250.0" prefWidth="840.0">
+        <columns>
+            <TableColumn text="Colaborador" prefWidth="200.0"/>
+            <TableColumn text="Objetivo" prefWidth="240.0"/>
+            <TableColumn text="Prazo" prefWidth="150.0"/>
+            <TableColumn text="Status" prefWidth="200.0"/>
+        </columns>
+
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <TableView fx:id="dummyData1">
+                    <columns>
+                        <TableColumn text="João Silva"/>
+                        <TableColumn text="Aprender Java"/>
+                        <TableColumn text="15/08/2025"/>
+                        <TableColumn text="Em Andamento"/>
+                    </columns>
+                </TableView>
+            </FXCollections>
+        </items>
+    </TableView>
+
+    <HBox layoutX="30.0" layoutY="440.0" spacing="10.0">
+        <Button text="Em Andamento"
+                style="-fx-background-color: #CCCCCC; -fx-text-fill: black; -fx-background-radius: 5;"
+                disable="true" />
+        <Button text="Concluído"
+                style="-fx-background-color: #4CFF72; -fx-text-fill: black; -fx-background-radius: 5;"
+                disable="true" />
+        <Button text="Atrasado"
+                style="-fx-background-color: #e53900; -fx-text-fill: white; -fx-background-radius: 5;"
+                disable="true" />
+    </HBox>
+
+</AnchorPane>
