@@ -1,6 +1,6 @@
 package gui;
 
-import javafx.animation.Timeline; // Import para futura animação (opcional)
+import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,9 +10,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox; // Import necessário para manipular o VBox de detalhes
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import modelo.Usuario;
+
+// IMPORTS PARA GRÁFICOS
+import javafx.scene.chart.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.net.URL;
@@ -33,22 +39,26 @@ public class HomeGUIController implements javafx.fxml.Initializable {
     @FXML private Label lblColaboradores;
     @FXML private Label lblPorcentagemConcluidos;
 
-    @FXML private Button btnDetalhesPdi; // Botão de Toggle
+    @FXML private Button btnDetalhesPdi;
 
     // NOVOS FXMLs para a funcionalidade de detalhes no card
-    @FXML private VBox vboxPdiCard;        // O Card pai (opcional, mas bom para referência)
-    @FXML private VBox vboxDetalhes;       // Contêiner dos detalhes (para toggle)
+    @FXML private VBox vboxPdiCard;
+    @FXML private VBox vboxDetalhes;
     @FXML private Label lblDetConcluidos;
     @FXML private Label lblDetAtrasados;
     @FXML private Label lblDetEmAndamento;
-    // Adicione outras categorias de status se necessário aqui
+
+    // --- NOVOS ELEMENTOS PARA GRÁFICOS ---
+    @FXML private PieChart chartStatus;
+    @FXML private BarChart<String, Number> chartArea;
+    @FXML private CategoryAxis xAxisArea;
+    @FXML private NumberAxis yAxisArea;
 
     private Usuario usuarioLogado;
     private final HomeGUIControllerHelper helper = new HomeGUIControllerHelper();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Inicializa o contêiner de detalhes como oculto
         if (vboxDetalhes != null) {
             vboxDetalhes.setVisible(false);
             vboxDetalhes.setManaged(false);
@@ -58,9 +68,7 @@ public class HomeGUIController implements javafx.fxml.Initializable {
     public void setUsuario(Usuario usuario) {
         this.usuarioLogado = usuario;
         if (usuario != null) {
-            // Preenche o nome do usuário no menu
             lblBemVindo.setText("Olá, " + usuario.getNome().split(" ")[0] + "!");
-            // Carrega os dados reais e preenche os labels
             carregarKPIs();
         }
     }
@@ -68,15 +76,12 @@ public class HomeGUIController implements javafx.fxml.Initializable {
     private void carregarKPIs() {
         if (usuarioLogado == null) return;
 
-        // --- BUSCANDO DADOS REAIS VIA HELPER E DAO ---
         int totalPdis = helper.getTotalPDIs(usuarioLogado);
         int colaboradores = helper.getTotalColaboradores(usuarioLogado);
         double concluido = helper.getPorcentagemConcluidos(usuarioLogado);
 
-        // --- ATUALIZAÇÃO DA UI PRINCIPAL ---
         lblTotalPDIs.setText(String.valueOf(totalPdis));
 
-        // KPI de Colaboradores:
         if (colaboradores > 0) {
             lblColaboradores.setText(String.valueOf(colaboradores));
         } else {
@@ -85,21 +90,18 @@ public class HomeGUIController implements javafx.fxml.Initializable {
 
         lblPorcentagemConcluidos.setText(String.format("%.1f%%", concluido));
 
-        // NOVO: Preenche os labels da área de detalhes (vboxDetalhes)
         Map<String, Integer> detalhes = helper.getDetalhesStatus(usuarioLogado);
         preencherDetalhes(detalhes);
+
+        // NOVO: Preenche os gráficos
+        popularGraficos(detalhes);
     }
 
-    /**
-     * Preenche os Labels de detalhe com a contagem real dos status.
-     */
     private void preencherDetalhes(Map<String, Integer> detalhes) {
-        // A chave no Map deve ser exatamente igual ao CASE no SQL do DAO: "Concluído", "Atrasado", "Em Andamento"
         int concluidos = detalhes.getOrDefault("Concluído", 0);
         int atrasados = detalhes.getOrDefault("Atrasado", 0);
         int emAndamento = detalhes.getOrDefault("Em Andamento", 0);
 
-        // Verifica se os labels existem (boas práticas)
         if (lblDetConcluidos != null) {
             lblDetConcluidos.setText("Concluídos: " + concluidos);
         }
@@ -111,18 +113,76 @@ public class HomeGUIController implements javafx.fxml.Initializable {
         }
     }
 
-    // --- Lógica de Navegação ---
+    // NOVO MÉTODO CENTRAL PARA GRÁFICOS
+    private void popularGraficos(Map<String, Integer> detalhesStatus) {
+        popularGraficoStatus(detalhesStatus);
+
+        Map<String, Integer> contagemPorArea = helper.getContagemPdiPorArea(usuarioLogado);
+        popularGraficoArea(contagemPorArea);
+    }
 
     /**
-     * Navega para a tela de PDIs (o Dashboard).
+     * Preenche o PieChart com a contagem de PDIs por Status.
      */
+    private void popularGraficoStatus(Map<String, Integer> detalhesStatus) {
+        if (chartStatus == null) return;
+
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+        int total = detalhesStatus.values().stream().mapToInt(Integer::intValue).sum();
+
+        if (total > 0) {
+            for (Map.Entry<String, Integer> entry : detalhesStatus.entrySet()) {
+                String label = String.format("%s (%.1f%%)",
+                        entry.getKey(),
+                        (double) entry.getValue() * 100 / total);
+                pieChartData.add(new PieChart.Data(label, entry.getValue()));
+            }
+        } else {
+            pieChartData.add(new PieChart.Data("Nenhum PDI Encontrado", 1));
+        }
+
+        chartStatus.setData(pieChartData);
+        chartStatus.setTitle("Status dos PDIs");
+        chartStatus.setLabelsVisible(true);
+        chartStatus.setLegendVisible(true);
+    }
+
+    /**
+     * Preenche o BarChart com a contagem de PDIs por Área.
+     */
+    private void popularGraficoArea(Map<String, Integer> contagemPorArea) {
+        if (chartArea == null) return;
+
+        chartArea.getData().clear();
+
+        if (contagemPorArea.isEmpty()) {
+            // Se não houver dados, o gráfico fica vazio ou exibe uma mensagem.
+            // Aqui vamos apenas limpá-lo.
+            return;
+        }
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Total de PDIs");
+
+        for (Map.Entry<String, Integer> entry : contagemPorArea.entrySet()) {
+            series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+        }
+
+        chartArea.getData().add(series);
+        chartArea.setTitle("Carga de Trabalho por Área");
+
+        // Configurações visuais
+        if (yAxisArea != null) {
+            yAxisArea.setLowerBound(0);
+        }
+    }
+
+
     @FXML
     private void handleNavigateToPDIs() {
-        // Fecha a Stage atual
         Stage currentStage = (Stage) rootPane.getScene().getWindow();
         currentStage.close();
 
-        // Reabre a Stage para o Dashboard
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/DashboardGUI.fxml"));
             Parent root = loader.load();
@@ -142,42 +202,24 @@ public class HomeGUIController implements javafx.fxml.Initializable {
         }
     }
 
-    /**
-     * Permanece ou recarrega a tela Home.
-     */
     @FXML
     private void handleNavigateToHome() {
-        // Já estamos na Home, apenas recarrega os dados (KPIs)
         carregarKPIs();
     }
 
-    // ---------------------------------------------
-    // AÇÃO DE EXPANDIR/OCULTAR DETALHES DO CARD
-    // ---------------------------------------------
-
-    /**
-     * Alterna a visibilidade da área de detalhes do KPI, simulando uma expansão/contração.
-     * Altera o texto do botão para "Ver Detalhes" ou "Ocultar Detalhes".
-     */
     @FXML
     private void handleVerDetalhesPdi(ActionEvent event) {
-        // Verifica se o VBox de detalhes e o Helper estão disponíveis
-        if (vboxDetalhes == null || btnDetalhesPdi == null || helper.getDetalhesStatus(usuarioLogado).isEmpty()) {
+        if (vboxDetalhes == null || btnDetalhesPdi == null) {
             return;
         }
 
         boolean isVisible = vboxDetalhes.isVisible();
 
-        // NOVO ESTADO: Ocultar
         if (isVisible) {
-            // Desativa o gerenciamento de layout e a visibilidade
             vboxDetalhes.setVisible(false);
             vboxDetalhes.setManaged(false);
             btnDetalhesPdi.setText("Ver Detalhes");
-
-            // NOVO ESTADO: Mostrar
         } else {
-            // Ativa o gerenciamento de layout e a visibilidade
             vboxDetalhes.setManaged(true);
             vboxDetalhes.setVisible(true);
             btnDetalhesPdi.setText("Ocultar Detalhes");

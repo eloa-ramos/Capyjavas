@@ -510,3 +510,100 @@
      -fx-background-color: transparent;
      -fx-text-fill: #459eb5;
  }
+
+/* ---------------------------------------------------------------------- */
+/* NOVOS ESTILOS PARA GRÁFICOS (DASHBOARD HOME)                           */
+/* ---------------------------------------------------------------------- */
+
+/* Contêiner Geral do Gráfico (Para aplicar o estilo de Card) */
+.dashboard-chart-card {
+    -fx-background-color: #fefefe; /* Fundo branco (#fefefe) */
+    -fx-padding: 20;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3); /* Sombra mais visível, igual ao KPI */
+    -fx-spacing: 15;
+}
+
+.chart-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 5 0;
+    -fx-alignment: center; /* Centraliza o título do gráfico */
+}
+
+/* Estilo Base para Todos os Gráficos (Removendo Bordas e Fundo) */
+.chart {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+
+.chart-content {
+    -fx-padding: 0;
+}
+
+/* Limpeza Geral de Eixos */
+.axis {
+    -fx-font-size: 12px;
+    -fx-tick-label-fill: #666;
+    -fx-border-color: #e0e0e0;
+}
+
+/* Gráfico de Barras (BarChart) Específico */
+.bar-chart {
+    -fx-bar-gap: 5;
+    -fx-category-gap: 20;
+}
+
+/* Estilo para as Barras: Cor Primária (Azul) */
+.default-color0.chart-bar {
+    -fx-bar-fill: -primary-color; /* #459eb5 */
+    -fx-background-radius: 4;
+}
+
+/* Eixo X e Y - Linhas e Marcas (Opcional: Remover as linhas da grade) */
+.chart-vertical-grid-lines {
+    -fx-stroke: transparent; /* Remove linhas verticais (se BarChart estiver na horizontal) */
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: #eeeeee; /* Linhas horizontais sutis */
+}
+.chart-plot-background {
+    -fx-background-color: transparent; /* Remove o fundo da área do plot */
+}
+
+/* Gráfico de Pizza (PieChart) Específico */
+.pie-chart {
+    -fx-legend-side: bottom;
+}
+
+/* Limpa o texto do título (se houver) e legenda */
+.chart-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
+}
+
+.chart-legend-item {
+    -fx-text-fill: #555;
+    -fx-font-size: 12px;
+}
+
+/* Cores das Fatias do PieChart (Harmoniza com os Status) */
+.default-color0.chart-pie { -fx-pie-color: #00b33c; } /* Concluído - Verde  */
+.default-color1.chart-pie { -fx-pie-color: #cc0000; } /* Atrasado - Vermelho  */
+.default-color2.chart-pie { -fx-pie-color: #b3a500; } /* Em Andamento - Amarelo  */
+.default-color3.chart-pie { -fx-pie-color: #6c757d; } /* Outros/Default - Cinza */
+.default-color4.chart-pie { -fx-pie-color: -primary-color; } /* Cor primária se houver mais de 3 status */
+
+/* Estilo para o label de dados em cima do PieChart */
+.chart-pie-label {
+    -fx-fill: #333;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}

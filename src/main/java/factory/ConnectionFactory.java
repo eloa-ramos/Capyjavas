@@ -8,8 +8,7 @@ public class ConnectionFactory {
         try{
             String url = "jdbc:mysql://localhost:3306/db_pdi";
             String user = "root";
-            String password = "Qp!7z@9Lx#2M";
-
+            String password = "fatec";
             return DriverManager.getConnection(url, user, password);
         }
         catch(SQLException excecao){

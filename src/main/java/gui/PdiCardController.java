@@ -18,24 +18,26 @@ public class PdiCardController {
     private PDIDashItem item;
     private DashboardGUIController dashboardController;
 
-    // Método antigo mantido por compatibilidade, mas o novo é preferível
     public void setPdiItem(PDIDashItem item) {
         this.item = item;
         preencherDados();
-        handleEditAction.setVisible(false); // Oculta por padrão
+        handleEditAction.setVisible(false);
+        handleEditAction.setManaged(false);
     }
 
-    // NOVO MÉTODO: Recebe as referências necessárias
     public void setupCard(PDIDashItem item, Usuario usuarioLogado, DashboardGUIController controller) {
         this.item = item;
         this.dashboardController = controller;
         preencherDados();
 
-        // Lógica de acesso
+        // Lógica de visibilidade do botão de edição (Gestor Geral ou RH podem editar)
         String tipoAcesso = usuarioLogado.getTipoAcesso().toUpperCase().replace(" ", "");
-        boolean isGestorGeral = "GESTORGERAL".equals(tipoAcesso);
-        handleEditAction.setVisible(isGestorGeral);
-        handleEditAction.setManaged(isGestorGeral);
+        boolean podeEditar = "GESTORGERAL".equals(tipoAcesso) || "RH".equals(tipoAcesso);
+
+        if (handleEditAction != null) {
+            handleEditAction.setVisible(podeEditar);
+            handleEditAction.setManaged(podeEditar);
+        }
     }
 
     private void preencherDados() {
@@ -46,24 +48,29 @@ public class PdiCardController {
 
         String status = item.getStatus();
         lblStatus.setText(status);
-        lblStatus.getStyleClass().clear();
-        lblStatus.getStyleClass().add("status-pill");
+
+        // Garante que apenas a classe 'status-pill' e a classe específica de status permaneçam
+        lblStatus.getStyleClass().removeIf(s -> s.startsWith("status-"));
         lblStatus.getStyleClass().add(getStatusCssClass(status));
     }
 
     private String getStatusCssClass(String status) {
         if (status == null) return "status-default";
-        return switch (status.toLowerCase()) {
-            case "concluído" -> "status-concluido";
-            case "em andamento" -> "status-andamento";
-            case "atrasado" -> "status-atrasado";
-            default -> "status-default";
-        };
+
+        String lowerStatus = status.toLowerCase();
+        if (lowerStatus.contains("concluído")) {
+            return "status-concluido";
+        } else if (lowerStatus.contains("andamento")) {
+            return "status-andamento";
+        } else if (lowerStatus.contains("atrasado") || lowerStatus.contains("bloqueado")) {
+            return "status-atrasado";
+        }
+        return "status-default";
     }
 
     @FXML
     private void handleEditAction() {
-        if (dashboardController != null) {
+        if (dashboardController != null && item != null) {
             dashboardController.abrirJanelaDeEdicao(item);
         }
     }

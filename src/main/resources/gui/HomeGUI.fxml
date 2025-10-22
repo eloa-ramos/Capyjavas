@@ -11,6 +11,11 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="gui.HomeGUIController"
             fx:id="rootPane"
@@ -83,6 +88,22 @@
 
             </HBox>
 
+            <HBox spacing="40" alignment="TOP_LEFT" VBox.vgrow="ALWAYS">
+
+                <VBox styleClass="dashboard-chart-card" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+                    <Label text="Distribuição de PDIs por Status" styleClass="chart-title"/>
+                    <PieChart fx:id="chartStatus" minHeight="300" VBox.vgrow="ALWAYS"/>
+                </VBox>
+
+                <VBox styleClass="dashboard-chart-card" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+                    <Label text="Carga de Trabalho por Área" styleClass="chart-title"/>
+                    <BarChart fx:id="chartArea" minHeight="300" VBox.vgrow="ALWAYS">
+                        <xAxis><CategoryAxis fx:id="xAxisArea"/></xAxis>
+                        <yAxis><NumberAxis fx:id="yAxisArea"/></yAxis>
+                    </BarChart>
+                </VBox>
+
+            </HBox>
         </VBox>
     </center>
 </BorderPane>

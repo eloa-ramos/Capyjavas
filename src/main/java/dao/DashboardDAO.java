@@ -144,6 +144,32 @@ public class DashboardDAO {
         return contagem;
     }
 
+    /**
+     * NOVO MÉTODO: Conta o total de PDIs agrupados por Área (nome do Gestor de Área).
+     */
+    public Map<String, Integer> contarPDIsPorArea() {
+        String sql = """
+                SELECT g.nome AS area_nome, COUNT(p.id_pdi) AS total
+                FROM PDI p
+                JOIN Usuarios u ON p.id_colaborador = u.id_usuario
+                JOIN Usuarios g ON u.id_gestor_de_area = g.id_usuario
+                GROUP BY g.nome
+                ORDER BY total DESC;
+                """;
+        Map<String, Integer> contagem = new HashMap<>();
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                String area = rs.getString("area_nome");
+                contagem.put(area, rs.getInt("total"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return contagem;
+    }
+
     private List<PDIDashItem> buscarPDIsGenerico(String sql, Integer idParametro) {
         List<PDIDashItem> listaPDIs = new ArrayList<>();
         try (Connection conn = new ConnectionFactory().getConnection();
@@ -152,7 +178,7 @@ public class DashboardDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     PDIDashItem item = new PDIDashItem(
-                            rs.getInt("id_pdi"), // <-- ATUALIZADO
+                            rs.getInt("id_pdi"),
                             rs.getInt("id_usuario"),
                             rs.getString("colaborador"),
                             rs.getString("objetivo"),

@@ -121,4 +121,18 @@ public class HomeGUIControllerHelper {
         // Por enquanto, retorna vazio para indicar que não há detalhe global.
         return Collections.emptyMap();
     }
+
+    /**
+     * NOVO MÉTODO: Retorna a contagem de PDIs agrupados por Área para o gráfico de barras.
+     * Retorna a contagem global do sistema para RH/Gestor Geral.
+     */
+    public Map<String, Integer> getContagemPdiPorArea(Usuario usuario) {
+        // Por enquanto, só buscamos dados globais (que é o que RH/Gestor Geral precisam)
+        if ("RH".equalsIgnoreCase(usuario.getTipoAcesso()) || "GESTORGERAL".equalsIgnoreCase(usuario.getTipoAcesso())) {
+            return dao.contarPDIsPorArea();
+        }
+
+        // Retorna vazio para usuários restritos (futuramente, implementar a contagem restrita)
+        return Collections.emptyMap();
+    }
 }
