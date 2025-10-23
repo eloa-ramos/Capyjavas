@@ -39,68 +39,67 @@
     <center>
         <HBox styleClass="main-content-container" spacing="0" fillHeight="true">
 
-            <VBox fx:id="sidebarFiltros" styleClass="sidebar-filtro"
-                  minWidth="240" prefWidth="280" maxWidth="350">
-                <padding>
-                    <Insets top="20" right="15" bottom="20" left="15"/>
-                </padding>
-                <spacing>20</spacing>
+            <ScrollPane fitToWidth="true" HBox.hgrow="NEVER" styleClass="sidebar-scroll-pane"
+                        minWidth="240" prefWidth="280" maxWidth="350">
+                <content>
+                    <VBox fx:id="sidebarFiltros" styleClass="sidebar-filtro"
+                          prefWidth="280">
+                        <padding>
+                            <Insets top="20" right="15" bottom="20" left="15"/>
+                        </padding>
+                        <spacing>20</spacing>
 
-                <ImageView fx:id="logoSidebar" fitHeight="60.0" preserveRatio="true">
-                    <VBox.margin>
-                        <Insets bottom="10" />
-                    </VBox.margin>
-                </ImageView>
-                <Region prefHeight="1.0" minHeight="1.0" style="-fx-background-color: #f0f0f0;" />
-                <Region prefHeight="5.0" minHeight="5.0" />
+                        <ImageView fx:id="logoSidebar" fitHeight="60.0" preserveRatio="true">
+                            <VBox.margin>
+                                <Insets bottom="10" />
+                            </VBox.margin>
+                        </ImageView>
+                        <Region prefHeight="1.0" minHeight="1.0" style="-fx-background-color: #f0f0f0;" />
+                        <Region prefHeight="5.0" minHeight="5.0" />
 
-                <TextField fx:id="campoBusca" promptText="Buscar por PDI, colaborador..." styleClass="text-field-search"/>
+                        <TextField fx:id="campoBusca" promptText="Buscar por PDI, colaborador..." styleClass="text-field-search"/>
 
-                <VBox styleClass="filtro-group" spacing="10">
-                    <Label text="Status" styleClass="filtro-title"/>
-                    <VBox fx:id="checkboxContainerStatus" spacing="5">
+                        <VBox styleClass="filtro-group" spacing="10">
+                            <Label text="Status" styleClass="filtro-title"/>
+                            <VBox fx:id="checkboxContainerStatus" spacing="5">
+                            </VBox>
+                        </VBox>
+
+                        <VBox styleClass="filtro-group" spacing="10">
+                            <Label text="Área" styleClass="filtro-title"/>
+                            <VBox fx:id="checkboxContainerArea" spacing="5">
+                            </VBox>
+                        </VBox>
+
+                        <Button fx:id="btnCadastroPdi"
+                                text="Cadastrar Novo PDI"
+                                onAction="#abrirCadastroPdi"
+                                visible="false" managed="false" prefWidth="250"
+                                styleClass="button">
+                        </Button>
+
+                        <Button fx:id="btnCadastroUsuario"
+                                text="Cadastrar Usuário"
+                                onAction="#abrirCadastroUsuario"
+                                visible="false"  managed="false"  prefWidth="250"
+                                styleClass="button">
+                        </Button>
+
+                        <Button fx:id="btnAtualizarPdi"
+                                text="Recarregar Dados"
+                                onAction="#recarregarPdis"
+                                prefWidth="250"
+                                styleClass="button-sidebar-action"/>
+
+                        <Button fx:id="btnSair"
+                                text="Sair da Conta"
+                                onAction="#handleLogout"
+                                prefWidth="250"
+                                styleClass="button-sidebar-logout"/>
+
                     </VBox>
-                </VBox>
-
-                <VBox styleClass="filtro-group" spacing="10">
-                    <Label text="Área" styleClass="filtro-title"/>
-                    <VBox fx:id="checkboxContainerArea" spacing="5">
-                    </VBox>
-                </VBox>
-
-                <Region VBox.vgrow="ALWAYS"/>
-
-                <Button fx:id="btnCadastroPdi"
-                        text="Cadastrar Novo PDI"
-                        onAction="#abrirCadastroPdi"
-                        visible="false" managed="false" prefWidth="250"
-                        styleClass="button">
-                </Button>
-
-                <Button fx:id="btnCadastroUsuario"
-                        text="Cadastrar Usuário"
-                        onAction="#abrirCadastroUsuario"
-                        visible="false"  managed="false"  prefWidth="250"
-                        styleClass="button">
-                    <VBox.margin>
-                        <Insets top="10"/>
-                    </VBox.margin>
-                </Button>
-
-                <Button fx:id="btnAtualizarPdi"
-                        text="Recarregar Dados"
-                        onAction="#recarregarPdis"
-                        prefWidth="250"
-                        styleClass="button-sidebar-action"/>
-
-                <Button fx:id="btnSair"
-                        text="Sair da Conta"
-                        onAction="#handleLogout"
-                        prefWidth="250"
-                        styleClass="button-sidebar-logout"/>
-
-            </VBox>
-
+                </content>
+            </ScrollPane>
             <VBox styleClass="center-content-area" alignment="TOP_CENTER" spacing="25" fillWidth="true" HBox.hgrow="ALWAYS">
                 <padding>
                     <Insets top="20" right="30" bottom="30" left="30"/>
