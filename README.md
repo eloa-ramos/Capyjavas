@@ -64,7 +64,7 @@ A solução proposta para a **Youtan** foi criarmos uma ferramenta que permita a
 ## 📅 Cronograma de Sprints <a id="sprint"></a>
 
 | Sprint          |    Período    | Documentação                                     |
-| --------------- | :-----------: | ------------------------------------------------ |
+| --------------- | :-----------: | :------------------------------------------------: |
 | 🔖 **SPRINT 1** | 08/09 - 28/09 | [Sprint 1](sprints/sprint1.md) |
 | 🔖 **SPRINT 2** | 06/10 - 26/10 | [Sprint 2](sprints/sprint2.md) |
 | 🔖 **SPRINT 3** | 03/11 - 23/11 | [Sprint 3](sprints/sprint3.md) |
