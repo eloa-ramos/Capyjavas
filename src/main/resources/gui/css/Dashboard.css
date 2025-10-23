@@ -64,14 +64,12 @@
 /* ==================================
    BARRA LATERAL DE FILTROS (SIDEBAR)
    ================================= */
+/* CORREÇÃO CSS: .sidebar-filtro agora é o VBox dentro do ScrollPane. */
 .sidebar-filtro {
     -fx-background-color: #fefefe; /* Fundo branco para sidebar */
     -fx-padding: 20 15 20 15;
     -fx-spacing: 25;
-    /* Linha sutil de separação */
-    -fx-border-color: #eeeeee;
-    -fx-border-width: 0 1 0 0;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.03), 10, 0, 0, 0);
+    /* Propriedades de borda/sombra removidas pois subiram para .sidebar-scroll-pane */
 }
 
 .filtro-title {
@@ -107,12 +105,16 @@
     -fx-background-radius: 3;
 }
 
-/* * NOVO ESTILO: Para o ScrollPane dos filtros no sidebar
+/* * CORREÇÃO CSS: Aplica a borda de separação e a sombra ao ScrollPane.
  */
 .sidebar-scroll-pane {
     -fx-background-color: transparent;
     -fx-border-width: 0;
     -fx-padding: 0;
+    /* Linha sutil de separação e sombra */
+    -fx-border-color: #eeeeee;
+    -fx-border-width: 0 1 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.03), 10, 0, 0, 0);
 }
 .sidebar-scroll-pane > .viewport {
     -fx-background-color: transparent;
@@ -225,21 +227,28 @@
 /* =========================
    ScrollPane para a área de Cards
    ========================= */
-.card-scroll-pane {
+.card-scroll-pane, .sidebar-scroll-pane { /* Adicionado .sidebar-scroll-pane aqui */
     -fx-background-color: transparent; /* Permite que o fundo do FlowPane/VBox apareça */
     -fx-border-width: 0;
 }
 
-/* Estilo para a barra de rolagem (modernização) */
 .card-scroll-pane .scroll-bar:vertical .increment-button,
 .card-scroll-pane .scroll-bar:vertical .decrement-button,
 .card-scroll-pane .scroll-bar:horizontal .increment-button,
-.card-scroll-pane .scroll-bar:horizontal .decrement-button {
+.card-scroll-pane .scroll-bar:horizontal .decrement-button,
+.sidebar-scroll-pane .scroll-bar:vertical .increment-button,
+.sidebar-scroll-pane .scroll-bar:vertical .decrement-button,
+.sidebar-scroll-pane .scroll-bar:horizontal .increment-button,
+.sidebar-scroll-pane .scroll-bar:horizontal .decrement-button
+{
     -fx-padding: 0;
 }
 
 .card-scroll-pane .scroll-bar:vertical .thumb,
-.card-scroll-pane .scroll-bar:horizontal .thumb {
+.card-scroll-pane .scroll-bar:horizontal .thumb,
+.sidebar-scroll-pane .scroll-bar:vertical .thumb,
+.sidebar-scroll-pane .scroll-bar:horizontal .thumb
+{
     -fx-background-color: rgba(69, 158, 181, 0.5); /* Azul primário semi-transparente */
     -fx-background-insets: 0;
     -fx-background-radius: 5;

@@ -92,8 +92,6 @@ public class HomeGUIController implements javafx.fxml.Initializable {
 
         Map<String, Integer> detalhes = helper.getDetalhesStatus(usuarioLogado);
         preencherDetalhes(detalhes);
-
-        // NOVO: Preenche os gráficos
         popularGraficos(detalhes);
     }
 
@@ -113,17 +111,12 @@ public class HomeGUIController implements javafx.fxml.Initializable {
         }
     }
 
-    // NOVO MÉTODO CENTRAL PARA GRÁFICOS
     private void popularGraficos(Map<String, Integer> detalhesStatus) {
         popularGraficoStatus(detalhesStatus);
 
         Map<String, Integer> contagemPorArea = helper.getContagemPdiPorArea(usuarioLogado);
         popularGraficoArea(contagemPorArea);
     }
-
-    /**
-     * Preenche o PieChart com a contagem de PDIs por Status.
-     */
     private void popularGraficoStatus(Map<String, Integer> detalhesStatus) {
         if (chartStatus == null) return;
 

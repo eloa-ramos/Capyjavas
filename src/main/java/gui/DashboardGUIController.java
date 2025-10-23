@@ -203,8 +203,7 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
         List<PDIDashItem> dados = helper.carregarDados(usuarioLogado);
         listaObservable.setAll(dados);
         setupCheckboxes(dados);
-        aplicarFiltros(); // Aplica filtros após carregar e configurar checkboxes
-        // A ordenação já é aplicada automaticamente pela SortedList ao definir o comparador
+        aplicarFiltros(); // Aplica filtros e agora garante que os cards sejam exibidos
     }
 
     @FXML
@@ -244,9 +243,8 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
             return buscaMatch && statusMatch && areaMatch;
         });
 
-        // Não precisa chamar exibirCards aqui, pois a SortedList atualiza automaticamente
-        // Mas se a atualização não estiver ocorrendo visualmente, descomente a linha abaixo
-        // exibirCards(sortedData);
+        // CORREÇÃO FUNCIONAL: Força a atualização da interface gráfica
+        exibirCards(sortedData);
     }
 
     // Método auxiliar para pegar textos dos checkboxes selecionados
@@ -294,7 +292,6 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
 
         sortedData.setComparator(comparator);
         // A interface gráfica (cardsContainer) deve ser atualizada para refletir a nova ordem.
-        // A SortedList notifica listeners, mas o FlowPane não se atualiza automaticamente.
         exibirCards(sortedData); // Força a reexibição dos cards na ordem correta
     }
 
