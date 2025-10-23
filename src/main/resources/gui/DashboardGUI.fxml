@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
@@ -32,7 +39,8 @@
     <center>
         <HBox styleClass="main-content-container" spacing="0" fillHeight="true">
 
-            <VBox fx:id="sidebarFiltros" styleClass="sidebar-filtro" prefWidth="280">
+            <VBox fx:id="sidebarFiltros" styleClass="sidebar-filtro"
+                  minWidth="240" prefWidth="280" maxWidth="350">
                 <padding>
                     <Insets top="20" right="15" bottom="20" left="15"/>
                 </padding>
@@ -65,10 +73,18 @@
                 <Button fx:id="btnCadastroPdi"
                         text="Cadastrar Novo PDI"
                         onAction="#abrirCadastroPdi"
-                        visible="false"
-                        managed="false"
-                        prefWidth="250"
+                        visible="false" managed="false" prefWidth="250"
                         styleClass="button">
+                </Button>
+
+                <Button fx:id="btnCadastroUsuario"
+                        text="Cadastrar Usuário"
+                        onAction="#abrirCadastroUsuario"
+                        visible="false"  managed="false"  prefWidth="250"
+                        styleClass="button">
+                    <VBox.margin>
+                        <Insets top="10"/>
+                    </VBox.margin>
                 </Button>
 
                 <Button fx:id="btnAtualizarPdi"
@@ -106,8 +122,7 @@
                 <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="card-scroll-pane">
                     <content>
                         <FlowPane fx:id="cardsContainer"
-                                  hgap="20"
-                                  vgap="20"
+                                  hgap="20" vgap="20"
                                   alignment="TOP_LEFT">
                             <padding>
                                 <Insets top="10" right="10" bottom="10" left="10"/>

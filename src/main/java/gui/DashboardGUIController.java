@@ -10,21 +10,19 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene; // Make sure Scene is imported
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.CheckBox;
 import javafx.scene.shape.SVGPath;
+import javafx.stage.Modality; // Make sure Modality is imported
 import javafx.stage.Stage;
-import javafx.scene.Scene;
 import modelo.PDI;
 import modelo.PDIDashItem;
 import modelo.Usuario;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,19 +35,22 @@ import java.util.stream.Collectors;
 public class DashboardGUIController implements javafx.fxml.Initializable {
 
     // Contêineres e Componentes Principais
-    @FXML private BorderPane rootPane; // Contêiner raiz para manipulação de tela
-    @FXML private FlowPane cardsContainer; // Contêiner para os cards de PDI
+    @FXML private BorderPane rootPane;
+    @FXML private FlowPane cardsContainer;
 
     // --- ELEMENTOS DO MENU DE NAVEGAÇÃO SUPERIOR ---
     @FXML private Button btnHome;
-    @FXML private Button btnPDIs; // Este é o botão da tela atual
-    @FXML private Label lblBemVindo; // Rótulo de boas-vindas
+    @FXML private Button btnPDIs;
+    @FXML private Label lblBemVindo;
 
     // --- ELEMENTOS DA SIDEBAR ---
     @FXML private ImageView logoSidebar;
     @FXML private TextField campoBusca;
-    @FXML private Button btnCadastroPdi;
+    @FXML private Button btnCadastroPdi; // Botão existente para Cadastrar PDI
     @FXML private Button btnSair; // Botão de Logout
+
+    // --- NOVO BOTÃO ---
+    @FXML private Button btnCadastroUsuario; // Botão para Cadastrar Usuário
 
     // Sidebar e Containers de Checkbox
     @FXML private VBox checkboxContainerStatus;
@@ -65,10 +66,9 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
     private FilteredList<PDIDashItem> filteredData;
     private SortedList<PDIDashItem> sortedData;
 
-    private boolean isAscending = false; // Estado inicial: Descendente (mais futuro primeiro)
+    private boolean isAscending = false; // Estado inicial: Descendente
 
     private Usuario usuarioLogado;
-    // O DAO pode ser usado diretamente, mas o Helper é a camada de negócios
     private final DashboardDAO dao = new DashboardDAO();
     private final DashboardGUIControllerHelper helper = new DashboardGUIControllerHelper();
 
@@ -77,12 +77,9 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
         // Carregar logo YouTan
         try {
             Image img = new Image(getClass().getResourceAsStream("/gui/images/logo_youtan_transparente.png"));
-
-            // Carrega na referência da sidebar
             if (logoSidebar != null) {
                 logoSidebar.setImage(img);
             }
-            // Remove a verificação de logoImage, que estava duplicada e não está no FXML.
         } catch (Exception e) {
             System.err.println("Logo não encontrada: " + e.getMessage());
         }
@@ -92,7 +89,7 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
         filteredData = new FilteredList<>(listaObservable, p -> true);
         sortedData = new SortedList<>(filteredData);
 
-        // Configura os listeners de UI (Foco, Busca, Ordenação)
+        // Configura os listeners de UI
         setupFocusListener();
         setupSortingControls();
         setupFilteringListeners();
@@ -102,31 +99,33 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
         this.usuarioLogado = usuario;
 
         if (usuario != null) {
-            // Ajuste para preencher o Label de Boas-Vindas no menu superior
+            // Preenche o Label de Boas-Vindas
             if (lblBemVindo != null) {
-                // Exibe apenas o primeiro nome
                 lblBemVindo.setText("Olá, " + usuario.getNome().split(" ")[0] + "!");
             }
 
-            // CORREÇÃO CRÍTICA: setVisible e setManaged controlam o espaço do botão na sidebar.
+            // Verifica se é RH para mostrar os botões corretos
+            boolean isRh = "RH".equalsIgnoreCase(usuario.getTipoAcesso());
+
+            // Visibilidade do botão de cadastrar PDI
             if (btnCadastroPdi != null) {
-                boolean isRh = "RH".equalsIgnoreCase(usuario.getTipoAcesso());
                 btnCadastroPdi.setVisible(isRh);
                 btnCadastroPdi.setManaged(isRh);
             }
+
+            // --- CONTROLE DE VISIBILIDADE DO BOTÃO Cadastrar Usuário ---
+            if (btnCadastroUsuario != null) {
+                btnCadastroUsuario.setVisible(isRh); // Visível apenas para RH
+                btnCadastroUsuario.setManaged(isRh); // Ocupa espaço apenas se visível
+            }
+            // --------------------------------------------------------
         }
 
-        carregarDados();
+        carregarDados(); // Carrega os dados após configurar o usuário
     }
 
-
     private void setupFocusListener() {
-        // Remove o foco ao clicar no painel principal
-        rootPane.setOnMouseClicked(event -> {
-            rootPane.requestFocus();
-        });
-
-        // Remove o foco do campo de busca ao sair
+        rootPane.setOnMouseClicked(event -> rootPane.requestFocus());
         campoBusca.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (oldVal && !newVal) {
                 rootPane.requestFocus();
@@ -137,27 +136,19 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
     private void setupSortingControls() {
         comboOrdenacao.getItems().addAll("Prazo (Padrão)", "Objetivo", "Colaborador", "Status");
         comboOrdenacao.setValue("Prazo (Padrão)");
+        comboOrdenacao.valueProperty().addListener((obs, oldVal, newVal) -> aplicarOrdenacao());
 
-        comboOrdenacao.valueProperty().addListener((obs, oldVal, newVal) -> {
-            aplicarOrdenacao();
-        });
-
-        // Define a rotação inicial do ícone para 0 (Descendente)
         if (iconSetaOrdem != null) {
-            iconSetaOrdem.setRotate(0);
+            iconSetaOrdem.setRotate(0); // Padrão descendente
         }
-
         btnInverterOrdem.getStyleClass().add("descendente");
-
-        aplicarOrdenacao();
+        aplicarOrdenacao(); // Aplica ordenação inicial
     }
 
     @FXML
     private void inverterOrdem(ActionEvent event) {
         isAscending = !isAscending;
-
         if (iconSetaOrdem != null) {
-            // Lógica para girar o ícone visualmente
             if (isAscending) {
                 iconSetaOrdem.setRotate(180);
                 btnInverterOrdem.getStyleClass().remove("descendente");
@@ -168,23 +159,21 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
                 btnInverterOrdem.getStyleClass().add("descendente");
             }
         }
-
         aplicarOrdenacao();
     }
 
-
     private void setupFilteringListeners() {
-        campoBusca.textProperty().addListener((observable, oldValue, newValue) -> {
-            aplicarFiltros();
-        });
+        campoBusca.textProperty().addListener((observable, oldValue, newValue) -> aplicarFiltros());
     }
 
     private void setupCheckboxes(List<PDIDashItem> dados) {
-        // --- 1. FILTRO DE STATUS ---
+        // --- Filtro de Status ---
         checkboxContainerStatus.getChildren().clear();
         Set<String> statusUnicos = dados.stream()
                 .map(PDIDashItem::getStatus)
+                .filter(s -> s != null && !s.isBlank()) // Evita status nulos ou vazios
                 .distinct()
+                .sorted() // Ordena alfabeticamente
                 .collect(Collectors.toSet());
 
         for (String status : statusUnicos) {
@@ -193,12 +182,13 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
             checkboxContainerStatus.getChildren().add(cb);
         }
 
-        // --- 2. FILTRO DE ÁREA ---
+        // --- Filtro de Área ---
         checkboxContainerArea.getChildren().clear();
         Set<String> areasUnicas = dados.stream()
                 .map(PDIDashItem::getArea)
-                .distinct()
                 .filter(area -> area != null && !area.isEmpty())
+                .distinct()
+                .sorted() // Ordena alfabeticamente
                 .collect(Collectors.toSet());
 
         for (String area : areasUnicas) {
@@ -208,91 +198,65 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
         }
     }
 
-    /**
-     * Busca os dados atualizados do banco/serviço e reinicia a ObservableList.
-     * Utiliza o Helper para obter a lista correta baseado no acesso do usuário.
-     */
     private void carregarDados() {
         if (usuarioLogado == null) return;
-
-        // 1. BUSCA E ATUALIZA A LISTA BASE usando o Helper
         List<PDIDashItem> dados = helper.carregarDados(usuarioLogado);
         listaObservable.setAll(dados);
-
-        // 2. RECRIA E CONFIGURA AS CHECKBOXES
         setupCheckboxes(dados);
-
-        // 3. APLICA FILTROS E ORDENAÇÃO
-        aplicarFiltros();
+        aplicarFiltros(); // Aplica filtros após carregar e configurar checkboxes
+        // A ordenação já é aplicada automaticamente pela SortedList ao definir o comparador
     }
 
     @FXML
     public void recarregarPdis(ActionEvent event) {
-        // Limpa os filtros de UI (busca e checkboxes)
         campoBusca.setText("");
-
-        checkboxContainerStatus.getChildren().stream()
-                .filter(node -> node instanceof CheckBox)
-                .map(node -> (CheckBox) node)
-                .forEach(cb -> cb.setSelected(false));
-
-        checkboxContainerArea.getChildren().stream()
-                .filter(node -> node instanceof CheckBox)
-                .map(node -> (CheckBox) node)
-                .forEach(cb -> cb.setSelected(false));
-
-        // Recarrega os dados do banco de dados/serviço
-        carregarDados();
+        clearCheckboxes(checkboxContainerStatus);
+        clearCheckboxes(checkboxContainerArea);
+        carregarDados(); // Recarrega do DAO e aplica filtros/ordenação
     }
 
+    // Método auxiliar para limpar checkboxes
+    private void clearCheckboxes(VBox container) {
+        container.getChildren().stream()
+                .filter(node -> node instanceof CheckBox)
+                .map(node -> (CheckBox) node)
+                .forEach(cb -> cb.setSelected(false));
+    }
+
+
     private void aplicarFiltros() {
-        // 1. Coleta os valores selecionados nas Checkboxes
-        Set<String> statusSelecionados = checkboxContainerStatus.getChildren().stream()
-                .filter(node -> node instanceof CheckBox)
-                .map(node -> (CheckBox) node)
-                .filter(CheckBox::isSelected)
-                .map(CheckBox::getText)
-                .collect(Collectors.toSet());
+        Set<String> statusSelecionados = getSelectedCheckboxTexts(checkboxContainerStatus);
+        Set<String> areasSelecionadas = getSelectedCheckboxTexts(checkboxContainerArea);
+        String termoBusca = campoBusca.getText();
 
-        Set<String> areasSelecionadas = checkboxContainerArea.getChildren().stream()
-                .filter(node -> node instanceof CheckBox)
-                .map(node -> (CheckBox) node)
-                .filter(CheckBox::isSelected)
-                .map(CheckBox::getText)
-                .collect(Collectors.toSet());
-
-        // 2. Define o Predicate (regra de filtragem)
         filteredData.setPredicate(item -> {
-
-            // A. FILTRO DE BUSCA (Texto Livre)
-            String termoBusca = campoBusca.getText();
+            boolean buscaMatch = true;
             if (termoBusca != null && !termoBusca.trim().isEmpty()) {
                 String buscaLower = termoBusca.toLowerCase();
-
-                boolean termoMatch = item.getObjetivo().toLowerCase().contains(buscaLower) ||
+                buscaMatch = item.getObjetivo().toLowerCase().contains(buscaLower) ||
                         item.getColaborador().toLowerCase().contains(buscaLower) ||
                         (item.getArea() != null && item.getArea().toLowerCase().contains(buscaLower));
-
-                if (!termoMatch) return false;
             }
 
-            // B. FILTRO DE STATUS (Multi-seleção - Lógica OR)
-            // Se nenhum status foi selecionado, não filtra por status.
-            if (!statusSelecionados.isEmpty()) {
-                if (!statusSelecionados.contains(item.getStatus())) return false;
-            }
+            boolean statusMatch = statusSelecionados.isEmpty() || statusSelecionados.contains(item.getStatus());
+            boolean areaMatch = areasSelecionadas.isEmpty() || (item.getArea() != null && areasSelecionadas.contains(item.getArea()));
 
-            // C. FILTRO DE ÁREA (Multi-seleção - Lógica OR)
-            // Se nenhuma área foi selecionada, não filtra por área.
-            if (!areasSelecionadas.isEmpty()) {
-                if (item.getArea() == null || !areasSelecionadas.contains(item.getArea())) return false;
-            }
-
-            return true; // Passou em todos os filtros
+            return buscaMatch && statusMatch && areaMatch;
         });
 
-        // A SortedList é notificada automaticamente e precisamos garantir que a UI seja atualizada
-        exibirCards(sortedData);
+        // Não precisa chamar exibirCards aqui, pois a SortedList atualiza automaticamente
+        // Mas se a atualização não estiver ocorrendo visualmente, descomente a linha abaixo
+        // exibirCards(sortedData);
+    }
+
+    // Método auxiliar para pegar textos dos checkboxes selecionados
+    private Set<String> getSelectedCheckboxTexts(VBox container) {
+        return container.getChildren().stream()
+                .filter(node -> node instanceof CheckBox)
+                .map(node -> (CheckBox) node)
+                .filter(CheckBox::isSelected)
+                .map(CheckBox::getText)
+                .collect(Collectors.toSet());
     }
 
     private void aplicarOrdenacao() {
@@ -301,60 +265,71 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
 
         switch (criterio) {
             case "Objetivo":
-                comparator = Comparator.comparing(PDIDashItem::getObjetivo);
+                comparator = Comparator.comparing(PDIDashItem::getObjetivo, String.CASE_INSENSITIVE_ORDER);
                 break;
             case "Colaborador":
-                comparator = Comparator.comparing(PDIDashItem::getColaborador);
+                comparator = Comparator.comparing(PDIDashItem::getColaborador, String.CASE_INSENSITIVE_ORDER);
                 break;
             case "Status":
-                comparator = Comparator.comparing(PDIDashItem::getStatus);
+                comparator = Comparator.comparing(PDIDashItem::getStatus, String.CASE_INSENSITIVE_ORDER);
                 break;
             case "Prazo (Padrão)":
             default:
-                // Assume que getPrazo retorna uma string que pode ser comparada
-                comparator = Comparator.comparing(PDIDashItem::getPrazo);
+                // Tenta comparar como data, se falhar, compara como string
+                comparator = Comparator.comparing(PDIDashItem::getPrazo, Comparator.nullsLast(Comparator.comparing(p -> {
+                    try {
+                        // Assume formato dd/MM/yyyy - ajuste se for diferente
+                        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        return java.time.LocalDate.parse(p, formatter);
+                    } catch (Exception e) {
+                        return java.time.LocalDate.MAX; // Coloca datas inválidas no final
+                    }
+                })));
                 break;
         }
 
-        // Inverte o comparador se for Descendente
         if (!isAscending) {
             comparator = comparator.reversed();
         }
 
-        // Aplica o comparador na SortedList
         sortedData.setComparator(comparator);
-
-        // Atualiza a UI
-        exibirCards(sortedData);
+        // A interface gráfica (cardsContainer) deve ser atualizada para refletir a nova ordem.
+        // A SortedList notifica listeners, mas o FlowPane não se atualiza automaticamente.
+        exibirCards(sortedData); // Força a reexibição dos cards na ordem correta
     }
 
     private void exibirCards(List<PDIDashItem> itens) {
-        cardsContainer.getChildren().clear();
+        cardsContainer.getChildren().clear(); // Limpa os cards existentes
+
+        if (itens == null) return; // Segurança extra
 
         for (PDIDashItem item : itens) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/PdiCard.fxml"));
                 Parent cardNode = loader.load();
                 PdiCardController cardController = loader.getController();
+                // Passa o item, o usuário logado e a referência deste controller
                 cardController.setupCard(item, usuarioLogado, this);
-                cardsContainer.getChildren().add(cardNode);
-
+                cardsContainer.getChildren().add(cardNode); // Adiciona o novo card
             } catch (IOException e) {
                 System.err.println("Erro ao carregar PdiCard.fxml para o item: " + item.getObjetivo());
+                e.printStackTrace();
+            } catch (Exception e) {
+                System.err.println("Erro inesperado ao criar card para: " + item.getObjetivo());
                 e.printStackTrace();
             }
         }
     }
 
+
     public void abrirJanelaDeEdicao(PDIDashItem item) {
         try {
-            // Usa o DAO para buscar o objeto PDI completo
-            PDIDAO dao = new PDIDAO();
-            PDI pdiCompleto = dao.buscarPdiPorId(item.getIdPdi());
+            PDIDAO daoPdi = new PDIDAO(); // Usa PDIDAO
+            PDI pdiCompleto = daoPdi.buscarPdiPorId(item.getIdPdi());
 
             if (pdiCompleto == null) {
-                // Tratar o caso de não encontrar o PDI
                 System.err.println("PDI com ID " + item.getIdPdi() + " não encontrado.");
+                showAlert(Alert.AlertType.ERROR, "Erro", "Não foi possível encontrar os dados completos do PDI.");
                 return;
             }
 
@@ -362,98 +337,123 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
             Parent root = loader.load();
 
             EdicaoPdiController controller = loader.getController();
-            controller.carregarPdi(pdiCompleto, item, this); // Envia o PDI e a referência do dashboard
+            controller.carregarPdi(pdiCompleto, item, this);
 
             Stage stage = new Stage();
             stage.setTitle("Editar PDI - " + item.getColaborador());
             stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela principal
-            stage.showAndWait(); // Espera a janela fechar
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
 
         } catch (IOException e) {
+            System.err.println("Erro ao carregar EdicaoPdiGUI.fxml: " + e.getMessage());
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erro", "Não foi possível abrir a tela de edição.");
+        } catch (Exception e) {
+            System.err.println("Erro inesperado ao abrir edição: " + e.getMessage());
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erro", "Ocorreu um erro inesperado ao tentar editar o PDI.");
         }
     }
 
-    /**
-     * NOVO MÉTODO PÚBLICO: Para que a janela de edição possa pedir a atualização do dashboard
-     */
     public void atualizarDashboard() {
-        carregarDados();
+        carregarDados(); // Simplesmente recarrega os dados
     }
 
-    // Este FXML Action agora se aplica ao botão dentro da Sidebar
+    // Ação do botão "Cadastrar Novo PDI"
     @FXML
     private void abrirCadastroPdi() {
         if (usuarioLogado != null && "RH".equalsIgnoreCase(usuarioLogado.getTipoAcesso())) {
-            // Assumindo que CadastroPdiWindow e Usuario existem
             CadastroPdiWindow cadastro = new CadastroPdiWindow(usuarioLogado);
-            cadastro.show();
+            cadastro.show(); // Este método cuida de criar e mostrar a janela
+        } else {
+            showAlert(Alert.AlertType.WARNING, "Acesso Negado", "Apenas usuários RH podem cadastrar PDIs.");
         }
     }
 
-    // --- MÉTODOS DE NAVEGAÇÃO SUPERIOR ---
+    // --- NOVO MÉTODO PARA ABRIR CADASTRO DE USUÁRIO ---
+    @FXML
+    private void abrirCadastroUsuario() {
+        // Verifica se o usuário logado é RH antes de abrir
+        if (usuarioLogado != null && "RH".equalsIgnoreCase(usuarioLogado.getTipoAcesso())) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/UsuarioGUI.fxml"));
+                Parent root = loader.load();
 
-    /**
-     * Implementa a navegação para a tela Home.
-     */
+                // Se UsuarioGUIController precisar de algo, configure aqui
+                // UsuarioGUIController controller = loader.getController();
+                // controller.setAlgo(...);
+
+                Stage stage = new Stage();
+                stage.setTitle("Cadastrar Novo Usuário");
+                stage.setScene(new Scene(root));
+                stage.initModality(Modality.APPLICATION_MODAL); // Bloqueia a janela do dashboard
+                // Pode ser útil definir um tamanho mínimo/máximo se o FXML não for responsivo
+                // stage.setMinWidth(600);
+                // stage.setMinHeight(500);
+                stage.showAndWait(); // Mostra e espera fechar
+
+                // Opcional: Recarregar dados se o cadastro de usuário afetar algo no dashboard
+                // carregarDados();
+
+            } catch (IOException e) {
+                System.err.println("Erro ao carregar UsuarioGUI.fxml: " + e.getMessage());
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erro de Interface", "Não foi possível abrir a tela de cadastro de usuário.");
+            }
+        } else {
+            // Caso não seja RH (segurança extra)
+            showAlert(Alert.AlertType.WARNING, "Acesso Negado", "Apenas usuários RH podem cadastrar novos usuários.");
+        }
+    }
+    // -----------------------------------------------------
+
+
+    // --- MÉTODOS DE NAVEGAÇÃO SUPERIOR ---
     @FXML
     private void handleNavigateToHome() {
-        // Fecha a Stage atual
-        Stage currentStage = (Stage) rootPane.getScene().getWindow();
-        currentStage.close();
-
-        // Reabre a Stage para a Home (usando o fluxo do Controller)
         try {
+            Stage currentStage = (Stage) rootPane.getScene().getWindow();
+            currentStage.close(); // Fecha o dashboard atual
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/HomeGUI.fxml"));
             Parent root = loader.load();
-
             HomeGUIController controller = loader.getController();
-            controller.setUsuario(usuarioLogado); // Passa o usuário logado
+            controller.setUsuario(usuarioLogado);
 
             Stage homeStage = new Stage();
             homeStage.setTitle("YouTan - Home");
-            homeStage.setScene(new javafx.scene.Scene(root));
-            homeStage.setMaximized(true);
+            homeStage.setScene(new Scene(root));
+            homeStage.setMaximized(true); // Maximiza a nova tela
             homeStage.show();
-
         } catch (IOException e) {
             System.err.println("Erro ao carregar HomeGUI.fxml: " + e.getMessage());
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erro de Navegação", "Não foi possível carregar a tela Home.");
         }
     }
 
-    /**
-     * Permanece no Dashboard (PDIs Ativos).
-     */
     @FXML
     private void handleNavigateToPDIs() {
-        // Já estamos no Dashboard, podemos apenas recarregar os dados se necessário
+        // Já está na tela correta, talvez recarregar?
         recarregarPdis(null);
     }
 
-    /**
-     * Fecha o Dashboard e retorna para a tela de Login, garantindo o CSS e a maximização.
-     */
     @FXML
     private void handleLogout() {
         try {
-            // 1. Fecha a janela atual (Dashboard)
-            Stage dashStage = (Stage) btnSair.getScene().getWindow();
-            dashStage.close();
+            Stage currentStage = (Stage) btnSair.getScene().getWindow();
+            currentStage.close(); // Fecha o dashboard
 
-            // 2. Carrega a tela de Login novamente (assumindo LoginGUI.fxml existe)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/LoginGUI.fxml"));
             Parent root = loader.load();
 
-            // Reabre a Stage com a tela de Login
             Stage loginStage = new Stage();
             loginStage.setTitle("YouTan - Login");
-            // Maximiza
             loginStage.setMaximized(true);
             Scene loginScene = new Scene(root);
 
-            // REAPLICAÇÃO DO CSS
+            // Reaplica CSSs da tela de login
             loginScene.getStylesheets().add(getClass().getResource("/gui/css/style.css").toExternalForm());
             loginScene.getStylesheets().add(getClass().getResource("/gui/css/Login.css").toExternalForm());
 
@@ -463,6 +463,16 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
         } catch (IOException e) {
             System.err.println("Erro ao carregar a tela de Login: " + e.getMessage());
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erro ao Sair", "Não foi possível retornar à tela de login.");
         }
+    }
+
+    // Método auxiliar para mostrar alertas
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null); // Sem cabeçalho
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

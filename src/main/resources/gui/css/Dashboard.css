@@ -107,6 +107,21 @@
     -fx-background-radius: 3;
 }
 
+/* * NOVO ESTILO: Para o ScrollPane dos filtros no sidebar
+ */
+.sidebar-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+.sidebar-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+.sidebar-scroll-content {
+    -fx-padding: 0 5 0 0; /* Adiciona um pequeno padding à direita para a barra de rolagem não colar */
+}
+
+
 /* Botão de Ação na Sidebar (Recarregar) */
 .button-sidebar-action {
     /* Herda o estilo .button base, mas com ajuste de sombra e raio */
@@ -254,8 +269,13 @@
     -fx-border-radius: 10;
     -fx-border-width: 1;
     -fx-padding: 20; /* Espaçamento interno */
-    -fx-min-width: 300px; /* Largura mínima para visualização */
-    -fx-pref-width: 320px; /* Largura padrão */
+
+    /* --- AJUSTE DE RESPONSIVIDADE --- */
+    -fx-min-width: 280px;  /* Reduzido: Permite encolher mais */
+    -fx-pref-width: 320px; /* Mantido: O FlowPane vai tentar usar este tamanho */
+    -fx-max-width: 360px;  /* Adicionado: Impede que o card estique demais */
+    /* ---------------------------------- */
+
     /* Sombra suave para efeito flutuante */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 10, 0.05, 0, 3);
     -fx-cursor: hand;
@@ -445,7 +465,13 @@
     -fx-border-radius: 12;
     -fx-background-radius: 12;
     -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3); /* Sombra mais visível */
+
+    /* --- AJUSTE DE RESPONSIVIDADE --- */
+    -fx-min-width: 200px;   /* Adicionado: Define o limite mínimo de compressão */
     -fx-pref-width: 220px;
+    -fx-max-width: 260px;   /* Adicionado: Permite um leve crescimento */
+    /* ---------------------------------- */
+
     -fx-min-height: 120px;
 }
 
@@ -458,7 +484,7 @@
 .kpi-value, .kpi-value-perc {
     -fx-font-size: 40px;
     -fx-font-weight: 700; /* Mais espesso */
-    -fx-text-fill: #459eb5; /* Cor primária */
+    -fx-text-fill: -primary-color; /* Cor primária */
 }
 
 /* ---------------------------------------------------------------------- */

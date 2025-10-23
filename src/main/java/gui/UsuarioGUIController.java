@@ -37,13 +37,22 @@ public class UsuarioGUIController {
             String observacoes = observacoesUsuario.getText().trim();
             String tipoAcesso = tipoUsuarioCombo.getValue();
             String email = emailUsuario.getText().trim();
-            String senha = senhaUsuario.getText().trim();
+            String senha = senhaUsuario.getText(); // Não use trim() em senhas cruas
+            java.time.LocalDate dataNascimento = dataNascimentoUsuario.getValue(); // Pega a data
+
             // Validação básica
             if (nome.isEmpty() || cpf.isEmpty() || cargo.isEmpty() || tipoAcesso == null || email.isEmpty() || senha.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING, "⚠️ Preencha todos os campos obrigatórios!");
-                alert.showAndWait();
+                showAlert(Alert.AlertType.WARNING, "⚠️ Preencha todos os campos obrigatórios!");
                 return;
             }
+
+            // ***** NOVA VALIDAÇÃO PARA DATA *****
+            if (dataNascimento == null) {
+                showAlert(Alert.AlertType.WARNING, "⚠️ Selecione a Data de Nascimento!");
+                return; // Impede o cadastro se a data for nula
+            }
+            // ************************************
+
 
             Usuario usuario = new Usuario();
             usuario.setNome(nome);
@@ -52,32 +61,44 @@ public class UsuarioGUIController {
             usuario.setExperiencia(experiencia);
             usuario.setObservacoes(observacoes);
             usuario.setTipoAcesso(tipoAcesso);
-            usuario.setDataNascimento(dataNascimentoUsuario.getValue());
+            usuario.setDataNascimento(dataNascimento); // Usa a variável local já validada
             usuario.setEmail(email);
-            usuario.setSenha(senha);
+            usuario.setSenha(senha); // Define a senha (sem trim)
 
             UsuarioDAO usuarioDAO = new UsuarioDAO();
             usuarioDAO.adiciona(usuario);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "✅ Usuário cadastrado com sucesso!");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.INFORMATION, "✅ Usuário cadastrado com sucesso!");
 
             // Limpa os campos
-            nomeUsuario.clear();
-            cpfUsuario.clear();
-            cargoUsuario.clear();
-            experienciaUsuario.clear();
-            observacoesUsuario.clear();
-            dataNascimentoUsuario.setValue(null);
-            tipoUsuarioCombo.setValue(null);
-            emailUsuario.clear();
-            senhaUsuario.clear();
+            clearForm(); // Chama o método para limpar
 
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Erro ao cadastrar: " + e.getMessage());
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Erro ao cadastrar: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    // Método auxiliar para limpar o formulário (Crie se não existir ou ajuste)
+    private void clearForm() {
+        nomeUsuario.clear();
+        cpfUsuario.clear();
+        cargoUsuario.clear();
+        experienciaUsuario.clear();
+        observacoesUsuario.clear();
+        dataNascimentoUsuario.setValue(null);
+        tipoUsuarioCombo.setValue(null);
+        emailUsuario.clear();
+        senhaUsuario.clear();
+    }
+
+    // Método auxiliar para mostrar alertas (Crie se não existir ou ajuste)
+    private void showAlert(Alert.AlertType type, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(type == Alert.AlertType.ERROR ? "Erro" : "Aviso");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
