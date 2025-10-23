@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.Date;
 
 public class UsuarioDAO {
     private Connection connection;
@@ -14,24 +15,39 @@ public class UsuarioDAO {
         this.connection = new ConnectionFactory().getConnection();
     }
 
-    public void adiciona(Usuario usuario) {
-        String sql = "INSERT INTO usuarios (nome, cpf, data_nascimento, cargo, experiencia, observacoes, tipo_acesso, email, senha) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void adiciona(Usuario usuario) throws SQLException {
+        // INCLUIDO id_area no SQL INSERT
+        String sql = "INSERT INTO Usuarios (email, senha, nome, cpf, data_nascimento, cargo, experiencia, observacoes, tipo_acesso, id_area) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, usuario.getNome());
-            stmt.setString(2, usuario.getCpf());
-            stmt.setDate(3, java.sql.Date.valueOf(usuario.getDataNascimento()));
-            stmt.setString(4, usuario.getCargo());
-            stmt.setString(5, usuario.getExperiencia());
-            stmt.setString(6, usuario.getObservacoes());
-            stmt.setString(7, usuario.getTipoAcesso());
-            stmt.setString(8, usuario.getEmail());
-            stmt.setString(9, usuario.getSenha());
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            // Mapeamento dos parâmetros
+            stmt.setString(1, usuario.getEmail());
+            stmt.setString(2, usuario.getSenha());
+            stmt.setString(3, usuario.getNome());
+            stmt.setString(4, usuario.getCpf());
+
+            // Tratamento para data nula (se dataNascimento for opcional)
+            if (usuario.getDataNascimento() != null) {
+                stmt.setDate(5, Date.valueOf(usuario.getDataNascimento()));
+            } else {
+                stmt.setNull(5, java.sql.Types.DATE);
+            }
+
+            stmt.setString(6, usuario.getCargo());
+            stmt.setString(7, usuario.getExperiencia());
+            stmt.setString(8, usuario.getObservacoes());
+            stmt.setString(9, usuario.getTipoAcesso());
+
+            // NOVO PARAMETRO: id_area
+            stmt.setInt(10, usuario.getIdArea());
 
             stmt.execute();
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.err.println("Erro ao adicionar usuário: " + e.getMessage());
+            throw e; // Lança a exceção para ser tratada no Controller
         }
     }
     public Usuario autenticar(String email, String senha) {

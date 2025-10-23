@@ -4,10 +4,13 @@ import java.time.LocalDate;
 
 public class Usuario {
 
-    // --- CAMPOS ADICIONADOS ---
+    // --- CAMPOS QUE TÊM COLUNA NO SQL ---
     private int id;
     private String email;
     private String senha;
+
+    // --- CHAVE ESTRANGEIRA DA ÁREA (NOVO) ---
+    private int idArea;
 
     // --- CAMPOS EXISTENTES ---
     private String nome;
@@ -18,32 +21,24 @@ public class Usuario {
     private LocalDate dataNascimento;
     private String tipoAcesso;
 
+    // Nota: id_gestor_de_area e id_gestor_geral omitidos para simplicidade do modelo.
+
 
     // --- GETTERS E SETTERS (MÉTODOS DE ACESSO) ---
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
+    // --- NOVO GETTER E SETTER PARA idArea ---
+    public int getIdArea() { return idArea; }
+    public void setIdArea(int idArea) { this.idArea = idArea; }
+    // ------------------------------------------
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
