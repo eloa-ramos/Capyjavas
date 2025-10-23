@@ -95,3 +95,21 @@ CREATE TABLE `Anexos` (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
+-- Dashboard de Atingimento Individual
+CREATE VIEW dashboard_gerente AS
+SELECT
+    u.id_usuario AS id_colaborador,
+    u.nome AS nome_colaborador,
+    u.id_gestor_de_area,
+    ROUND(AVG(m.percentual_atingido), 2) AS percentual_medio_atingido,
+    CASE
+        WHEN AVG(m.percentual_atingido) < 90 THEN 'Abaixo da meta'
+        WHEN AVG(m.percentual_atingido) BETWEEN 90 AND 100 THEN 'Dentro da meta'
+        ELSE 'Acima da meta'
+    END AS status
+FROM Usuarios u
+JOIN PDI p ON p.id_colaborador = u.id_usuario
+JOIN Metas m ON m.id_pdi = p.id_pdi
+GROUP BY u.id_usuario, u.nome, u.id_gestor_de_area;
+
+
