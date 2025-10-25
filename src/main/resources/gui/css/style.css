@@ -69,3 +69,52 @@
     -fx-border-color: #ccc;
     -fx-padding: 6 10 6 10;
 }
+/* =====================
+   ESTILOS ESPECÍFICOS PARA UsuarioGUI.fxml BOTÕES
+===================== */
+
+/* Estilo base para o botão Cadastrar (usando o ID do FXML) */
+#cadastrarUsuarioBtn {
+    -fx-background-color: #459eb5; /* Azul Youtan */
+    -fx-text-fill: white;
+    -fx-padding: 10 30;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-font-size: 14px; /* Tamanho da fonte opcional */
+}
+
+/* Efeito Hover para o botão Cadastrar */
+#cadastrarUsuarioBtn:hover {
+    -fx-background-color: #357a8f; /* Azul Youtan mais escuro */
+}
+
+/* Estilo base para o botão Cancelar/Sair (usando o ID do FXML) */
+#sairBtn {
+    -fx-background-color: #cccccc; /* Cinza claro */
+    -fx-text-fill: black;
+    -fx-padding: 10 30;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-font-size: 14px; /* Tamanho da fonte opcional */
+    -fx-font-weight: normal; /* Opcional: deixar normal, não bold */
+}
+
+/* Efeito Hover para o botão Cancelar/Sair */
+#sairBtn:hover {
+    -fx-background-color: #bbbbbb; /* Cinza um pouco mais escuro */
+}
+
+/* Opcional: Efeito Pressionado (para ambos os botões) */
+#cadastrarUsuarioBtn:pressed, #sairBtn:pressed {
+     -fx-scale-x: 0.98;
+     -fx-scale-y: 0.98;
+     -fx-effect: innershadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1); /* Sombra interna ao pressionar */
+}
+
+/* Opcional: Estilos adicionais para labels e inputs se necessário */
+/* .form-label { */
+/* -fx-font-size: 14px; */
+/* -fx-font-weight: bold; */
+/* -fx-text-fill: #555; */
+/* } */
