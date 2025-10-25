@@ -1,19 +1,20 @@
 package gui;
 
 import dao.UsuarioDAO;
-import dao.AreaDAO; // IMPORT NOVO
+import dao.AreaDAO;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import modelo.Usuario;
-import modelo.Area; // IMPORT NOVO
+import modelo.Area;
 
 import java.util.List;
+import javafx.stage.Stage; // Importação corrigida
 
 public class UsuarioGUIController {
 
-    @FXML private ComboBox<Area> areaCombo; // Tipo alterado para 'Area'
+    @FXML private ComboBox<Area> areaCombo;
 
     @FXML private TextField nomeUsuario;
     @FXML private TextField cpfUsuario;
@@ -27,16 +28,19 @@ public class UsuarioGUIController {
     @FXML private Button cadastrarUsuarioBtn;
     @FXML private Button sairBtn;
 
+    private AreaDAO areaDAO;
+
     @FXML
     public void initialize() {
         tipoUsuarioCombo.setPromptText("Selecione o tipo de acesso");
 
-        // NOVO: Inicializa a ComboBox de Áreas buscando do banco de dados
-        AreaDAO areaDAO = new AreaDAO();
+        this.areaDAO = new AreaDAO();
+        areaCombo.setEditable(true);
+
         try {
             List<Area> areas = areaDAO.listarTodas();
             areaCombo.getItems().addAll(areas);
-            areaCombo.setPromptText("Selecione a Área");
+            areaCombo.setPromptText("Selecione ou digite uma Área");
         } catch (Exception e) {
             System.err.println("Falha ao carregar áreas: " + e.getMessage());
             areaCombo.setPromptText("Erro ao carregar áreas");
@@ -47,10 +51,10 @@ public class UsuarioGUIController {
     @FXML
     void clickCadastrar(ActionEvent event) {
         try {
+            // --- Campos de Texto ---
             String nome = nomeUsuario.getText().trim();
             String cpf = cpfUsuario.getText().trim();
             String cargo = cargoUsuario.getText().trim();
-            Area areaSelecionada = areaCombo.getValue(); // Obtém o objeto Area
             String experiencia = experienciaUsuario.getText().trim();
             String observacoes = observacoesUsuario.getText().trim();
             String tipoAcesso = tipoUsuarioCombo.getValue();
@@ -58,22 +62,39 @@ public class UsuarioGUIController {
             String senha = senhaUsuario.getText();
             java.time.LocalDate dataNascimento = dataNascimentoUsuario.getValue();
 
+            // --- ================================== ---
+            // --- LÓGICA DE CORREÇÃO PARA O ERRO     ---
+            // --- ================================== ---
+
+            // 1. Não usamos mais areaCombo.getValue(), pois ele causa o erro.
+            //    Pegamos APENAS o texto que o usuário digitou ou selecionou.
+            String nomeAreaFinal = areaCombo.getEditor().getText().trim();
+
+            // --- FIM DA CORREÇÃO ---
+
             // Validação
-            if (nome.isEmpty() || cpf.isEmpty() || cargo.isEmpty() || tipoAcesso == null || email.isEmpty() || senha.isEmpty() || areaSelecionada == null) {
-                showAlert(Alert.AlertType.WARNING, "⚠️ Preencha todos os campos obrigatórios (incluindo a Área)!");
+            if (nome.isEmpty() || cpf.isEmpty() || cargo.isEmpty() || tipoAcesso == null || email.isEmpty() || senha.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "⚠️ Preencha todos os campos obrigatórios!");
                 return;
             }
-
+            // 2. Validamos o texto que pegamos
+            if (nomeAreaFinal.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "⚠️ A Área é obrigatória (selecione ou digite uma nova)!");
+                return;
+            }
             if (dataNascimento == null) {
                 showAlert(Alert.AlertType.WARNING, "⚠️ Selecione a Data de Nascimento!");
                 return;
             }
 
+            // 3. O DAO cuida de buscar ou criar a área com base no nome (String)
+            int idDaArea = this.areaDAO.buscarOuCriarArea(nomeAreaFinal);
+
             Usuario usuario = new Usuario();
             usuario.setNome(nome);
             usuario.setCpf(cpf);
             usuario.setCargo(cargo);
-            usuario.setIdArea(areaSelecionada.getIdArea()); // NOVO: Define a FK (id)
+            usuario.setIdArea(idDaArea);
             usuario.setExperiencia(experiencia);
             usuario.setObservacoes(observacoes);
             usuario.setTipoAcesso(tipoAcesso);
@@ -87,7 +108,12 @@ public class UsuarioGUIController {
             showAlert(Alert.AlertType.INFORMATION, "✅ Usuário cadastrado com sucesso!");
             clearForm();
 
+            // Opcional: recarregar a lista de áreas para incluir a nova
+            areaCombo.getItems().setAll(areaDAO.listarTodas());
+
+
         } catch (Exception e) {
+            // Se o erro for a ClassCastException, esta mensagem genérica o pegará
             showAlert(Alert.AlertType.ERROR, "Erro ao cadastrar: " + e.getMessage());
             e.printStackTrace();
         }
@@ -102,6 +128,7 @@ public class UsuarioGUIController {
         dataNascimentoUsuario.setValue(null);
         tipoUsuarioCombo.setValue(null);
         areaCombo.setValue(null);
+        areaCombo.getEditor().clear(); // Limpa o texto digitado
         emailUsuario.clear();
         senhaUsuario.clear();
     }
@@ -116,7 +143,8 @@ public class UsuarioGUIController {
 
     @FXML
     void clickSair(ActionEvent event) {
-        Platform.exit();
-        System.exit(0);
+        // Fecha apenas a janela atual
+        Stage stage = (Stage) sairBtn.getScene().getWindow();
+        stage.close();
     }
 }

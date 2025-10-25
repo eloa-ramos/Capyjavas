@@ -7,20 +7,44 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement; // <-- IMPORTANTE
 
 public class PDIDAO {
 
     public PDIDAO() {}
 
-    public void cadastrarPDI(PDI pdi) {
+    /**
+     * MODIFICADO: Agora retorna o ID do PDI cadastrado.
+     */
+    public int cadastrarPDI(PDI pdi) {
         String sql = "INSERT INTO PDI (id_colaborador, data_inicio, data_fim, observacoes) VALUES (?, ?, ?, ?)";
+
+        // Usamos Statement.RETURN_GENERATED_KEYS para pegar o ID
         try (Connection conn = new ConnectionFactory().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             stmt.setInt(1, pdi.getIdColaborador());
             stmt.setDate(2, java.sql.Date.valueOf(pdi.getDataInicio()));
             stmt.setDate(3, java.sql.Date.valueOf(pdi.getDataFim()));
             stmt.setString(4, pdi.getObservacoes());
-            stmt.executeUpdate();
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Cadastro do PDI falhou, nenhuma linha afetada.");
+            }
+
+            // --- ESTE BLOCO É A CORREÇÃO ---
+            // Recupera o ID gerado
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1); // Retorna o ID (ex: 4)
+                } else {
+                    throw new SQLException("Cadastro do PDI falhou, não foi possível obter o ID.");
+                }
+            }
+            // --- FIM DO BLOCO ---
+
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao cadastrar PDI: " + e.getMessage(), e);
         }

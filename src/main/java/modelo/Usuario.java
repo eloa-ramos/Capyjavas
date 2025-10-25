@@ -60,4 +60,12 @@ public class Usuario {
 
     public String getTipoAcesso() { return tipoAcesso; }
     public void setTipoAcesso(String tipoAcesso) { this.tipoAcesso = tipoAcesso; }
+
+    /**
+     * NOVO: Método toString() para exibir o nome do usuário no ComboBox.
+     */
+    @Override
+    public String toString() {
+        return getNome(); // Retorna o nome do usuário
+    }
 }

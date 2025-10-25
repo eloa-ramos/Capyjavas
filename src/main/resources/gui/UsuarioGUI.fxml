@@ -46,7 +46,7 @@
             <TextField fx:id="cargoUsuario" promptText="Ex: Desenvolvedor Jr" GridPane.rowIndex="2" GridPane.columnIndex="1" />
 
             <Label text="Área:" GridPane.rowIndex="2" GridPane.columnIndex="2" />
-            <ComboBox fx:id="areaCombo" promptText="Selecione a Área" GridPane.rowIndex="2" GridPane.columnIndex="3" maxWidth="Infinity" />
+            <ComboBox fx:id="areaCombo" promptText="Selecione ou digite uma Área" GridPane.rowIndex="2" GridPane.columnIndex="3" maxWidth="Infinity" editable="true" />
 
             <Label text="Email:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
             <TextField fx:id="emailUsuario" promptText="nome.sobrenome@empresa.com" GridPane.rowIndex="3" GridPane.columnIndex="1" />

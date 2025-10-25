@@ -1,18 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.control.TextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="gui.CadastroPdiController"
             prefWidth="800" prefHeight="600">
-   <VBox spacing="15" alignment="CENTER" layoutX="100" layoutY="50" prefWidth="600">
-      <Label text="Cadastrar PDI" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
 
-      <TextField fx:id="txtColaborador" promptText="Nome do colaborador"/>
-      <DatePicker fx:id="dateInicio" promptText="Data de início"/>
-      <DatePicker fx:id="dateFim" promptText="Data de término"/>
-      <TextArea fx:id="txtObservacoes" promptText="Observações" prefRowCount="4"/>
+    <VBox spacing="10" alignment="TOP_LEFT"
+          AnchorPane.topAnchor="50.0" AnchorPane.leftAnchor="200.0"
+          AnchorPane.rightAnchor="200.0" AnchorPane.bottomAnchor="50.0">
 
-      <Button fx:id="btnCadastrar" text="Cadastrar PDI" onAction="#cadastrarPdi"/>
-   </VBox>
+        <HBox alignment="CENTER" prefWidth="Infinity">
+            <ImageView fitWidth="200" preserveRatio="true">
+                <image>
+                    <Image url="@/gui/images/logo_youtan_transparente.png" />
+                </image>
+            </ImageView>
+        </HBox>
+
+        <Label text="Cadastro de PDI" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-padding: 0 0 20 0;"
+               maxWidth="Infinity" alignment="CENTER"/>
+
+        <Label text="Colaborador"/>
+        <ComboBox fx:id="cmbColaborador" promptText="Ex. João Silva" maxWidth="Infinity" editable="true"/>
+
+        <Label text="Data de Início"/>
+        <DatePicker fx:id="dateInicio" promptText="Selecione a data de início" maxWidth="Infinity"/>
+
+        <Label text="Data de Fim"/>
+        <DatePicker fx:id="dateFim" promptText="Selecione a data de término" maxWidth="Infinity"/>
+
+        <Label text="Objetivo (Skill):" />
+        <TextField fx:id="txtObjetivo" promptText="Digite o nome do objetivo (ex: Liderança)" maxWidth="Infinity" />
+
+        <Label text="Meta de Pontuação (Ex: 100):" />
+        <TextField fx:id="txtMetaPontuacao" promptText="100" maxWidth="Infinity" />
+
+        <Label text="Pontuação Inicial (Ex: 0):" />
+        <TextField fx:id="txtPontuacaoObtida" promptText="0" maxWidth="Infinity" />
+
+        <Label text="Observações"/>
+        <TextArea fx:id="txtObservacoes" promptText="Observações (opcional)" prefRowCount="4"/>
+
+        <Button fx:id="btnCadastrar" text="Cadastrar" onAction="#cadastrarPdi"
+                style="-fx-background-color: #00A9E0; -fx-text-fill: white; -fx-font-weight: bold;"
+                maxWidth="Infinity"/>
+
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+    </VBox>
 </AnchorPane>

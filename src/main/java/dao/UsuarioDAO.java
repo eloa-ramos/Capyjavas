@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Date;
+import java.util.ArrayList; // Importado
+import java.util.List;     // Importado
 
 public class UsuarioDAO {
     private Connection connection;
@@ -73,5 +75,33 @@ public class UsuarioDAO {
         }
 
         return null;
+    }
+
+    /**
+     * NOVO: Método para buscar usuários por nome (para autocomplete).
+     */
+    public List<Usuario> buscarPorNome(String nome) {
+        // Busca usuários cujo nome COMEÇA COM o texto digitado
+        String sql = "SELECT id_usuario, nome, email, tipo_acesso FROM usuarios WHERE nome LIKE ?";
+        List<Usuario> usuarios = new ArrayList<>();
+
+        // Usamos a conexão da instância (this.connection)
+        try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
+            stmt.setString(1, nome + "%"); // Adiciona o curinga '%'
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Usuario usuario = new Usuario();
+                    usuario.setId(rs.getInt("id_usuario"));
+                    usuario.setNome(rs.getString("nome"));
+                    usuario.setEmail(rs.getString("email"));
+                    usuario.setTipoAcesso(rs.getString("tipo_acesso"));
+                    usuarios.add(usuario);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar usuários por nome: " + e.getMessage(), e);
+        }
+        return usuarios;
     }
 }
