@@ -1,5 +1,6 @@
 -- DESTRÓI E CRIA O BANCO DE DADOS
 DROP DATABASE IF EXISTS db_pdi;
+
 CREATE DATABASE db_pdi;
 USE db_pdi;
 
@@ -250,3 +251,7 @@ FROM Usuarios U
 JOIN Areas A ON U.id_area = A.id_area
 LEFT JOIN PDI P ON U.id_usuario = P.id_colaborador
 ORDER BY U.id_usuario;
+
+ALTER TABLE Skills MODIFY COLUMN tipo_skill
+ENUM('Hard Skill', 'Soft Skill', 'A Definir') NOT NULL;
+
