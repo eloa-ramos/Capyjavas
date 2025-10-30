@@ -7,4 +7,4 @@
 |3|   Média   |Como **RH**, quero registrar objetivos dentro de um PDI para estruturar os planos de crescimento|   180min   |2|
 |4|  Média   |Como **RH**, quero adicionar metas e prazos dentro de cada objetivo do PDI para mensurar resultados|   180min   |2|
 
-[![](Youtan.png)](https://youtu.be/4AgPr7gfrjs)
+[<img src="Youtan.png" width="350px" heigth="300px"/>](https://youtu.be/4AgPr7gfrjs)
