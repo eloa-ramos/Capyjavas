@@ -7,8 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Date;
-import java.util.ArrayList; // Importado
-import java.util.List;     // Importado
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioDAO {
     private Connection connection;
@@ -18,19 +18,16 @@ public class UsuarioDAO {
     }
 
     public void adiciona(Usuario usuario) throws SQLException {
-        // INCLUIDO id_area no SQL INSERT
         String sql = "INSERT INTO Usuarios (email, senha, nome, cpf, data_nascimento, cargo, experiencia, observacoes, tipo_acesso, id_area) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = new ConnectionFactory().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            // Mapeamento dos parâmetros
             stmt.setString(1, usuario.getEmail());
             stmt.setString(2, usuario.getSenha());
             stmt.setString(3, usuario.getNome());
             stmt.setString(4, usuario.getCpf());
 
-            // Tratamento para data nula (se dataNascimento for opcional)
             if (usuario.getDataNascimento() != null) {
                 stmt.setDate(5, Date.valueOf(usuario.getDataNascimento()));
             } else {
@@ -42,18 +39,22 @@ public class UsuarioDAO {
             stmt.setString(8, usuario.getObservacoes());
             stmt.setString(9, usuario.getTipoAcesso());
 
-            // NOVO PARAMETRO: id_area
-            stmt.setInt(10, usuario.getIdArea());
+            if (usuario.getIdArea() != null && usuario.getIdArea() > 0) {
+                stmt.setInt(10, usuario.getIdArea());
+            } else {
+                stmt.setNull(10, java.sql.Types.INTEGER);
+            }
 
             stmt.execute();
 
         } catch (SQLException e) {
             System.err.println("Erro ao adicionar usuário: " + e.getMessage());
-            throw e; // Lança a exceção para ser tratada no Controller
+            throw e;
         }
     }
+
     public Usuario autenticar(String email, String senha) {
-        String sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ?";
+        String sql = "SELECT id_usuario, nome, email, tipo_acesso, id_area FROM usuarios WHERE email = ? AND senha = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
@@ -67,6 +68,13 @@ public class UsuarioDAO {
                     usuario.setEmail(rs.getString("email"));
                     usuario.setTipoAcesso(rs.getString("tipo_acesso"));
 
+                    int idArea = rs.getInt("id_area");
+                    if (!rs.wasNull()) {
+                        usuario.setIdArea(idArea);
+                    } else {
+                        usuario.setIdArea(null);
+                    }
+
                     return usuario;
                 }
             }
@@ -77,17 +85,12 @@ public class UsuarioDAO {
         return null;
     }
 
-    /**
-     * NOVO: Método para buscar usuários por nome (para autocomplete).
-     */
     public List<Usuario> buscarPorNome(String nome) {
-        // Busca usuários cujo nome COMEÇA COM o texto digitado
-        String sql = "SELECT id_usuario, nome, email, tipo_acesso FROM usuarios WHERE nome LIKE ?";
+        String sql = "SELECT id_usuario, nome, email, tipo_acesso, id_area FROM usuarios WHERE nome LIKE ?";
         List<Usuario> usuarios = new ArrayList<>();
 
-        // Usamos a conexão da instância (this.connection)
         try (PreparedStatement stmt = this.connection.prepareStatement(sql)) {
-            stmt.setString(1, nome + "%"); // Adiciona o curinga '%'
+            stmt.setString(1, nome + "%");
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -96,6 +99,14 @@ public class UsuarioDAO {
                     usuario.setNome(rs.getString("nome"));
                     usuario.setEmail(rs.getString("email"));
                     usuario.setTipoAcesso(rs.getString("tipo_acesso"));
+
+                    int idArea = rs.getInt("id_area");
+                    if (!rs.wasNull()) {
+                        usuario.setIdArea(idArea);
+                    } else {
+                        usuario.setIdArea(null);
+                    }
+
                     usuarios.add(usuario);
                 }
             }

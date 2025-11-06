@@ -73,16 +73,23 @@ public class HomeGUIController implements javafx.fxml.Initializable {
         }
     }
 
+    /**
+     * Carrega todos os KPIs e gráficos, usando o usuário logado para
+     * aplicar o filtro de acesso (global ou por área).
+     */
     private void carregarKPIs() {
         if (usuarioLogado == null) return;
 
+        // 1. Carrega Métricas
         int totalPdis = helper.getTotalPDIs(usuarioLogado);
         int colaboradores = helper.getTotalColaboradores(usuarioLogado);
         double concluido = helper.getPorcentagemConcluidos(usuarioLogado);
+        Map<String, Integer> detalhes = helper.getDetalhesStatus(usuarioLogado);
 
+        // 2. Preenche KPIs
         lblTotalPDIs.setText(String.valueOf(totalPdis));
 
-        if (colaboradores > 0) {
+        if (colaboradores >= 0) {
             lblColaboradores.setText(String.valueOf(colaboradores));
         } else {
             lblColaboradores.setText("--");
@@ -90,7 +97,7 @@ public class HomeGUIController implements javafx.fxml.Initializable {
 
         lblPorcentagemConcluidos.setText(String.format("%.1f%%", concluido));
 
-        Map<String, Integer> detalhes = helper.getDetalhesStatus(usuarioLogado);
+        // 3. Preenche Detalhes e Gráficos
         preencherDetalhes(detalhes);
         popularGraficos(detalhes);
     }
@@ -117,6 +124,7 @@ public class HomeGUIController implements javafx.fxml.Initializable {
         Map<String, Integer> contagemPorArea = helper.getContagemPdiPorArea(usuarioLogado);
         popularGraficoArea(contagemPorArea);
     }
+
     private void popularGraficoStatus(Map<String, Integer> detalhesStatus) {
         if (chartStatus == null) return;
 
@@ -125,44 +133,78 @@ public class HomeGUIController implements javafx.fxml.Initializable {
 
         if (total > 0) {
             for (Map.Entry<String, Integer> entry : detalhesStatus.entrySet()) {
-                String label = String.format("%s (%.1f%%)",
-                        entry.getKey(),
-                        (double) entry.getValue() * 100 / total);
-                pieChartData.add(new PieChart.Data(label, entry.getValue()));
+                // Adiciona apenas status com contagem > 0
+                if (entry.getValue() > 0) {
+                    String label = String.format("%s (%.1f%%)",
+                            entry.getKey(),
+                            (double) entry.getValue() * 100 / total);
+                    pieChartData.add(new PieChart.Data(label, entry.getValue()));
+                }
             }
+        }
+
+        // CORREÇÃO: Se não houver dados válidos, adiciona um dado dummy para evitar erro de inicialização.
+        if (pieChartData.isEmpty()) {
+            pieChartData.add(new PieChart.Data("Nenhum PDI Ativo", 1));
+            chartStatus.setLabelsVisible(false);
+            chartStatus.setLegendVisible(false);
         } else {
-            pieChartData.add(new PieChart.Data("Nenhum PDI Encontrado", 1));
+            chartStatus.setLabelsVisible(true);
+            chartStatus.setLegendVisible(true);
         }
 
         chartStatus.setData(pieChartData);
         chartStatus.setTitle("Status dos PDIs");
-        chartStatus.setLabelsVisible(true);
-        chartStatus.setLegendVisible(true);
     }
 
     /**
-     * Preenche o BarChart com a contagem de PDIs por Área.
+     * Preenche o BarChart com a contagem de PDIs por Colaborador (para Gestor de Área) ou por Área (Global).
      */
     private void popularGraficoArea(Map<String, Integer> contagemPorArea) {
         if (chartArea == null) return;
 
         chartArea.getData().clear();
+        chartArea.setLegendVisible(false);
 
         if (contagemPorArea.isEmpty()) {
-            // Se não houver dados, o gráfico fica vazio ou exibe uma mensagem.
-            // Aqui vamos apenas limpá-lo.
+            // CORREÇÃO: Limpa os eixos e títulos quando vazio
+            if (xAxisArea != null) xAxisArea.setLabel("");
+            if (yAxisArea != null) yAxisArea.setLabel("");
+            chartArea.setTitle("Nenhuma Carga de Trabalho Encontrada");
             return;
         }
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Total de PDIs");
+        series.setName("PDIs");
 
         for (Map.Entry<String, Integer> entry : contagemPorArea.entrySet()) {
-            series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+            // Adiciona apenas dados com contagem > 0
+            if (entry.getValue() > 0) {
+                series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+            }
+        }
+
+        // Verifica novamente se a série não está vazia após o filtro
+        if (series.getData().isEmpty()) {
+            if (xAxisArea != null) xAxisArea.setLabel("");
+            if (yAxisArea != null) yAxisArea.setLabel("");
+            chartArea.setTitle("Nenhuma Carga de Trabalho Ativa");
+            return;
         }
 
         chartArea.getData().add(series);
-        chartArea.setTitle("Carga de Trabalho por Área");
+
+        // AJUSTE DO TÍTULO CONFORME O TIPO DE ACESSO
+        if ("Gestor de Area".equals(usuarioLogado.getTipoAcesso())) {
+            chartArea.setTitle("Carga de Trabalho por Colaborador");
+            if (xAxisArea != null) xAxisArea.setLabel("Colaborador");
+            if (yAxisArea != null) yAxisArea.setLabel("Total de PDIs");
+        } else {
+            chartArea.setTitle("Distribuição por Área");
+            if (xAxisArea != null) xAxisArea.setLabel("Área");
+            if (yAxisArea != null) yAxisArea.setLabel("Total de PDIs");
+        }
+
 
         // Configurações visuais
         if (yAxisArea != null) {
@@ -192,12 +234,13 @@ public class HomeGUIController implements javafx.fxml.Initializable {
         } catch (IOException e) {
             System.err.println("Erro ao carregar DashboardGUI.fxml.");
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erro", "Não foi possível carregar o Dashboard de PDIs.");
         }
     }
 
     @FXML
     private void handleNavigateToHome() {
-        carregarKPIs();
+        carregarKPIs(); // Simplesmente recarrega os dados da Home
     }
 
     @FXML
@@ -208,14 +251,19 @@ public class HomeGUIController implements javafx.fxml.Initializable {
 
         boolean isVisible = vboxDetalhes.isVisible();
 
-        if (isVisible) {
-            vboxDetalhes.setVisible(false);
-            vboxDetalhes.setManaged(false);
-            btnDetalhesPdi.setText("Ver Detalhes");
-        } else {
-            vboxDetalhes.setManaged(true);
-            vboxDetalhes.setVisible(true);
-            btnDetalhesPdi.setText("Ocultar Detalhes");
-        }
+        // Alterna o estado de visibilidade
+        vboxDetalhes.setVisible(!isVisible);
+        vboxDetalhes.setManaged(!isVisible);
+
+        // Alterna o texto do botão
+        btnDetalhesPdi.setText(isVisible ? "Ver Detalhes" : "Ocultar Detalhes");
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

@@ -31,13 +31,13 @@ public class DashboardDAO {
                 LEFT JOIN Areas a ON u.id_area = a.id_area
                 LEFT JOIN Metas m ON p.id_pdi = m.id_pdi
                 LEFT JOIN Skills s ON m.id_skill = s.id_skill
-                -- REMOVIDA A CLÁUSULA GROUP BY
                 ORDER BY a.nome_area, u.nome;
                 """;
         return buscarPDIsGenerico(sql, null);
     }
 
     public List<PDIDashItem> buscarPDIsGestorGeral() {
+        // Gestor Geral tem a mesma visão global que o RH
         return buscarPDIsRH();
     }
 
@@ -56,8 +56,8 @@ public class DashboardDAO {
                 LEFT JOIN Areas a ON u.id_area = a.id_area
                 LEFT JOIN Metas m ON p.id_pdi = m.id_pdi
                 LEFT JOIN Skills s ON m.id_skill = s.id_skill
+                -- FILTRA PELO ID DO GESTOR DE ÁREA
                 WHERE u.id_gestor_de_area = ?
-                -- REMOVIDA A CLÁUSULA GROUP BY
                 ORDER BY u.nome;
                 """;
         return buscarPDIsGenerico(sql, idGestor);
@@ -79,13 +79,13 @@ public class DashboardDAO {
                 LEFT JOIN Metas m ON p.id_pdi = m.id_pdi
                 LEFT JOIN Skills s ON m.id_skill = s.id_skill
                 WHERE u.id_usuario = ? 
-                -- REMOVIDA A CLÁUSULA GROUP BY
                 ORDER BY p.data_fim DESC;
                 """;
         return buscarPDIsGenerico(sql, idColaborador);
     }
 
-    // --- MÉTODOS DE CONTAGEM (NÃO PRECISAM DE MUDANÇA) ---
+    // --- MÉTODOS DE CONTAGEM ---
+
     public int contarTotalColaboradores() {
         String sql = "SELECT COUNT(*) FROM Usuarios WHERE tipo_acesso = 'Colaborador'";
         try (Connection conn = new ConnectionFactory().getConnection();
@@ -93,6 +93,22 @@ public class DashboardDAO {
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int contarColaboradoresPorArea(int idArea) {
+        String sql = "SELECT COUNT(*) FROM Usuarios WHERE tipo_acesso = 'Colaborador' AND id_area = ?";
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idArea);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -166,7 +182,7 @@ public class DashboardDAO {
         return contagem;
     }
 
-    // --- MÉTODO GENÉRICO (NÃO PRECISA DE MUDANÇA) ---
+    // --- MÉTODO GENÉRICO (CORRIGIDO PARA TRATAR NULLS) ---
     private List<PDIDashItem> buscarPDIsGenerico(String sql, Integer idParametro) {
         List<PDIDashItem> listaPDIs = new ArrayList<>();
         try (Connection conn = new ConnectionFactory().getConnection();
@@ -174,20 +190,29 @@ public class DashboardDAO {
             if (idParametro != null) stmt.setInt(1, idParametro);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
+
+                    // --- CORREÇÃO DE NULLS ---
+                    String objetivo = rs.getString("objetivo");
+                    String prazo = rs.getString("prazo");
+                    String status = rs.getString("status");
+                    String area = rs.getString("area");
+
                     PDIDashItem item = new PDIDashItem(
                             rs.getInt("id_pdi"),
                             rs.getInt("id_usuario"),
                             rs.getString("colaborador"),
-                            rs.getString("objetivo"),
-                            rs.getString("prazo"),
-                            rs.getString("status"),
-                            rs.getString("area")
+                            // Tratamento: se for nulo, usa uma string padrão
+                            objetivo != null ? objetivo : "N/A",
+                            prazo != null ? prazo : "N/A",
+                            status != null ? status : "Em Andamento (Sem Metas)",
+                            area != null ? area : "N/A"
                     );
                     listaPDIs.add(item);
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar PDIs: " + e.getMessage(), e);
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar PDIs no DAO: " + e.getMessage(), e);
         }
         return listaPDIs;
     }

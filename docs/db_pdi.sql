@@ -244,6 +244,8 @@ INSERT INTO Metas (id_pdi, id_skill, meta_pontuacao, pontuacao_obtida) VALUES
 SELECT
     U.id_usuario,
     U.nome,
+    U.email,
+    U.senha,
     U.tipo_acesso,
     A.nome_area AS Area,
     P.data_fim AS PDI_Data_Fim
@@ -254,4 +256,3 @@ ORDER BY U.id_usuario;
 
 ALTER TABLE Skills MODIFY COLUMN tipo_skill
 ENUM('Hard Skill', 'Soft Skill', 'A Definir') NOT NULL;
-

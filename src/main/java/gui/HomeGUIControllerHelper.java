@@ -11,36 +11,39 @@ import java.util.stream.Collectors;
 
 /**
  * Classe de apoio (Helper) para o HomeGUIController.
- * É responsável por isolar a lógica de acesso a dados (DAO) e calcular os KPIs.
+ * É responsável por isolar a lógica de acesso a dados (DAO) e calcular os KPIs,
+ * aplicando o filtro de acesso (Global, Por Área ou Individual).
  */
 public class HomeGUIControllerHelper {
 
-    private final DashboardDAO dao;
+    private final DashboardDAO dao = new DashboardDAO();
 
     public HomeGUIControllerHelper() {
-        this.dao = new DashboardDAO();
+        // Construtor limpo.
     }
 
     /**
      * Busca a lista base de PDIs com base no acesso do usuário.
-     * Esta é a mesma lógica usada no DashboardControllerHelper.
      */
     private List<PDIDashItem> buscarListaBase(Usuario usuario) {
         if (usuario == null || usuario.getTipoAcesso() == null) {
             return Collections.emptyList();
         }
 
-        String tipoAcesso = usuario.getTipoAcesso().toUpperCase();
+        String tipoAcesso = usuario.getTipoAcesso();
 
         switch (tipoAcesso) {
             case "RH":
-            case "GESTORGERAL":
                 return dao.buscarPDIsRH();
 
-            case "GESTORDEAREA":
+            case "Gestor Geral":
+                return dao.buscarPDIsGestorGeral();
+
+            case "Gestor de Area":
+                // Filtra pelos colaboradores que reportam ao ID do Gestor (ID do Usuário Logado)
                 return dao.buscarPDIsGestorArea(usuario.getId());
 
-            case "COLABORADOR":
+            case "Colaborador":
                 return dao.listarPDIColaborador(usuario.getId());
 
             default:
@@ -50,89 +53,111 @@ public class HomeGUIControllerHelper {
 
     /**
      * KPI 1: Retorna o total de PDIs que o usuário pode visualizar.
-     * Para RH/Gestor Geral, retorna o total do sistema.
-     * Para outros, retorna o total da lista de acesso.
      */
     public int getTotalPDIs(Usuario usuario) {
-        // Se o usuário tem visão global, usa a contagem total do sistema
-        if ("RH".equalsIgnoreCase(usuario.getTipoAcesso()) || "GESTORGERAL".equalsIgnoreCase(usuario.getTipoAcesso())) {
+        String tipoAcesso = usuario.getTipoAcesso();
+
+        // Para RH/Gestor Geral, usa a contagem total do sistema
+        if ("RH".equalsIgnoreCase(tipoAcesso) || "Gestor Geral".equalsIgnoreCase(tipoAcesso)) {
             return dao.contarTotalPDIs();
         }
 
-        // Caso contrário, usa a contagem da lista de acesso do usuário (o número de PDIs que ele gerencia/possui)
+        // Caso contrário, usa a contagem da lista de acesso do usuário (filtrada)
         return buscarListaBase(usuario).size();
     }
 
     /**
      * KPI 2: Retorna a porcentagem de PDIs concluídos.
-     * O cálculo é feito sobre o total que o usuário tem acesso (ou total do sistema).
      */
     public double getPorcentagemConcluidos(Usuario usuario) {
         int totalPDIs = getTotalPDIs(usuario);
-
         if (totalPDIs == 0) {
-            return 0.0;
+            return 0.0; // Retorna 0.0 se não há PDIs para evitar divisão por zero
         }
 
-        // --- Lógica Global (para RH/Gestor Geral) ---
-        if ("RH".equalsIgnoreCase(usuario.getTipoAcesso()) || "GESTORGERAL".equalsIgnoreCase(usuario.getTipoAcesso())) {
+        long concluidos;
+        String tipoAcesso = usuario.getTipoAcesso();
+
+        if ("RH".equalsIgnoreCase(tipoAcesso) || "Gestor Geral".equalsIgnoreCase(tipoAcesso)) {
             Map<String, Integer> contagem = dao.contarPDIsPorStatus();
-            int concluidos = contagem.getOrDefault("Concluído", 0);
-
-            // Note: O totalPDIs usado aqui é dao.contarTotalPDIs()
-            return (double) concluidos * 100.0 / totalPDIs;
+            concluidos = contagem.getOrDefault("Concluído", 0);
+        } else {
+            List<PDIDashItem> pdis = buscarListaBase(usuario);
+            concluidos = pdis.stream()
+                    // Usamos a string exata (CONCLUÍDO) para garantir correspondência com o DAO
+                    .filter(pdi -> pdi.getStatus() != null && "CONCLUÍDO".equalsIgnoreCase(pdi.getStatus()))
+                    .count();
         }
-
-        // --- Lógica Restrita (Gestor de Área/Colaborador) ---
-        // Calcula o total de concluídos na lista restrita
-        List<PDIDashItem> pdis = buscarListaBase(usuario);
-        long concluidos = pdis.stream()
-                .filter(pdi -> "CONCLUÍDO".equalsIgnoreCase(pdi.getStatus()))
-                .count();
 
         return (double) concluidos * 100.0 / totalPDIs;
     }
 
     /**
-     * KPI 3: Retorna o total de colaboradores cadastrados (apenas os com tipo_acesso='Colaborador').
+     * KPI 3: Retorna o total de colaboradores.
+     * Para Gestor de Área, conta colaboradores em sua área.
      */
     public int getTotalColaboradores(Usuario usuario) {
-        // Este KPI só deve ser visível para usuários com visão geral
-        if ("RH".equalsIgnoreCase(usuario.getTipoAcesso()) || "GESTORGERAL".equalsIgnoreCase(usuario.getTipoAcesso())) {
+        String tipoAcesso = usuario.getTipoAcesso();
+
+        if ("RH".equals(tipoAcesso) || "Gestor Geral".equals(tipoAcesso)) {
             return dao.contarTotalColaboradores();
         }
 
-        // Retorna 0 se o usuário não tem permissão para ver este KPI
+        if ("Gestor de Area".equals(tipoAcesso)) {
+            // Conta os colaboradores da área onde o gestor está lotado.
+            if (usuario.getIdArea() != null && usuario.getIdArea() > 0) {
+                return dao.contarColaboradoresPorArea(usuario.getIdArea());
+            }
+        }
+
         return 0;
     }
 
     /**
-     * Retorna a contagem detalhada de PDIs por status.
-     * Retorna a contagem global do sistema para RH/Gestor Geral.
-     * TODO: Implementar a lógica de contagem restrita para outros tipos.
+     * Retorna a contagem detalhada de PDIs por status para o gráfico de pizza.
      */
     public Map<String, Integer> getDetalhesStatus(Usuario usuario) {
-        // Retorna a contagem global do sistema
-        if ("RH".equalsIgnoreCase(usuario.getTipoAcesso()) || "GESTORGERAL".equalsIgnoreCase(usuario.getTipoAcesso())) {
+        String tipoAcesso = usuario.getTipoAcesso();
+
+        if ("RH".equalsIgnoreCase(tipoAcesso) || "Gestor Geral".equalsIgnoreCase(tipoAcesso)) {
             return dao.contarPDIsPorStatus();
         }
 
-        // Se for um usuário restrito, você pode criar uma contagem baseada na lista dele.
-        // Por enquanto, retorna vazio para indicar que não há detalhe global.
-        return Collections.emptyMap();
+        // Lógica para Gestor de Área/Colaborador
+        List<PDIDashItem> pdis = buscarListaBase(usuario);
+
+        return pdis.stream()
+                .filter(pdi -> pdi.getStatus() != null && !pdi.getStatus().isBlank())
+                .collect(Collectors.groupingBy(
+                        PDIDashItem::getStatus,
+                        Collectors.summingInt(p -> 1)
+                ));
     }
 
     /**
-     * NOVO MÉTODO: Retorna a contagem de PDIs agrupados por Área para o gráfico de barras.
-     * Retorna a contagem global do sistema para RH/Gestor Geral.
+     * Retorna a contagem de PDIs agrupados.
+     * RH/Gestor Geral: Por Área.
+     * Gestor de Área: Por Colaborador (Carga de Trabalho).
      */
     public Map<String, Integer> getContagemPdiPorArea(Usuario usuario) {
-        // Por enquanto, só buscamos dados globais (que é o que RH/Gestor Geral precisam)
-        if ("RH".equalsIgnoreCase(usuario.getTipoAcesso()) || "GESTORGERAL".equalsIgnoreCase(usuario.getTipoAcesso())) {
+        String tipoAcesso = usuario.getTipoAcesso();
+
+        if ("RH".equals(tipoAcesso) || "Gestor Geral".equals(tipoAcesso)) {
             return dao.contarPDIsPorArea();
         }
 
-        // Retorna vazio para usuários restritos (futuramente, implementar a contagem restrita)
+        if ("Gestor de Area".equals(tipoAcesso)) {
+            List<PDIDashItem> pdis = buscarListaBase(usuario);
+
+            // Agrupa pelo nome do Colaborador
+            return pdis.stream()
+                    .filter(pdi -> pdi.getColaborador() != null && !pdi.getColaborador().isBlank())
+                    .collect(Collectors.groupingBy(
+                            PDIDashItem::getColaborador,
+                            Collectors.summingInt(p -> 1)
+                    ));
+        }
+
         return Collections.emptyMap();
     }
 }

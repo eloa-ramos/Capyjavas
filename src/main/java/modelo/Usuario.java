@@ -8,9 +8,7 @@ public class Usuario {
     private int id;
     private String email;
     private String senha;
-
-    // --- CHAVE ESTRANGEIRA DA ÁREA (NOVO) ---
-    private int idArea;
+    private Integer idArea;
 
     // --- CAMPOS EXISTENTES ---
     private String nome;
@@ -35,9 +33,9 @@ public class Usuario {
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
 
-    // --- NOVO GETTER E SETTER PARA idArea ---
-    public int getIdArea() { return idArea; }
-    public void setIdArea(int idArea) { this.idArea = idArea; }
+    // --- NOVO GETTER E SETTER PARA idArea (CORRIGIDO PARA Integer) ---
+    public Integer getIdArea() { return idArea; }
+    public void setIdArea(Integer idArea) { this.idArea = idArea; }
     // ------------------------------------------
 
     public String getNome() { return nome; }
@@ -62,7 +60,7 @@ public class Usuario {
     public void setTipoAcesso(String tipoAcesso) { this.tipoAcesso = tipoAcesso; }
 
     /**
-     * NOVO: Método toString() para exibir o nome do usuário no ComboBox.
+     * Método toString() para exibir o nome do usuário no ComboBox.
      */
     @Override
     public String toString() {
