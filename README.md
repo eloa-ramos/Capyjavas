@@ -70,7 +70,28 @@ A solução proposta para a **Youtan** foi criarmos uma ferramenta que permita a
 | 🔖 **SPRINT 3** | 03/11 - 23/11 | [Sprint 3](sprints/sprint3.md) |
 
 ## 💻 Manual de Instalação <a id="manual"></a>
-(ainda a ser feito) 
+1. Instale o IntelliJ IDEA (Recomendado usar a versão Community o que é possível [aqui](https://www.jetbrains.com/idea/download/download-thanks.html?platform=windows&code=IIC)
+2. Verifique se o Java está instalado  na sua máquina 
+    ``` bash
+   java -version
+    ```
+   #### [Caso o contrário baixe aqui](https://www.java.com/pt-br/download/manual.jsp)
+    
+3. Baixe o Java FX, o que você pode encontrar neste [link](https://gluonhq.com/products/javafx/)
+4. Clone o repositório
+   ``` bash
+   git clone https://github.com/eloa-ramos/Capyjavas.git
+    ```
+    
+ 5. Configure o Java FX no IntelliJ
+  * Abra o IntelliJ -> File -> Project Structure -> Libraries -> Add
+  * Selecione a pasta /lib do JavaFX baixado
+  * Depois vá em Run -> Edit Configurations -> Add New -> Applcation -> Modify options (ALt + M) e clique em *Add VM options*
+  * Adicione nas VM Options:
+    ```text
+    --module-path "C:\Caminho\da\Pasta\javafx-sdk-25.0.1\lib"
+    --add-modules javafx.controls,javafx.fxml
+    ```
 
 ## 🙆‍♀️Equipe <a id="equipe"></a>
 
