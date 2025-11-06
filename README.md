@@ -86,7 +86,7 @@ A solução proposta para a **Youtan** foi criarmos uma ferramenta que permita a
  5. Configure o Java FX no IntelliJ
   * Abra o IntelliJ -> File -> Project Structure -> Libraries -> Add
   * Selecione a pasta /lib do JavaFX baixado
-  * Depois vá em Run -> Edit Configurations -> Add New -> Applcation -> Modify options (ALt + M) e clique em *Add VM options*
+  * Depois vá em Run -> Edit Configurations -> Add New -> Application -> Modify options (ALt + M) e clique em *Add VM options*
   * Adicione nas VM Options:
     ```text
     --module-path "C:\Caminho\da\Pasta\javafx-sdk-25.0.1\lib"
