@@ -85,6 +85,12 @@
                                 styleClass="button">
                         </Button>
 
+                        <Button fx:id="btnExportarPDIs"
+                                text="Exportar PDIs (CSV)"
+                                onAction="#handleExportarPDIs"
+                                visible="false" managed="false" prefWidth="250"
+                                styleClass="button-sidebar-action"/>
+
                         <Button fx:id="btnAtualizarPdi"
                                 text="Recarregar Dados"
                                 onAction="#recarregarPdis"

@@ -24,6 +24,13 @@ import modelo.PDI;
 import modelo.PDIDashItem;
 import modelo.Usuario;
 
+// <<< IMPORTS ADICIONADOS >>>
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+// <<< FIM DOS IMPORTS ADICIONADOS >>>
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
@@ -51,6 +58,9 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
 
     // --- NOVO BOTÃO ---
     @FXML private Button btnCadastroUsuario; // Botão para Cadastrar Usuário
+
+    // --- BOTÃO DE EXPORTAÇÃO (ADICIONADO) ---
+    @FXML private Button btnExportarPDIs;
 
     // Sidebar e Containers de Checkbox
     @FXML private VBox checkboxContainerStatus;
@@ -117,6 +127,19 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
             if (btnCadastroUsuario != null) {
                 btnCadastroUsuario.setVisible(isRh); // Visível apenas para RH
                 btnCadastroUsuario.setManaged(isRh); // Ocupa espaço apenas se visível
+            }
+            // --------------------------------------------------------
+
+            // --- CONTROLE DE VISIBILIDADE DO BOTÃO EXPORTAR (ADICIONADO) ---
+            // A exportação é permitida para RH, Gestor Geral e Gestor de Área.
+            String tipoAcesso = usuario.getTipoAcesso().replace(" ", "");
+            boolean isManagement = "RH".equalsIgnoreCase(tipoAcesso) ||
+                    "GESTORGERAL".equalsIgnoreCase(tipoAcesso) ||
+                    "GESTORDEAREA".equalsIgnoreCase(tipoAcesso);
+
+            if (btnExportarPDIs != null) {
+                btnExportarPDIs.setVisible(isManagement);
+                btnExportarPDIs.setManaged(isManagement);
             }
             // --------------------------------------------------------
         }
@@ -402,6 +425,62 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
             // Caso não seja RH (segurança extra)
             showAlert(Alert.AlertType.WARNING, "Acesso Negado", "Apenas usuários RH podem cadastrar novos usuários.");
         }
+    }
+    // -----------------------------------------------------
+
+
+    // --- NOVO MÉTODO PARA EXPORTAÇÃO (ADICIONADO) ---
+    @FXML
+    private void handleExportarPDIs(ActionEvent event) {
+        if (usuarioLogado == null) {
+            showAlert(Alert.AlertType.ERROR, "Erro", "Usuário não está logado. Não é possível exportar.");
+            return;
+        }
+
+        // 1. Consumir o "endpoint" de dados (a lista que o usuário vê)
+        // Usamos a lista JÁ FILTRADA (sortedData) para que a exportação
+        // reflita exatamente o que o usuário está vendo na tela.
+        List<PDIDashItem> pdisParaExportar = sortedData;
+
+        // Se a lista estiver vazia, avisa o usuário
+        if (pdisParaExportar == null || pdisParaExportar.isEmpty()) {
+            showAlert(Alert.AlertType.INFORMATION, "Exportação", "Não há dados (PDIs) para exportar.");
+            return;
+        }
+
+        // 2. Abrir o FileChooser
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Salvar Relatório de PDIs");
+
+        // Sugere um nome de arquivo padrão
+        String dataAtual = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        fileChooser.setInitialFileName("Relatorio_PDIs_" + usuarioLogado.getNome().split(" ")[0] + "_" + dataAtual + ".csv");
+
+        // Define o filtro para arquivos CSV
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Arquivo CSV (*.csv)", "*.csv");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        // 3. Obter o local para salvar
+        File file = fileChooser.showSaveDialog((Stage) rootPane.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                // 4. Chamar o Helper de exportação (ExportacaoHelper.java que criamos)
+                ExportacaoHelper.exportarListaParaCSV(pdisParaExportar, file);
+
+                // 5. Exibir alerta de sucesso
+                showAlert(Alert.AlertType.INFORMATION, "Sucesso", "✅ Relatório exportado com sucesso!\nO arquivo foi salvo em: " + file.getAbsolutePath());
+
+            } catch (IOException e) {
+                // 6. Exibir alerta de erro
+                showAlert(Alert.AlertType.ERROR, "Erro de Exportação", "❌ Falha ao salvar o arquivo CSV: " + e.getMessage());
+                e.printStackTrace();
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Erro Inesperado", "❌ Ocorreu um erro inesperado: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        // Se 'file' for nulo, o usuário cancelou a caixa de diálogo, então não fazemos nada.
     }
     // -----------------------------------------------------
 
