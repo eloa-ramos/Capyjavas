@@ -79,9 +79,10 @@ A solução proposta para a **Youtan** foi criarmos uma ferramenta que permita a
     
 3. Baixe o Java FX, o que você pode encontrar neste [link](https://gluonhq.com/products/javafx/)
 4. Clone o repositório
-       ``` bash
+   ``` bash
    git clone https://github.com/eloa-ramos/Capyjavas.git
     ```
+    
  5. Configure o Java FX no IntelliJ
   * Abra o IntelliJ -> File -> Project Structure -> Libraries -> Add
   * Selecione a pasta /lib do JavaFX baixado
