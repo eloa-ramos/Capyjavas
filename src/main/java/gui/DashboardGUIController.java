@@ -114,28 +114,32 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
                 lblBemVindo.setText("Olá, " + usuario.getNome().split(" ")[0] + "!");
             }
 
-            // Verifica se é RH para mostrar os botões corretos
-            boolean isRh = "RH".equalsIgnoreCase(usuario.getTipoAcesso());
+            // Normaliza o tipo de acesso
+            String tipoAcesso = usuario.getTipoAcesso().toUpperCase().replace(" ", "");
+
+            // =========================================================================
+            // >>> INÍCIO DA CORREÇÃO: VISIBILIDADE DO BOTÃO DE CADASTRO PDI <<<
+            // RH e Gestor Geral (GESTORGERAL) podem cadastrar PDIs
+            boolean canRegisterPdi = "RH".equals(tipoAcesso) || "GESTORGERAL".equals(tipoAcesso);
 
             // Visibilidade do botão de cadastrar PDI
             if (btnCadastroPdi != null) {
-                btnCadastroPdi.setVisible(isRh);
-                btnCadastroPdi.setManaged(isRh);
+                btnCadastroPdi.setVisible(canRegisterPdi);
+                btnCadastroPdi.setManaged(canRegisterPdi);
             }
+            // =========================================================================
 
-            // --- CONTROLE DE VISIBILIDADE DO BOTÃO Cadastrar Usuário ---
+            // --- CONTROLE DE VISIBILIDADE DO BOTÃO Cadastrar Usuário (Apenas RH) ---
             if (btnCadastroUsuario != null) {
-                btnCadastroUsuario.setVisible(isRh); // Visível apenas para RH
-                btnCadastroUsuario.setManaged(isRh); // Ocupa espaço apenas se visível
+                boolean canRegisterUser = "RH".equals(tipoAcesso);
+                btnCadastroUsuario.setVisible(canRegisterUser); // Visível apenas para RH
+                btnCadastroUsuario.setManaged(canRegisterUser); // Ocupa espaço apenas se visível
             }
             // --------------------------------------------------------
 
-            // --- CONTROLE DE VISIBILIDADE DO BOTÃO EXPORTAR (ADICIONADO) ---
+            // --- CONTROLE DE VISIBILIDADE DO BOTÃO EXPORTAR ---
             // A exportação é permitida para RH, Gestor Geral e Gestor de Área.
-            String tipoAcesso = usuario.getTipoAcesso().replace(" ", "");
-            boolean isManagement = "RH".equalsIgnoreCase(tipoAcesso) ||
-                    "GESTORGERAL".equalsIgnoreCase(tipoAcesso) ||
-                    "GESTORDEAREA".equalsIgnoreCase(tipoAcesso);
+            boolean isManagement = canRegisterPdi || "GESTORDEAREA".equals(tipoAcesso);
 
             if (btnExportarPDIs != null) {
                 btnExportarPDIs.setVisible(isManagement);
@@ -383,11 +387,18 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
     // Ação do botão "Cadastrar Novo PDI"
     @FXML
     private void abrirCadastroPdi() {
-        if (usuarioLogado != null && "RH".equalsIgnoreCase(usuarioLogado.getTipoAcesso())) {
-            CadastroPdiWindow cadastro = new CadastroPdiWindow(usuarioLogado);
-            cadastro.show(); // Este método cuida de criar e mostrar a janela
-        } else {
-            showAlert(Alert.AlertType.WARNING, "Acesso Negado", "Apenas usuários RH podem cadastrar PDIs.");
+        if (usuarioLogado != null) {
+            String tipoAcesso = usuarioLogado.getTipoAcesso().toUpperCase().replace(" ", "");
+
+            // =========================================================================
+            // >>> INÍCIO DA CORREÇÃO: PERMISSÃO DE ACESSO PARA CADASTRO PDI <<<
+            if ("RH".equals(tipoAcesso) || "GESTORGERAL".equals(tipoAcesso)) {
+                // =========================================================================
+                CadastroPdiWindow cadastro = new CadastroPdiWindow(usuarioLogado);
+                cadastro.show(); // Este método cuida de criar e mostrar a janela
+            } else {
+                showAlert(Alert.AlertType.WARNING, "Acesso Negado", "Apenas usuários RH ou Gestor Geral podem cadastrar PDIs.");
+            }
         }
     }
 
