@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="gui.CadastroPdiController"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.CadastroPdiController"
             prefWidth="800" prefHeight="600">
 
     <VBox spacing="10" alignment="TOP_LEFT"
@@ -50,6 +50,11 @@
         <Label text="Pontuação Inicial (Ex: 0):" />
         <TextField fx:id="txtPontuacaoObtida" promptText="0" maxWidth="Infinity" />
 
+        <Label text="Anexar Documento (Opcional)"/>
+        <HBox spacing="10" alignment="CENTER_LEFT" maxWidth="Infinity">
+            <Button fx:id="btnAnexar" text="Selecionar Arquivo" onAction="#handleAnexarDocumento" />
+            <Label fx:id="lblNomeArquivo" text="Nenhum arquivo selecionado." style="-fx-text-fill: #555555;"/>
+        </HBox>
         <Label text="Observações"/>
         <TextArea fx:id="txtObservacoes" promptText="Observações (opcional)" prefRowCount="4"/>
 
