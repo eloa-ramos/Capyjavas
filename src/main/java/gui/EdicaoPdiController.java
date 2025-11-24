@@ -7,15 +7,19 @@ import javafx.stage.Stage;
 import modelo.PDI;
 import modelo.PDIDashItem;
 
-// --- NOVOS IMPORTS
+import java.io.File;
+import java.io.IOException; // Necessário para a cópia de arquivos
+import java.nio.file.Files; // Necessário para a cópia de arquivos
+import java.nio.file.Path; // Necessário para a cópia de arquivos
+import java.nio.file.StandardCopyOption; // Necessário para a cópia de arquivos
+import java.awt.Desktop; // Mantido para o Desktop.isDesktopSupported()
 import dao.AnexosDAO;
 import modelo.Anexos;
 import javafx.stage.FileChooser;
-import java.io.File;
 import java.util.List;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox; // NECESSÁRIO
-// --- FIM NOVOS IMPORTS
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Tooltip;
 
 public class EdicaoPdiController {
 
@@ -27,23 +31,21 @@ public class EdicaoPdiController {
     @FXML private TextArea txtObservacoes;
     @FXML private Button btnSalvar;
 
-    // --- NOVOS CAMPOS FXML PARA ANEXO ---
     @FXML private Button btnAnexar;
     @FXML private Label lblNomeArquivo;
-    @FXML private VBox vboxAnexosExistentes; // NOVO CAMPO PARA EXIBIR A LISTA
-    // --- FIM NOVOS CAMPOS FXML PARA ANEXO ---
+    @FXML private VBox vboxAnexosExistentes;
 
     private PDI pdiParaEditar;
     private DashboardGUIController dashboardController;
     private PDIDashItem dashItem;
     private File arquivoSelecionado;
 
-    // DAO
-    private final AnexosDAO anexosDAO = new AnexosDAO(); // Inicializa o DAO
+    private final AnexosDAO anexosDAO = new AnexosDAO();
 
     // --- Lidar com a seleção de arquivo ---
     @FXML
     private void handleAnexarDocumento() {
+        // ... (código de seleção de arquivo, mantido)
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Anexar Documento ao PDI");
 
@@ -82,21 +84,18 @@ public class EdicaoPdiController {
         dpPrazo.setValue(pdi.getDataFim());
         txtObservacoes.setText(pdi.getObservacoes());
 
-        // Limpa o estado do anexo ao carregar e reseta o rótulo
         this.arquivoSelecionado = null;
         if (lblNomeArquivo != null) {
             lblNomeArquivo.setText("Nenhum arquivo selecionado.");
         }
 
-        // --- NOVO: CARREGAR E EXIBIR ANEXOS EXISTENTES ---
         if (vboxAnexosExistentes != null && pdi != null) {
             List<Anexos> anexos = anexosDAO.listarPorPdi(pdi.getIdPdi());
             exibirAnexos(anexos);
         }
-        // --- FIM NOVO: CARREGAR E EXIBIR ANEXOS EXISTENTES ---
     }
 
-    // --- NOVO MÉTODO: Exibir a lista de anexos ---
+    // --- MÉTODO MODIFICADO: EXIBIÇÃO COM BOTÃO DOWNLOAD CORRETO ---
     private void exibirAnexos(List<Anexos> anexos) {
         vboxAnexosExistentes.getChildren().clear();
 
@@ -115,21 +114,47 @@ public class EdicaoPdiController {
             Label lblTipo = new Label(getTipoIcone(anexo.getTipoArquivo()));
             lblTipo.setStyle("-fx-font-weight: bold; -fx-text-fill: #333;");
 
-            Hyperlink linkNome = new Hyperlink(anexo.getNomeArquivo());
-            linkNome.setTooltip(new Tooltip(anexo.getCaminhoArquivo())); // Mostra o caminho no hover
-            linkNome.setOnAction(e -> {
-                // Simulação de abertura de arquivo:
-                showAlert(Alert.AlertType.INFORMATION, "Abrir Arquivo",
-                        "Tentando abrir arquivo em: " + anexo.getCaminhoArquivo() + "\n(A abertura real depende do JavaFX Desktop API)");
-                // Para implementar a abertura real, descomente as linhas abaixo
-                // try {
-                //    java.awt.Desktop.getDesktop().open(new File(anexo.getCaminhoArquivo()));
-                // } catch (java.io.IOException | UnsupportedOperationException ex) {
-                //    System.err.println("Erro ao abrir arquivo: " + ex.getMessage());
-                // }
-            });
+            Label lblNome = new Label(anexo.getNomeArquivo());
+            lblNome.setTooltip(new Tooltip("Caminho original: " + anexo.getCaminhoArquivo()));
+            lblNome.setStyle("-fx-font-weight: normal; -fx-text-fill: #555555;");
 
-            anexoBox.getChildren().addAll(lblTipo, linkNome);
+            // --- BOTÃO DE DOWNLOAD (SALVAR COMO...) ---
+            Button btnDownload = new Button("Download");
+            btnDownload.setTooltip(new Tooltip("ID do Anexo: " + anexo.getIdAnexo() + "\nSalvar uma cópia no seu PC."));
+            btnDownload.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 3 8; -fx-font-size: 11px; -fx-cursor: hand;");
+
+            // Ação do Botão: Abrir a caixa de diálogo "Salvar Como" e copiar o arquivo
+            btnDownload.setOnAction(e -> {
+                File sourceFile = new File(anexo.getCaminhoArquivo());
+
+                if (!sourceFile.exists()) {
+                    showAlert(Alert.AlertType.ERROR, "Erro de Download", "O arquivo físico não foi encontrado no caminho original:\n" + anexo.getCaminhoArquivo());
+                    return;
+                }
+
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Salvar Cópia do Anexo");
+                fileChooser.setInitialFileName(anexo.getNomeArquivo());
+
+                // Abre a caixa de diálogo "Salvar Como"
+                File destFile = fileChooser.showSaveDialog((Stage) btnDownload.getScene().getWindow());
+
+                if (destFile != null) {
+                    try {
+                        // Copia o arquivo do caminho de origem para o destino escolhido pelo usuário
+                        Files.copy(sourceFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        showAlert(Alert.AlertType.INFORMATION, "Download Concluído",
+                                "O arquivo foi salvo com sucesso em:\n" + destFile.getAbsolutePath());
+                    } catch (IOException ex) {
+                        showAlert(Alert.AlertType.ERROR, "Erro ao Salvar Arquivo",
+                                "Falha ao copiar o arquivo para o destino. Detalhes: " + ex.getMessage());
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            // --- FIM BOTÃO DE DOWNLOAD ---
+
+            anexoBox.getChildren().addAll(lblTipo, lblNome, btnDownload);
             vboxAnexosExistentes.getChildren().add(anexoBox);
         }
     }
@@ -154,10 +179,8 @@ public class EdicaoPdiController {
         pdiParaEditar.setObservacoes(txtObservacoes.getText().trim());
 
         try {
-            // 1. Salva as alterações do PDI
             new PDIDAO().atualizarPDI(pdiParaEditar);
 
-            // --- SALVAR NOVO ANEXO (SE HOUVER) ---
             if (arquivoSelecionado != null) {
                 String nomeArquivo = arquivoSelecionado.getName();
                 String caminho = arquivoSelecionado.getAbsolutePath();
@@ -184,18 +207,15 @@ public class EdicaoPdiController {
                 anexo.setObservacoes("Anexado durante a edição do PDI.");
 
                 anexosDAO.adiciona(anexo);
-                showAlert(Alert.AlertType.INFORMATION, "Sucesso", "PDI e Anexo atualizados com sucesso!");
+                showAlert(Alert.AlertType.INFORMATION, "Sucesso", "PDI e Anexo adicionados/atualizados com sucesso!");
             } else {
                 showAlert(Alert.AlertType.INFORMATION, "Sucesso", "PDI atualizado com sucesso!");
             }
-            // --- FIM SALVAR NOVO ANEXO ---
 
-            // Recarrega os dados no dashboard e na tela de edição
             dashboardController.recarregarPdis(null);
-            // Re-chama o carregar PDI para atualizar a lista de anexos na tela
-            carregarPdi(pdiParaEditar, dashItem, dashboardController);
 
-            // fecharJanela(); // Pode ser omitido para permitir edições subsequentes/visualização do novo anexo
+            PDI pdiAtualizado = new PDIDAO().buscarPdiPorId(pdiParaEditar.getIdPdi());
+            carregarPdi(pdiAtualizado, dashItem, dashboardController);
 
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Erro", "Falha ao salvar as alterações: " + e.getMessage());
