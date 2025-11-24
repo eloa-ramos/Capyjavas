@@ -8,11 +8,11 @@ import modelo.PDI;
 import modelo.PDIDashItem;
 
 import java.io.File;
-import java.io.IOException; // Necessário para a cópia de arquivos
-import java.nio.file.Files; // Necessário para a cópia de arquivos
-import java.nio.file.Path; // Necessário para a cópia de arquivos
-import java.nio.file.StandardCopyOption; // Necessário para a cópia de arquivos
-import java.awt.Desktop; // Mantido para o Desktop.isDesktopSupported()
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.awt.Desktop; // Necessário para abrir o arquivo
 import dao.AnexosDAO;
 import modelo.Anexos;
 import javafx.stage.FileChooser;
@@ -45,7 +45,6 @@ public class EdicaoPdiController {
     // --- Lidar com a seleção de arquivo ---
     @FXML
     private void handleAnexarDocumento() {
-        // ... (código de seleção de arquivo, mantido)
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Anexar Documento ao PDI");
 
@@ -95,7 +94,7 @@ public class EdicaoPdiController {
         }
     }
 
-    // --- MÉTODO MODIFICADO: EXIBIÇÃO COM BOTÃO DOWNLOAD CORRETO ---
+    // --- MÉTODO MODIFICADO: EXIBIÇÃO COM HYPERLINK E BOTÃO ---
     private void exibirAnexos(List<Anexos> anexos) {
         vboxAnexosExistentes.getChildren().clear();
 
@@ -111,19 +110,35 @@ public class EdicaoPdiController {
             anexoBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
             anexoBox.setStyle("-fx-padding: 5 10; -fx-background-color: #f0f0f0; -fx-background-radius: 4;");
 
+            // 1. Ícone e Tipo
             Label lblTipo = new Label(getTipoIcone(anexo.getTipoArquivo()));
             lblTipo.setStyle("-fx-font-weight: bold; -fx-text-fill: #333;");
 
-            Label lblNome = new Label(anexo.getNomeArquivo());
-            lblNome.setTooltip(new Tooltip("Caminho original: " + anexo.getCaminhoArquivo()));
-            lblNome.setStyle("-fx-font-weight: normal; -fx-text-fill: #555555;");
+            // 2. Hyperlink (Abre o arquivo diretamente)
+            Hyperlink linkNome = new Hyperlink(anexo.getNomeArquivo());
+            linkNome.setTooltip(new Tooltip("Clique para Abrir (ID: " + anexo.getIdAnexo() + ")"));
 
-            // --- BOTÃO DE DOWNLOAD (SALVAR COMO...) ---
+            linkNome.setOnAction(e -> {
+                File file = new File(anexo.getCaminhoArquivo());
+                if (Desktop.isDesktopSupported() && file.exists()) {
+                    try {
+                        // Lógica de Abrir
+                        Desktop.getDesktop().open(file);
+                    } catch (IOException ex) {
+                        showAlert(Alert.AlertType.ERROR, "Erro de Acesso", "Não foi possível abrir o arquivo. Verifique as permissões.");
+                    } catch (UnsupportedOperationException ex) {
+                        showAlert(Alert.AlertType.ERROR, "Erro de Sistema", "A abertura de arquivos diretos não é suportada por esta plataforma.");
+                    }
+                } else {
+                    showAlert(Alert.AlertType.WARNING, "Arquivo Indisponível",
+                            "O arquivo físico não foi encontrado ou o sistema não suporta a abertura direta.");
+                }
+            });
+
+            // 3. Botão de Download (Salva cópia para o PC)
             Button btnDownload = new Button("Download");
-            btnDownload.setTooltip(new Tooltip("ID do Anexo: " + anexo.getIdAnexo() + "\nSalvar uma cópia no seu PC."));
             btnDownload.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 3 8; -fx-font-size: 11px; -fx-cursor: hand;");
 
-            // Ação do Botão: Abrir a caixa de diálogo "Salvar Como" e copiar o arquivo
             btnDownload.setOnAction(e -> {
                 File sourceFile = new File(anexo.getCaminhoArquivo());
 
@@ -136,12 +151,11 @@ public class EdicaoPdiController {
                 fileChooser.setTitle("Salvar Cópia do Anexo");
                 fileChooser.setInitialFileName(anexo.getNomeArquivo());
 
-                // Abre a caixa de diálogo "Salvar Como"
                 File destFile = fileChooser.showSaveDialog((Stage) btnDownload.getScene().getWindow());
 
                 if (destFile != null) {
                     try {
-                        // Copia o arquivo do caminho de origem para o destino escolhido pelo usuário
+                        // Lógica de Salvar Como (Copia o arquivo)
                         Files.copy(sourceFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         showAlert(Alert.AlertType.INFORMATION, "Download Concluído",
                                 "O arquivo foi salvo com sucesso em:\n" + destFile.getAbsolutePath());
@@ -152,9 +166,8 @@ public class EdicaoPdiController {
                     }
                 }
             });
-            // --- FIM BOTÃO DE DOWNLOAD ---
 
-            anexoBox.getChildren().addAll(lblTipo, lblNome, btnDownload);
+            anexoBox.getChildren().addAll(lblTipo, linkNome, btnDownload);
             vboxAnexosExistentes.getChildren().add(anexoBox);
         }
     }
