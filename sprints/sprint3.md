@@ -10,3 +10,10 @@
 |6|   Pequena   |Como **RH**, quero fazer download dos documentos anexados para consulta posterior|   150min   |3|
 |7|   Pequena   |Como **Gerente**, quero exportar PDIs em planilha para análise externa|   240min   |3|
 |8|   Pequena   |Como **RH**, quero gerar relatórios de metas e resultados para compartilhar com a gestão|   240min   |3|
+
+
+<br>
+
+ - Clique na imagem para ser redirecionado ao vídeo
+
+[<img src="Youtan.png" width="350px" heigth="300px"/>](https://youtu.be/bhBFtD0WSLo)
