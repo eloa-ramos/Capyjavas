@@ -91,7 +91,7 @@
                 <Insets top="15.0" />
             </VBox.margin>
         </VBox>
-        <Button fx:id="btnSalvar" maxWidth="1.7976931348623157E308" onAction="#handleSalvar" style="-fx-background-color: #363636;"
+        <Button fx:id="btnSalvar" maxWidth="1.7976931348623157E308" onAction="#handleSalvar" style="-fx-background-color: #459eb5;"
                 text="Salvar Alterações" textFill="WHITE">
             <VBox.margin>
                 <Insets top="20.0" />
