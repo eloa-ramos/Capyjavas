@@ -133,57 +133,54 @@ CREATE TABLE `Anexos` (
 
 -- =========================================================
 -- INSERÇÃO DE DADOS DE TESTE (EXPANDIDO)
+-- AS SENHAS FORAM CRIPTOGRAFADAS COM SHA2(SENHA, 256)
 -- =========================================================
 
 -- ID_AREA: 1=Tecnologia, 2=RH, 3=Financeiro, 4=Marketing, 5=Vendas
--- GESTOR GERAL: Assume ID 10 (a ser preenchido)
--- GESTORES DE ÁREA: Assume ID 11 e ID 12 (a ser preenchido)
 
--- Usuários base (Garantindo IDs baixos para referência)
-
--- 1. GESTOR GERAL (Área Financeiro ID 3)
+-- 1. GESTOR GERAL (Área Financeiro ID 3) - Senha original: 'gg123'
 INSERT INTO Usuarios (email, senha, nome, cpf, data_nascimento, cargo, tipo_acesso, id_area)
 VALUES
-('gg@youtan.com', 'gg123', 'Marcelo Gestor Geral', '22222222222', '1978-11-10', 'CEO', 'Gestor Geral', 3); -- ID 1
+('gg@youtan.com', SHA2('gg123', 256), 'Marcelo Gestor Geral', '22222222222', '1978-11-10', 'CEO', 'Gestor Geral', 3); -- ID 1
 
--- 2. RH (Área RH ID 2)
+-- 2. RH (Área RH ID 2) - Senha original: 'rh123'
 INSERT INTO Usuarios (email, senha, nome, cpf, data_nascimento, cargo, tipo_acesso, id_area)
 VALUES
-('rh@youtan.com', 'rh123', 'Laura RH', '11111111111', '1985-05-20', 'Especialista em RH', 'RH', 2); -- ID 2
+('rh@youtan.com', SHA2('rh123', 256), 'Laura RH', '11111111111', '1985-05-20', 'Especialista em RH', 'RH', 2); -- ID 2
 
 -- GESTORES DE ÁREA (Reportando ao GG ID 1)
 
--- 3. GESTOR DE ÁREA (Tecnologia ID 1)
+-- 3. GESTOR DE ÁREA (Tecnologia ID 1) - Senha original: 'ga123'
 INSERT INTO Usuarios (email, senha, nome, cpf, data_nascimento, cargo, tipo_acesso, id_gestor_geral, id_area)
 VALUES
-('ga1@youtan.com', 'ga123', 'Julia Gestor Dev', '33333333333', '1990-03-01', 'Gerente de Tecnologia', 'Gestor de Area', 1, 1); -- ID 3
+('ga1@youtan.com', SHA2('ga123', 256), 'Julia Gestor Dev', '33333333333', '1990-03-01', 'Gerente de Tecnologia', 'Gestor de Area', 1, 1); -- ID 3
 
--- 4. GESTOR DE ÁREA (Financeiro ID 3)
+-- 4. GESTOR DE ÁREA (Financeiro ID 3) - Senha original: 'ga223'
 INSERT INTO Usuarios (email, senha, nome, cpf, data_nascimento, cargo, tipo_acesso, id_gestor_geral, id_area)
 VALUES
-('ga2@youtan.com', 'ga223', 'Roberto Gestor Financeiro', '44444444444', '1988-07-12', 'Gerente de Contas', 'Gestor de Area', 1, 3); -- ID 4
+('ga2@youtan.com', SHA2('ga223', 256), 'Roberto Gestor Financeiro', '44444444444', '1988-07-12', 'Gerente de Contas', 'Gestor de Area', 1, 3); -- ID 4
 
 -- COLABORADORES (Reportando aos GAs e ao GG ID 1)
 
--- 5. COLABORADOR TECNOLOGIA - PDI ABERTO/EM ANDAMENTO
+-- 5. COLABORADOR TECNOLOGIA - PDI ABERTO/EM ANDAMENTO - Senha original: 'c1123'
 INSERT INTO Usuarios (email, senha, nome, cpf, data_nascimento, cargo, tipo_acesso, id_gestor_de_area, id_gestor_geral, id_area)
 VALUES
-('colab1@youtan.com', 'c1123', 'Lucas Colab Tech', '55555555555', '1995-09-15', 'Desenvolvedor Pleno', 'Colaborador', 3, 1, 1); -- ID 5
+('colab1@youtan.com', SHA2('c1123', 256), 'Lucas Colab Tech', '55555555555', '1995-09-15', 'Desenvolvedor Pleno', 'Colaborador', 3, 1, 1); -- ID 5
 
--- 6. COLABORADOR RH - PDI ATRASADO/VENCIDO (DATA FIM PASSADA)
+-- 6. COLABORADOR RH - PDI ATRASADO/VENCIDO (DATA FIM PASSADA) - Senha original: 'c2123'
 INSERT INTO Usuarios (email, senha, nome, cpf, data_nascimento, cargo, tipo_acesso, id_gestor_de_area, id_gestor_geral, id_area)
 VALUES
-('colab2@youtan.com', 'c2123', 'Mariana Colab RH', '66666666666', '1992-04-22', 'Analista de Recrutamento', 'Colaborador', 2, 1, 2); -- ID 6
+('colab2@youtan.com', SHA2('c2123', 256), 'Mariana Colab RH', '66666666666', '1992-04-22', 'Analista de Recrutamento', 'Colaborador', 2, 1, 2); -- ID 6
 
--- 7. COLABORADOR FINANCEIRO - PDI CONCLUÍDO (DATA FIM PASSADA + PONTUAÇÃO MÁXIMA)
+-- 7. COLABORADOR FINANCEIRO - PDI CONCLUÍDO (DATA FIM PASSADA + PONTUAÇÃO MÁXIMA) - Senha original: 'c3123'
 INSERT INTO Usuarios (email, senha, nome, cpf, data_nascimento, cargo, tipo_acesso, id_gestor_de_area, id_gestor_geral, id_area)
 VALUES
-('colab3@youtan.com', 'c3123', 'Felipe Colab Fin', '77777777777', '1998-01-08', 'Analista Fiscal Jr', 'Colaborador', 4, 1, 3); -- ID 7
+('colab3@youtan.com', SHA2('c3123', 256), 'Felipe Colab Fin', '77777777777', '1998-01-08', 'Analista Fiscal Jr', 'Colaborador', 4, 1, 3); -- ID 7
 
--- 8. COLABORADOR MARKETING - SEM PDI CADASTRADO
+-- 8. COLABORADOR MARKETING - SEM PDI CADASTRADO - Senha original: 'c4123'
 INSERT INTO Usuarios (email, senha, nome, cpf, data_nascimento, cargo, tipo_acesso, id_gestor_de_area, id_gestor_geral, id_area)
 VALUES
-('colab4@youtan.com', 'c4123', 'Beatriz Colab Mkt', '88888888888', '1993-11-20', 'Especialista em SEO', 'Colaborador', 1, 1, 4); -- ID 8
+('colab4@youtan.com', SHA2('c4123', 256), 'Beatriz Colab Mkt', '88888888888', '1993-11-20', 'Especialista em SEO', 'Colaborador', 1, 1, 4); -- ID 8
 
 
 -- ==============================

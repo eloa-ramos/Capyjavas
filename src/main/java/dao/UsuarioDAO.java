@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+// Importa a classe CriptografiaHelper
+import dao.CriptografiaHelper; //
 
 public class UsuarioDAO {
     private Connection connection;
@@ -24,7 +26,12 @@ public class UsuarioDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, usuario.getEmail());
-            stmt.setString(2, usuario.getSenha());
+
+            // >>> INÍCIO DA MUDANÇA: CRIPTOGRAFA A SENHA ANTES DE SALVAR <<<
+            String senhaCriptografada = CriptografiaHelper.hashSHA256(usuario.getSenha()); //
+            stmt.setString(2, senhaCriptografada);
+            // >>> FIM DA MUDANÇA <<<
+
             stmt.setString(3, usuario.getNome());
             stmt.setString(4, usuario.getCpf());
 
@@ -47,9 +54,9 @@ public class UsuarioDAO {
 
             stmt.execute();
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("Erro ao adicionar usuário: " + e.getMessage());
-            throw e;
+            throw new SQLException("Erro ao adicionar usuário: " + e.getMessage(), e);
         }
     }
 
@@ -57,8 +64,13 @@ public class UsuarioDAO {
         String sql = "SELECT id_usuario, nome, email, tipo_acesso, id_area FROM usuarios WHERE email = ? AND senha = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            // >>> INÍCIO DA MUDANÇA: CRIPTOGRAFA A SENHA DE ENTRADA PARA COMPARAÇÃO <<<
+            String senhaCriptografada = CriptografiaHelper.hashSHA256(senha); //
+            stmt.setString(2, senhaCriptografada);
+            // >>> FIM DA MUDANÇA <<<
+
             stmt.setString(1, email);
-            stmt.setString(2, senha);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -78,7 +90,7 @@ public class UsuarioDAO {
                     return usuario;
                 }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Erro ao autenticar usuário: " + e.getMessage(), e);
         }
 
