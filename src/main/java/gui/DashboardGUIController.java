@@ -10,7 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene; // Make sure Scene is imported
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,7 +18,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
-import javafx.stage.Modality; // Make sure Modality is imported
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.PDI;
 import modelo.PDIDashItem;
@@ -104,6 +104,12 @@ public class DashboardGUIController implements javafx.fxml.Initializable {
         setupSortingControls();
         setupFilteringListeners();
     }
+
+    // MÉTODO ADICIONADO
+    public Usuario getUsuarioLogado() {
+        return this.usuarioLogado;
+    }
+    // FIM MÉTODO ADICIONADO
 
     public void setUsuario(Usuario usuario) {
         this.usuarioLogado = usuario;

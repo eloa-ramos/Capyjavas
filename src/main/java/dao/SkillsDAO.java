@@ -52,6 +52,31 @@ public class SkillsDAO {
     }
 
     /**
+     * NOVO: Busca uma skill pelo ID.
+     * Retorna o objeto Skills se encontrar, ou null se não encontrar.
+     */
+    public Skills buscarPorId(int idSkill) {
+        String sql = "SELECT * FROM skills WHERE id_skill = ?";
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idSkill);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Skills skill = new Skills();
+                    skill.setIdSkill(rs.getInt("id_skill"));
+                    skill.setNomeSkill(rs.getString("nome_skill"));
+                    skill.setTipoSkill(rs.getString("tipo_skill"));
+                    return skill;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar skill por ID: " + e.getMessage(), e);
+        }
+        return null; // Não encontrou
+    }
+
+    /**
      * NOVO: Busca uma skill pelo nome exato.
      * Retorna o objeto Skills se encontrar, ou null se não encontrar.
      */

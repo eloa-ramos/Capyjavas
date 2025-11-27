@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.awt.Desktop; // Necessário para abrir o arquivo
+import java.awt.Desktop;
 import dao.AnexosDAO;
 import modelo.Anexos;
 import javafx.stage.FileChooser;
@@ -20,27 +20,44 @@ import java.util.List;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Tooltip;
+import dao.MetasDAO;
+import javafx.scene.control.ButtonType;
+import dao.SkillsDAO;
+import modelo.Metas;
+import modelo.Skills;
+import java.math.BigDecimal;
 
 public class EdicaoPdiController {
 
+    // CAMPOS DE DADOS DO PDI
     @FXML private TextField txtColaborador;
     @FXML private TextField txtArea;
     @FXML private DatePicker dpDataInicio;
     @FXML private DatePicker dpPrazo;
     @FXML private TextField txtObjetivo;
     @FXML private TextArea txtObservacoes;
-    @FXML private Button btnSalvar;
 
+    // NOVOS CAMPOS DE METAS/PONTUAÇÃO
+    @FXML private TextField txtMetaPontuacao;
+    @FXML private TextField txtPontuacaoObtida;
+
+    // CAMPOS DE BOTÕES/ANEXOS
+    @FXML private Button btnSalvar;
+    @FXML private Button btnConcluir;
     @FXML private Button btnAnexar;
     @FXML private Label lblNomeArquivo;
     @FXML private VBox vboxAnexosExistentes;
 
     private PDI pdiParaEditar;
+    private Metas metaParaEditar; // Armazena a meta existente (assumindo 1 por PDI)
+    private Skills skillExistente; // Armazena a skill existente
     private DashboardGUIController dashboardController;
     private PDIDashItem dashItem;
     private File arquivoSelecionado;
 
     private final AnexosDAO anexosDAO = new AnexosDAO();
+    private final MetasDAO metasDAO = new MetasDAO();
+    private final SkillsDAO skillsDAO = new SkillsDAO();
 
     // --- Lidar com a seleção de arquivo ---
     @FXML
@@ -76,13 +93,32 @@ public class EdicaoPdiController {
             return;
         }
 
+        // 1. CARREGAR DADOS BÁSICOS
         txtColaborador.setText(item.getColaborador());
         txtArea.setText(item.getArea());
-        txtObjetivo.setText(item.getObjetivo());
         dpDataInicio.setValue(pdi.getDataInicio());
         dpPrazo.setValue(pdi.getDataFim());
         txtObservacoes.setText(pdi.getObservacoes());
 
+        // 2. CARREGAR DADOS DE META/PONTUAÇÃO (Assumindo 1 meta por PDI)
+        this.metaParaEditar = metasDAO.buscarMetaPorPdi(pdi.getIdPdi());
+
+        if (metaParaEditar != null) {
+            this.skillExistente = skillsDAO.buscarPorId(metaParaEditar.getIdSkill());
+
+            // Preenche os campos de meta/skill
+            txtObjetivo.setText(skillExistente.getNomeSkill());
+            txtMetaPontuacao.setText(metaParaEditar.getMetaPontuacao().toPlainString());
+            txtPontuacaoObtida.setText(metaParaEditar.getPontuacaoObtida().toPlainString());
+        } else {
+            // Caso não haja meta cadastrada (o que é raro, mas possível)
+            txtObjetivo.setText(item.getObjetivo()); // Usa o objetivo do dashitem (que pode ser N/A)
+            txtMetaPontuacao.setText("100");
+            txtPontuacaoObtida.setText("0");
+        }
+
+
+        // 3. CARREGAR ANEXOS
         this.arquivoSelecionado = null;
         if (lblNomeArquivo != null) {
             lblNomeArquivo.setText("Nenhum arquivo selecionado.");
@@ -92,9 +128,30 @@ public class EdicaoPdiController {
             List<Anexos> anexos = anexosDAO.listarPorPdi(pdi.getIdPdi());
             exibirAnexos(anexos);
         }
+
+        // 4. LÓGICA DE VISIBILIDADE DO BOTÃO CONCLUIR
+        atualizarVisibilidadeBtnConcluir();
     }
 
-    // --- MÉTODO MODIFICADO: EXIBIÇÃO COM HYPERLINK E BOTÃO ---
+    // Método auxiliar para atualização da visibilidade do botão de conclusão
+    private void atualizarVisibilidadeBtnConcluir() {
+        if (btnConcluir != null && dashboardController.getUsuarioLogado() != null && dashItem != null) {
+            String status = dashItem.getStatus();
+            boolean isConcluido = status != null && "Concluído".equalsIgnoreCase(status.trim());
+
+            String tipoAcesso = dashboardController.getUsuarioLogado().getTipoAcesso().toUpperCase().replace(" ", "");
+            boolean podeEditar = "GESTORGERAL".equals(tipoAcesso) || "RH".equals(tipoAcesso);
+
+            btnConcluir.setVisible(!isConcluido && podeEditar);
+            btnConcluir.setManaged(!isConcluido && podeEditar);
+        } else if (btnConcluir != null) {
+            btnConcluir.setVisible(false);
+            btnConcluir.setManaged(false);
+        }
+    }
+
+
+    // --- MÉTODO MODIFICADO: EXIBIÇÃO COM HYPERLINK E BOTÃO (CÓDIGO OMITIDO POR SER IGUAL) ---
     private void exibirAnexos(List<Anexos> anexos) {
         vboxAnexosExistentes.getChildren().clear();
 
@@ -187,6 +244,32 @@ public class EdicaoPdiController {
             return;
         }
 
+        // Validação de campos de Meta/Pontuação
+        String nomeObjetivo = txtObjetivo.getText().trim();
+        String metaPontuacaoStr = txtMetaPontuacao.getText().trim();
+        String pontuacaoObtidaStr = txtPontuacaoObtida.getText().trim();
+
+        if (nomeObjetivo.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Atenção", "O campo Objetivo (Skill) é obrigatório.");
+            return;
+        }
+
+        BigDecimal metaPontuacao;
+        BigDecimal pontuacaoObtida;
+        try {
+            metaPontuacao = new BigDecimal(metaPontuacaoStr.isEmpty() ? "100" : metaPontuacaoStr);
+            pontuacaoObtida = new BigDecimal(pontuacaoObtidaStr.isEmpty() ? "0" : pontuacaoObtidaStr);
+
+            if (metaPontuacao.compareTo(BigDecimal.ZERO) < 0 || pontuacaoObtida.compareTo(BigDecimal.ZERO) < 0) {
+                showAlert(Alert.AlertType.WARNING, "Atenção", "Os valores de pontuação não podem ser negativos.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Erro de Formato", "Valores de pontuação inválidos. Use apenas números (ex: 100 ou 0).");
+            return;
+        }
+
+        // 1. Atualizar PDI (Datas e Observações)
         pdiParaEditar.setDataInicio(dpDataInicio.getValue());
         pdiParaEditar.setDataFim(dpPrazo.getValue());
         pdiParaEditar.setObservacoes(txtObservacoes.getText().trim());
@@ -194,6 +277,35 @@ public class EdicaoPdiController {
         try {
             new PDIDAO().atualizarPDI(pdiParaEditar);
 
+            int idSkill;
+            if (metaParaEditar != null && skillExistente != null && skillExistente.getNomeSkill().equalsIgnoreCase(nomeObjetivo)) {
+                // O nome do objetivo não mudou, usa o ID existente.
+                idSkill = skillExistente.getIdSkill();
+            } else {
+                // O nome do objetivo mudou ou não havia meta: busca/cria a skill
+                idSkill = skillsDAO.buscarOuCriarSkill(nomeObjetivo, "A Definir");
+            }
+
+            // 2. Atualizar ou Criar Meta
+            if (metaParaEditar != null) {
+                // Atualiza a meta existente
+                metaParaEditar.setIdSkill(idSkill);
+                metaParaEditar.setMetaPontuacao(metaPontuacao);
+                metaParaEditar.setPontuacaoObtida(pontuacaoObtida);
+                metasDAO.atualiza(metaParaEditar);
+            } else {
+                // Cria uma nova meta (se for a primeira vez que está sendo salva)
+                Metas novaMeta = new Metas();
+                novaMeta.setIdPdi(pdiParaEditar.getIdPdi());
+                novaMeta.setIdSkill(idSkill);
+                novaMeta.setMetaPontuacao(metaPontuacao);
+                novaMeta.setPontuacaoObtida(pontuacaoObtida);
+                metasDAO.adiciona(novaMeta);
+                this.metaParaEditar = metasDAO.buscarMetaPorPdi(pdiParaEditar.getIdPdi()); // Recarrega para usar o objeto no futuro
+            }
+
+
+            // 3. Salvar Anexo (se houver)
             if (arquivoSelecionado != null) {
                 String nomeArquivo = arquivoSelecionado.getName();
                 String caminho = arquivoSelecionado.getAbsolutePath();
@@ -220,13 +332,15 @@ public class EdicaoPdiController {
                 anexo.setObservacoes("Anexado durante a edição do PDI.");
 
                 anexosDAO.adiciona(anexo);
-                showAlert(Alert.AlertType.INFORMATION, "Sucesso", "PDI e Anexo adicionados/atualizados com sucesso!");
+                showAlert(Alert.AlertType.INFORMATION, "Sucesso", "PDI, Meta e Anexo adicionados/atualizados com sucesso!");
             } else {
-                showAlert(Alert.AlertType.INFORMATION, "Sucesso", "PDI atualizado com sucesso!");
+                showAlert(Alert.AlertType.INFORMATION, "Sucesso", "PDI e Meta atualizados com sucesso!");
             }
 
+            // 4. Recarrega o dashboard principal
             dashboardController.recarregarPdis(null);
 
+            // 5. Recarrega a própria tela de edição para atualizar a lista de anexos e o botão "Concluir"
             PDI pdiAtualizado = new PDIDAO().buscarPdiPorId(pdiParaEditar.getIdPdi());
             carregarPdi(pdiAtualizado, dashItem, dashboardController);
 
@@ -235,6 +349,46 @@ public class EdicaoPdiController {
             e.printStackTrace();
         }
     }
+
+    // MÉTODO: Lida com o botão "Concluir PDI"
+    @FXML
+    private void handleConcluirPdi() {
+        if (pdiParaEditar == null) {
+            showAlert(Alert.AlertType.ERROR, "Erro", "PDI não carregado.");
+            return;
+        }
+
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION,
+                "Tem certeza que deseja marcar este PDI como CONCLUÍDO (100% de atingimento em todas as metas)? Esta ação não pode ser desfeita facilmente.",
+                ButtonType.YES, ButtonType.NO);
+        confirmation.setTitle("Confirmação de Conclusão");
+        confirmation.setHeaderText("Confirmação de Conclusão do PDI");
+
+        confirmation.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                try {
+                    // 1. Marca as metas como 100% concluídas
+                    metasDAO.marcarComoConcluido(pdiParaEditar.getIdPdi());
+
+                    showAlert(Alert.AlertType.INFORMATION, "Sucesso", "✅ PDI marcado como CONCLUÍDO com sucesso! O dashboard será atualizado.");
+
+                    // 2. Atualiza o dashboard principal
+                    if (dashboardController != null) {
+                        dashboardController.recarregarPdis(null);
+                    }
+
+                    // 3. Fecha a janela
+                    Stage stage = (Stage) btnConcluir.getScene().getWindow();
+                    stage.close();
+
+                } catch (Exception e) {
+                    showAlert(Alert.AlertType.ERROR, "Erro", "❌ Falha ao marcar o PDI como concluído: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 
     private void fecharJanela() {
         Stage stage = (Stage) btnSalvar.getScene().getWindow();

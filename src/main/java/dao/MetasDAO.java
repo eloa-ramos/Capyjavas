@@ -63,6 +63,56 @@ public class MetasDAO {
         }
     }
 
+    /**
+     * NOVO: Busca a primeira (e única) meta associada a um PDI.
+     */
+    public Metas buscarMetaPorPdi(int idPdi) {
+        // Assume-se que há apenas uma meta por PDI (devido à lógica de cadastro)
+        String sql = "SELECT id_meta, id_pdi, id_skill, meta_pontuacao, pontuacao_obtida FROM Metas WHERE id_pdi = ?";
+
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idPdi);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Metas meta = new Metas();
+                    meta.setIdMeta(rs.getInt("id_meta"));
+                    meta.setIdPdi(rs.getInt("id_pdi"));
+                    meta.setIdSkill(rs.getInt("id_skill"));
+                    meta.setMetaPontuacao(rs.getBigDecimal("meta_pontuacao"));
+                    meta.setPontuacaoObtida(rs.getBigDecimal("pontuacao_obtida"));
+                    return meta;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar meta por PDI: " + e.getMessage(), e);
+        }
+        return null;
+    }
+
+
+    /**
+     * Marca todas as metas de um PDI como 100% concluídas
+     * (seta pontuacao_obtida = meta_pontuacao).
+     * @param idPdi O ID do PDI a ser concluído.
+     */
+    public void marcarComoConcluido(int idPdi) {
+        // Usamos uma subconsulta para garantir que a pontuacao_obtida seja
+        // igual à meta_pontuacao, garantindo 100% de atingimento no campo calculado.
+        String sql = "UPDATE Metas SET pontuacao_obtida = meta_pontuacao WHERE id_pdi = ?";
+
+        try (Connection conn = new ConnectionFactory().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idPdi);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao marcar PDI como concluído: " + e.getMessage(), e);
+        }
+    }
+
     // Método para listar todas as metas
     public List<Metas> listaTodas() {
         List<Metas> metasList = new ArrayList<>();

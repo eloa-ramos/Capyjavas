@@ -36,6 +36,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
                 <VBox spacing="5.0">
@@ -68,6 +69,19 @@
                         <TextField fx:id="txtObjetivo" promptText="Digite o objetivo a ser desenvolvido" />
                     </children>
                 </VBox>
+
+                <VBox spacing="5.0" GridPane.rowIndex="3">
+                    <children>
+                        <Label text="Meta de Pontuação (Ex: 100)" />
+                        <TextField fx:id="txtMetaPontuacao" promptText="100" />
+                    </children>
+                </VBox>
+                <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <children>
+                        <Label text="Pontuação Obtida (Atual)" />
+                        <TextField fx:id="txtPontuacaoObtida" promptText="0" />
+                    </children>
+                </VBox>
             </children>
         </GridPane>
 
@@ -95,6 +109,13 @@
                 text="Salvar Alterações" textFill="WHITE">
             <VBox.margin>
                 <Insets top="20.0" />
+            </VBox.margin>
+        </Button>
+        <Button fx:id="btnConcluir" maxWidth="1.7976931348623157E308" onAction="#handleConcluirPdi"
+                text="Marcar como Concluído (100%)" textFill="WHITE"
+                style="-fx-background-color: #4CAF50; -fx-font-weight: bold;">
+            <VBox.margin>
+                <Insets top="-15.0" bottom="20.0" />
             </VBox.margin>
         </Button>
     </children>
